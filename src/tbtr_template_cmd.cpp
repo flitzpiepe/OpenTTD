@@ -4,7 +4,6 @@
 #include "command_func.h"
 #include "core/random_func.hpp"
 
-#include "tbtr_debug.h"
 #include "tbtr_template_vehicle.h"
 
 /**
@@ -157,7 +156,7 @@ void TransferCargo(Train* src, Train* dest)
 			if (tmp->cargo_type == _cargo_type && tmp->cargo_subtype == _cargo_subtype) {
 				/* calculate the free space for new cargo on the current vehicle */
 				uint curCap = tmp->cargo_cap - tmp->cargo.TotalCount();
-				uint moveAmount = std::min(remainingAmount, curCap);
+				uint moveAmount = min(remainingAmount, curCap);
 				/* move (parts of) the old vehicle's cargo onto the current vehicle of the new chain */
 				if (moveAmount > 0) {
 					src->cargo.Shift(moveAmount, &tmp->cargo);
