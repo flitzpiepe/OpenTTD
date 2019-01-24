@@ -7,7 +7,7 @@
  * See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with OpenTTD. If not, see <http://www.gnu.org/licenses/>.
  */
 
- /** @file tbtr_template_gui_main.h Main window for template configuration and overview. */
+ /** @file tbtr_template_gui_main.h Main window for Template-based train replacement patch. */
 
 #ifndef TBTR_GUI_H
 #define TBTR_GUI_H
