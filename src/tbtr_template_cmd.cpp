@@ -1,10 +1,20 @@
+/* $Id$ */
+
+/*
+ * This file is part of OpenTTD.
+ * OpenTTD is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2.
+ * OpenTTD is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with OpenTTD. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/** @file tbtr_template_cmd.cpp Implementation of the TemplateVehicle class. */
+
 #include "stdafx.h"
 
 #include "autoreplace_func.h"
 #include "command_func.h"
 #include "core/random_func.hpp"
 
-#include "tbtr_debug.h"
 #include "tbtr_template_vehicle.h"
 
 /**
@@ -157,7 +167,7 @@ void TransferCargo(Train* src, Train* dest)
 			if (tmp->cargo_type == _cargo_type && tmp->cargo_subtype == _cargo_subtype) {
 				/* calculate the free space for new cargo on the current vehicle */
 				uint curCap = tmp->cargo_cap - tmp->cargo.TotalCount();
-				uint moveAmount = std::min(remainingAmount, curCap);
+				uint moveAmount = min(remainingAmount, curCap);
 				/* move (parts of) the old vehicle's cargo onto the current vehicle of the new chain */
 				if (moveAmount > 0) {
 					src->cargo.Shift(moveAmount, &tmp->cargo);
