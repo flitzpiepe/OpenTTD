@@ -355,6 +355,8 @@ subsidy_base.h
 subsidy_func.h
 subsidy_type.h
 tar_type.h
+tbtr_gui.h
+tbtr_template_vehicle.h
 terraform_gui.h
 textbuf_gui.h
 textbuf_type.h

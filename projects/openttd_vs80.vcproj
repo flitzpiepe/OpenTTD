@@ -787,6 +787,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\..\src\tbtr_gui.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\..\src\tbtr_template_vehicle.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\..\src\tbtr_template_cmd.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\..\src\textbuf.cpp"
 				>
 			</File>
@@ -1744,6 +1756,14 @@
 			</File>
 			<File
 				RelativePath=".\..\src\tar_type.h"
+				>
+			</File>
+			<File
+				RelativePath=".\..\src\tbtr_gui.h"
+				>
+			</File>
+			<File
+				RelativePath=".\..\src\tbtr_template_vehicle.h"
 				>
 			</File>
 			<File
@@ -2792,6 +2812,10 @@
 			</File>
 			<File
 				RelativePath=".\..\src\saveload\subsidy_sl.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\..\src\saveload\tbtr_template_vehicle_sl.cpp"
 				>
 			</File>
 			<File
