@@ -15,7 +15,7 @@
 
 #include "saveload.h"
 
-const SaveLoad* GTD() {
+const SaveLoad* GetTemplateDescription() {
 
 	static const SaveLoad _template_vehicle_desc[] = {
 		SLE_VAR(TemplateVehicle, index,                     SLE_UINT16),
@@ -59,7 +59,7 @@ static void Save_TMPLS()
 
 	FOR_ALL_TEMPLATES(tv) {
 		SlSetArrayIndex(tv->index);
-		SlObject(tv, GTD());
+		SlObject(tv, GetTemplateDescription());
 	}
 }
 
@@ -69,7 +69,7 @@ static void Load_TMPLS()
 
 	while ((index = SlIterateArray()) != -1) {
 		TemplateVehicle *tv = new (index) TemplateVehicle();
-		SlObject(tv, GTD());
+		SlObject(tv, GetTemplateDescription());
 	}
 }
 
@@ -77,7 +77,7 @@ static void Ptrs_TMPLS()
 {
 	TemplateVehicle *tv;
 	FOR_ALL_TEMPLATES(tv) {
-		SlObject(tv, GTD());
+		SlObject(tv, GetTemplateDescription());
 	}
 }
 
