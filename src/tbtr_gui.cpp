@@ -414,7 +414,7 @@ void TbtrGui::DrawGroups(const Rect& r) const
 
 		/* Draw the index of the selected template for this group
 		 * Note, that this is the index into the group list, not the template's ID. */
-		if (group->template_id >= 0) {
+		if ( group->template_id != INVALID_TEMPLATE ) {
 			SetDParam(0, FindTemplateIndexInGui(group->template_id));
 			DrawString ( left, right, y+2, STR_TBTR_TEMPLATE_USED_BY_GROUP, TC_BLACK, SA_HOR_CENTER);
 		}
