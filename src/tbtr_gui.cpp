@@ -394,7 +394,7 @@ void TbtrGui::DrawGroups(const Rect& r) const
 {
 	int left = r.left + WD_MATRIX_LEFT;
 	int right = r.right - WD_MATRIX_RIGHT;
-	int y = r.top;
+	int y = r.top + this->resize.step_height/8;
 	int max = min(this->vscroll_groups->GetPosition() + this->vscroll_groups->GetCapacity(), this->groups.Length());
 
 	/* Then treat all groups defined by/for the current company */
@@ -431,7 +431,7 @@ void TbtrGui::DrawGroups(const Rect& r) const
 		SetDParam(0, num_trains);
 		DrawString(left, right-4, y+2, STR_JUST_INT, color, SA_RIGHT);
 
-		y += this->line_height / 2;
+		y += this->resize.step_height;
 	}
 }
 
