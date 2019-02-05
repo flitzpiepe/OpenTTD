@@ -213,35 +213,65 @@ static int CDECL TrainEnginesThenWagonsSorter(const EngineID* a, const EngineID*
 	return _engine_sort_direction ? -r : r;
 }
 
-void CcTemplateDeleted(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2)
-{
-	if ( result.Succeeded() ) {
-		TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
-		tbtrGui->DeselectTemplate();
-	}
-}
 
+/**
+ * CcTemplateEngineAdded
+ *
+ * Command callback when a new engine has been added to an existing template or while creating a new template.
+ */
 void CcTemplateEngineAdded(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2)
 {
 	if ( result.Succeeded() ) {
 		TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
-		tbtrGui->RebuildTemplateGuiList();
+		// TODO rm
+		//tbtrGui->RebuildTemplateGuiList();
+		tbtrGui->UpdateGUI(ENGINE_ADDED);
 	}
 }
 
+/**
+ * CcTemplateEngineDeleted
+ *
+ * Command callback when an engine has been removed from a template.
+ */
 void CcTemplateEngineDeleted(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2)
 {
 	if ( result.Succeeded() ) {
 		TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
-		tbtrGui->RebuildTemplateGuiListAfterDelete();
+		// TODO rm
+		//tbtrGui->RebuildTemplateGuiListAfterDelete();
+		tbtrGui->UpdateGUI(ENGINE_DELETED);
+
 	}
 }
 
+/**
+ * CcTemplateClonedFromTrain
+ *
+ * Command callback when a template has been cloned from an existing train.
+ */
 void CcTemplateClonedFromTrain(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2)
 {
 	if ( result.Succeeded() ) {
 		TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
-		tbtrGui->RebuildTemplateGuiListAfterClone();
+		// TODO rm
+		//tbtrGui->RebuildTemplateGuiListAfterClone();
+		tbtrGui->UpdateGUI(TEMPLATE_CLONED);
+	}
+}
+
+/**
+ * CcTemplateDeleted
+ *
+ * Command callback when a template has been deleted.
+ */
+void CcTemplateDeleted(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2)
+{
+	if ( result.Succeeded() ) {
+		TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
+		// TODO rm
+		//tbtrGui->DeselectTemplate();
+		tbtrGui->UpdateGUI(TEMPLATE_DELETED);
 	}
 }
 
@@ -279,32 +309,32 @@ TbtrGui::TbtrGui(WindowDesc* wdesc) : Window(wdesc)
 	BuildTemplateList();
 }
 
-// TODO combine these 3
-void TbtrGui::RebuildTemplateGuiList()
-{
-	this->BuildTemplateList();
-	/* if no template was selected, select the newly created chain */
-	if ( this->index_selected_template == -1 )
-		this->index_selected_template = this->templates.Length() - 1;
-	this->CalculateTemplatesHScroll();
-}
-void TbtrGui::RebuildTemplateGuiListAfterDelete()
-{
-	BuildTemplateList();
+void TbtrGui::UpdateGUI(UpdateGuiMode mode)
+{ 
 	uint num_templates = this->templates.Length();
-	/* in case that the last engine of the template has been removed, reset the selected index */
-	if ( this->templates.Length() < num_templates )
-		this->index_selected_template = -1;
+	this->BuildTemplateList();
+	switch (mode) {
+		case ENGINE_ADDED:
+			/* if no template was selected, select the newly created chain */
+			if ( this->index_selected_template == -1 )
+				this->index_selected_template = this->templates.Length() - 1;
+			break;
+		case ENGINE_DELETED:
+			/* last engine removed => unselect template */
+			if ( this->templates.Length() < num_templates )
+				this->index_selected_template = -1;
+			break;
+		case TEMPLATE_CLONED:
+			this->ToggleWidgetLoweredState(TRW_WIDGET_TMPL_BUTTONS_CLONE);
+			ResetObjectToPlace();
+			this->SetDirty();
+			break;
+		case TEMPLATE_DELETED:
+			this->index_selected_template = -1;
+			break;
+	}
 	this->CalculateTemplatesHScroll();
 }
-void TbtrGui::RebuildTemplateGuiListAfterClone()
-{
-	BuildTemplateList();
-	this->ToggleWidgetLoweredState(TRW_WIDGET_TMPL_BUTTONS_CLONE);
-	this->SetDirty();
-	this->CalculateTemplatesHScroll();
-}
-
 
 // TODO needs to be moved for alph.order
 /*
@@ -808,10 +838,7 @@ bool TbtrGui::OnVehicleSelect(const Vehicle* v)
 {
 	if (v->type != VEH_TRAIN)
 		return false;
-
-	if ( DoCommandP(0, v->index, 0, CMD_CLONE_TEMPLATE_FROM_TRAIN) )
-		ResetObjectToPlace();
-
+	DoCommandP(0, v->index, 0, CMD_CLONE_TEMPLATE_FROM_TRAIN);
 	return true;
 }
 
