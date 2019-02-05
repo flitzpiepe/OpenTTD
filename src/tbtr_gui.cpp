@@ -213,6 +213,12 @@ static int CDECL TrainEnginesThenWagonsSorter(const EngineID* a, const EngineID*
 	return _engine_sort_direction ? -r : r;
 }
 
+void CcTemplateDeleted(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2)
+{
+	TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
+	tbtrGui->DeselectTemplate();
+}
+
 /**
  * Constructor, initialize GUI with a window descriptor
  */
@@ -590,10 +596,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 		}
 		case TRW_WIDGET_TMPL_BUTTONS_DELETE: {
 			TemplateID tid = this->templates[this->index_selected_template]->index;
-			bool template_deleted = DoCommandP(0, tid, 0, CMD_DELETE_TEMPLATE);
-			if ( template_deleted ) {
-				this->index_selected_template = -1;
-			}
+			DoCommandP(0, tid, 0, CMD_DELETE_TEMPLATE, CcTemplateDeleted);
 			BuildTemplateList();
 			this->CalculateTemplatesHScroll();
 
