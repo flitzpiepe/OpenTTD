@@ -215,30 +215,34 @@ static int CDECL TrainEnginesThenWagonsSorter(const EngineID* a, const EngineID*
 
 void CcTemplateDeleted(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2)
 {
-	TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
-	// TODO only if command was successful
-	tbtrGui->DeselectTemplate();
+	if ( result.Succeeded() ) {
+		TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
+		tbtrGui->DeselectTemplate();
+	}
 }
 
 void CcTemplateEngineAdded(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2)
 {
-	TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
-	// TODO only if command was successful
-	tbtrGui->RebuildTemplateGuiList();
+	if ( result.Succeeded() ) {
+		TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
+		tbtrGui->RebuildTemplateGuiList();
+	}
 }
 
 void CcTemplateEngineDeleted(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2)
 {
-	TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
-	// TODO only if command successful
-	tbtrGui->RebuildTemplateGuiListAfterDelete();
+	if ( result.Succeeded() ) {
+		TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
+		tbtrGui->RebuildTemplateGuiListAfterDelete();
+	}
 }
 
 void CcTemplateClonedFromTrain(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2)
 {
-	TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
-	// TODO only if command successful
-	tbtrGui->RebuildTemplateGuiListAfterClone();
+	if ( result.Succeeded() ) {
+		TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
+		tbtrGui->RebuildTemplateGuiListAfterClone();
+	}
 }
 
 /**
