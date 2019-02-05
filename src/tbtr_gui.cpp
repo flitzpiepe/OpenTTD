@@ -227,6 +227,13 @@ void CcTemplateEngineAdded(const CommandCost &result, TileIndex tile, uint32 p1,
 	tbtrGui->RebuildTemplateGuiList();
 }
 
+void CcTemplateEngineDeleted(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2)
+{
+	TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
+	// TODO only if command successful
+	tbtrGui->RebuildTemplateGuiListAfterDelete();
+}
+
 /**
  * Constructor, initialize GUI with a window descriptor
  */
@@ -261,12 +268,22 @@ TbtrGui::TbtrGui(WindowDesc* wdesc) : Window(wdesc)
 	BuildTemplateList();
 }
 
+// TODO combine these 2
 void TbtrGui::RebuildTemplateGuiList()
 {
 	this->BuildTemplateList();
 	/* if no template was selected, select the newly created chain */
 	if ( this->index_selected_template == -1 )
 		this->index_selected_template = this->templates.Length() - 1;
+	this->CalculateTemplatesHScroll();
+}
+void TbtrGui::RebuildTemplateGuiListAfterDelete()
+{
+	BuildTemplateList();
+	uint num_templates = this->templates.Length();
+	/* in case that the last engine of the template has been removed, reset the selected index */
+	if ( this->templates.Length() < num_templates )
+		this->index_selected_template = -1;
 	this->CalculateTemplatesHScroll();
 }
 
@@ -692,17 +709,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 				return;
 
 			/* delete the last engine */
-			uint num_templates = this->templates.Length();
-			bool successful = DoCommandP(0, tid, 0, CMD_TEMPLATE_DELETE_ENGINE);
-
-			if ( successful ) {
-				BuildTemplateList();
-				/* in case that the last engine of the template has been removed, reset the selected index */
-				if ( this->templates.Length() < num_templates )
-					this->index_selected_template = -1;
-				this->CalculateTemplatesHScroll();
-			}
-
+			DoCommandP(0, tid, 0, CMD_TEMPLATE_DELETE_ENGINE, CcTemplateEngineDeleted);
 			break;
 		}
 		case TRW_WIDGET_TMPL_BUTTONS_CONFIGTMPL_REUSE: {
