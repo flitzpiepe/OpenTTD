@@ -216,7 +216,15 @@ static int CDECL TrainEnginesThenWagonsSorter(const EngineID* a, const EngineID*
 void CcTemplateDeleted(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2)
 {
 	TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
+	// TODO only if command was successful
 	tbtrGui->DeselectTemplate();
+}
+
+void CcTemplateEngineAdded(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2)
+{
+	TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
+	// TODO only if command was successful
+	tbtrGui->RebuildTemplateGuiList();
 }
 
 /**
@@ -252,6 +260,18 @@ TbtrGui::TbtrGui(WindowDesc* wdesc) : Window(wdesc)
 
 	BuildTemplateList();
 }
+
+void TbtrGui::RebuildTemplateGuiList()
+{
+	this->BuildTemplateList();
+	/* if no template was selected, select the newly created chain */
+	if ( this->index_selected_template == -1 )
+		this->index_selected_template = this->templates.Length() - 1;
+	this->CalculateTemplatesHScroll();
+}
+
+
+// TODO needs to be moved for alph.order
 /*
  * Recalculate the size of the window's components
  */
@@ -660,16 +680,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 				tid = this->templates[index_selected_template]->index;
 
 			/* add the engine */
-			bool successful = DoCommandP(0, tid, eid, CMD_TEMPLATE_ADD_ENGINE);
-
-			if ( successful ) {
-				BuildTemplateList();
-				/* if no template was selected, select the newly created chain */
-				if ( this->index_selected_template == -1 )
-					this->index_selected_template = this->templates.Length() - 1;
-				this->CalculateTemplatesHScroll();
-			}
-
+			DoCommandP(0, tid, eid, CMD_TEMPLATE_ADD_ENGINE, CcTemplateEngineAdded);
 			break;
 		}
 		case TRW_WIDGET_TMPL_BUTTONS_DELETE_LAST_VEH: {
