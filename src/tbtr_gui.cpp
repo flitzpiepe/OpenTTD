@@ -234,6 +234,13 @@ void CcTemplateEngineDeleted(const CommandCost &result, TileIndex tile, uint32 p
 	tbtrGui->RebuildTemplateGuiListAfterDelete();
 }
 
+void CcTemplateClonedFromTrain(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2)
+{
+	TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
+	// TODO only if command successful
+	tbtrGui->RebuildTemplateGuiListAfterClone();
+}
+
 /**
  * Constructor, initialize GUI with a window descriptor
  */
@@ -268,7 +275,7 @@ TbtrGui::TbtrGui(WindowDesc* wdesc) : Window(wdesc)
 	BuildTemplateList();
 }
 
-// TODO combine these 2
+// TODO combine these 3
 void TbtrGui::RebuildTemplateGuiList()
 {
 	this->BuildTemplateList();
@@ -284,6 +291,13 @@ void TbtrGui::RebuildTemplateGuiListAfterDelete()
 	/* in case that the last engine of the template has been removed, reset the selected index */
 	if ( this->templates.Length() < num_templates )
 		this->index_selected_template = -1;
+	this->CalculateTemplatesHScroll();
+}
+void TbtrGui::RebuildTemplateGuiListAfterClone()
+{
+	BuildTemplateList();
+	this->ToggleWidgetLoweredState(TRW_WIDGET_TMPL_BUTTONS_CLONE);
+	this->SetDirty();
 	this->CalculateTemplatesHScroll();
 }
 
@@ -791,15 +805,8 @@ bool TbtrGui::OnVehicleSelect(const Vehicle* v)
 	if (v->type != VEH_TRAIN)
 		return false;
 
-	if ( !DoCommandP(0, v->index, 0, CMD_CLONE_TEMPLATE_FROM_TRAIN) )
-		return false;
-
-	BuildTemplateList();
-	this->ToggleWidgetLoweredState(TRW_WIDGET_TMPL_BUTTONS_CLONE);
-	ResetObjectToPlace();
-	this->SetDirty();
-
-	this->CalculateTemplatesHScroll();
+	if ( DoCommandP(0, v->index, 0, CMD_CLONE_TEMPLATE_FROM_TRAIN) )
+		ResetObjectToPlace();
 
 	return true;
 }

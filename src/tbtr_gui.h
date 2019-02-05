@@ -41,6 +41,7 @@ public:
 	virtual bool OnVehicleSelect(const Vehicle*);
 	virtual void OnInvalidateData(int, bool);
 	void RebuildTemplateGuiList();
+	void RebuildTemplateGuiListAfterClone();
 	void RebuildTemplateGuiListAfterDelete();
 	void DeselectTemplate() {this->index_selected_template=-1;}
 
