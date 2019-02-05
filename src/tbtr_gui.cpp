@@ -213,6 +213,68 @@ static int CDECL TrainEnginesThenWagonsSorter(const EngineID* a, const EngineID*
 	return _engine_sort_direction ? -r : r;
 }
 
+
+/**
+ * CcTemplateEngineAdded
+ *
+ * Command callback when a new engine has been added to an existing template or while creating a new template.
+ */
+void CcTemplateEngineAdded(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2)
+{
+	if ( result.Succeeded() ) {
+		TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
+		// TODO rm
+		//tbtrGui->RebuildTemplateGuiList();
+		tbtrGui->UpdateGUI(ENGINE_ADDED);
+	}
+}
+
+/**
+ * CcTemplateEngineDeleted
+ *
+ * Command callback when an engine has been removed from a template.
+ */
+void CcTemplateEngineDeleted(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2)
+{
+	if ( result.Succeeded() ) {
+		TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
+		// TODO rm
+		//tbtrGui->RebuildTemplateGuiListAfterDelete();
+		tbtrGui->UpdateGUI(ENGINE_DELETED);
+
+	}
+}
+
+/**
+ * CcTemplateClonedFromTrain
+ *
+ * Command callback when a template has been cloned from an existing train.
+ */
+void CcTemplateClonedFromTrain(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2)
+{
+	if ( result.Succeeded() ) {
+		TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
+		// TODO rm
+		//tbtrGui->RebuildTemplateGuiListAfterClone();
+		tbtrGui->UpdateGUI(TEMPLATE_CLONED);
+	}
+}
+
+/**
+ * CcTemplateDeleted
+ *
+ * Command callback when a template has been deleted.
+ */
+void CcTemplateDeleted(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2)
+{
+	if ( result.Succeeded() ) {
+		TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
+		// TODO rm
+		//tbtrGui->DeselectTemplate();
+		tbtrGui->UpdateGUI(TEMPLATE_DELETED);
+	}
+}
+
 /**
  * Constructor, initialize GUI with a window descriptor
  */
@@ -246,25 +308,32 @@ TbtrGui::TbtrGui(WindowDesc* wdesc) : Window(wdesc)
 
 	BuildTemplateList();
 }
-/*
- * Recalculate the size of the window's components
- */
-void TbtrGui::UpdateWidgetSize(int widget, Dimension *size, const Dimension &padding, Dimension *fill, Dimension *resize)
-{
-	switch (widget) {
-		case TRW_WIDGET_MATRIX_GROUPS:
-			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP) / 2;
-			size->height = 8 * resize->height;
+
+void TbtrGui::UpdateGUI(UpdateGuiMode mode)
+{ 
+	uint num_templates = this->templates.Length();
+	this->BuildTemplateList();
+	switch (mode) {
+		case ENGINE_ADDED:
+			/* if no template was selected, select the newly created chain */
+			if ( this->index_selected_template == -1 )
+				this->index_selected_template = this->templates.Length() - 1;
 			break;
-		case TRW_WIDGET_MATRIX_TEMPLATES:
-			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP);
-			size->height = 4 * resize->height;
+		case ENGINE_DELETED:
+			/* last engine removed => unselect template */
+			if ( this->templates.Length() < num_templates )
+				this->index_selected_template = -1;
 			break;
-		case TRW_WIDGET_MATRIX_ENGINES:
-			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP) / 2;
-			size->height = 4 * resize->height;
+		case TEMPLATE_CLONED:
+			this->ToggleWidgetLoweredState(TRW_WIDGET_TMPL_BUTTONS_CLONE);
+			ResetObjectToPlace();
+			this->SetDirty();
+			break;
+		case TEMPLATE_DELETED:
+			this->index_selected_template = -1;
 			break;
 	}
+	this->CalculateTemplatesHScroll();
 }
 
 /**
@@ -590,10 +659,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 		}
 		case TRW_WIDGET_TMPL_BUTTONS_DELETE: {
 			TemplateID tid = this->templates[this->index_selected_template]->index;
-			bool template_deleted = DoCommandP(0, tid, 0, CMD_DELETE_TEMPLATE);
-			if ( template_deleted ) {
-				this->index_selected_template = -1;
-			}
+			DoCommandP(0, tid, 0, CMD_DELETE_TEMPLATE, CcTemplateDeleted);
 			BuildTemplateList();
 			this->CalculateTemplatesHScroll();
 
@@ -657,16 +723,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 				tid = this->templates[index_selected_template]->index;
 
 			/* add the engine */
-			bool successful = DoCommandP(0, tid, eid, CMD_TEMPLATE_ADD_ENGINE);
-
-			if ( successful ) {
-				BuildTemplateList();
-				/* if no template was selected, select the newly created chain */
-				if ( this->index_selected_template == -1 )
-					this->index_selected_template = this->templates.Length() - 1;
-				this->CalculateTemplatesHScroll();
-			}
-
+			DoCommandP(0, tid, eid, CMD_TEMPLATE_ADD_ENGINE, CcTemplateEngineAdded);
 			break;
 		}
 		case TRW_WIDGET_TMPL_BUTTONS_DELETE_LAST_VEH: {
@@ -678,17 +735,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 				return;
 
 			/* delete the last engine */
-			uint num_templates = this->templates.Length();
-			bool successful = DoCommandP(0, tid, 0, CMD_TEMPLATE_DELETE_ENGINE);
-
-			if ( successful ) {
-				BuildTemplateList();
-				/* in case that the last engine of the template has been removed, reset the selected index */
-				if ( this->templates.Length() < num_templates )
-					this->index_selected_template = -1;
-				this->CalculateTemplatesHScroll();
-			}
-
+			DoCommandP(0, tid, 0, CMD_TEMPLATE_DELETE_ENGINE, CcTemplateEngineDeleted);
 			break;
 		}
 		case TRW_WIDGET_TMPL_BUTTONS_CONFIGTMPL_REUSE: {
@@ -769,18 +816,29 @@ bool TbtrGui::OnVehicleSelect(const Vehicle* v)
 {
 	if (v->type != VEH_TRAIN)
 		return false;
-
-	if ( !DoCommandP(0, v->index, 0, CMD_CLONE_TEMPLATE_FROM_TRAIN) )
-		return false;
-
-	BuildTemplateList();
-	this->ToggleWidgetLoweredState(TRW_WIDGET_TMPL_BUTTONS_CLONE);
-	ResetObjectToPlace();
-	this->SetDirty();
-
-	this->CalculateTemplatesHScroll();
-
+	DoCommandP(0, v->index, 0, CMD_CLONE_TEMPLATE_FROM_TRAIN);
 	return true;
+}
+
+/*
+ * Recalculate the size of the window's components
+ */
+void TbtrGui::UpdateWidgetSize(int widget, Dimension *size, const Dimension &padding, Dimension *fill, Dimension *resize)
+{
+	switch (widget) {
+		case TRW_WIDGET_MATRIX_GROUPS:
+			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP) / 2;
+			size->height = 8 * resize->height;
+			break;
+		case TRW_WIDGET_MATRIX_TEMPLATES:
+			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP);
+			size->height = 4 * resize->height;
+			break;
+		case TRW_WIDGET_MATRIX_ENGINES:
+			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP) / 2;
+			size->height = 4 * resize->height;
+			break;
+	}
 }
 
 /*

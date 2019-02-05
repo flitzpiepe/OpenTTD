@@ -27,6 +27,13 @@
 typedef GUIList<const Group*> GUIGroupList;
 typedef GUIList<const TemplateVehicle*> GUITemplateList;
 
+enum UpdateGuiMode {
+	ENGINE_ADDED,
+	ENGINE_DELETED,
+	TEMPLATE_CLONED,
+	TEMPLATE_DELETED,
+};
+
 /*
  * TBTR's main window - for managing templates and setting up train groups for replacement.
  */
@@ -40,6 +47,7 @@ public:
 	virtual void OnResize();
 	virtual bool OnVehicleSelect(const Vehicle*);
 	virtual void OnInvalidateData(int, bool);
+	void UpdateGUI(UpdateGuiMode);
 
 private:
 	void BuildGroupList();
