@@ -336,28 +336,6 @@ void TbtrGui::UpdateGUI(UpdateGuiMode mode)
 	this->CalculateTemplatesHScroll();
 }
 
-// TODO needs to be moved for alph.order
-/*
- * Recalculate the size of the window's components
- */
-void TbtrGui::UpdateWidgetSize(int widget, Dimension *size, const Dimension &padding, Dimension *fill, Dimension *resize)
-{
-	switch (widget) {
-		case TRW_WIDGET_MATRIX_GROUPS:
-			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP) / 2;
-			size->height = 8 * resize->height;
-			break;
-		case TRW_WIDGET_MATRIX_TEMPLATES:
-			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP);
-			size->height = 4 * resize->height;
-			break;
-		case TRW_WIDGET_MATRIX_ENGINES:
-			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP) / 2;
-			size->height = 4 * resize->height;
-			break;
-	}
-}
-
 /**
  * Build the list of engines that can be selected for new or existing templates
  */
@@ -840,6 +818,27 @@ bool TbtrGui::OnVehicleSelect(const Vehicle* v)
 		return false;
 	DoCommandP(0, v->index, 0, CMD_CLONE_TEMPLATE_FROM_TRAIN);
 	return true;
+}
+
+/*
+ * Recalculate the size of the window's components
+ */
+void TbtrGui::UpdateWidgetSize(int widget, Dimension *size, const Dimension &padding, Dimension *fill, Dimension *resize)
+{
+	switch (widget) {
+		case TRW_WIDGET_MATRIX_GROUPS:
+			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP) / 2;
+			size->height = 8 * resize->height;
+			break;
+		case TRW_WIDGET_MATRIX_TEMPLATES:
+			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP);
+			size->height = 4 * resize->height;
+			break;
+		case TRW_WIDGET_MATRIX_ENGINES:
+			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP) / 2;
+			size->height = 4 * resize->height;
+			break;
+	}
 }
 
 /*
