@@ -312,64 +312,52 @@ STR_SORT_BY_RANGE                                               :Range
 STR_SORT_BY_POPULATION                                          :Population
 STR_SORT_BY_RATING                                              :Rating
 
-STR_TBTR_RPL_TITLE                                              :{WHITE}Template Replacement
+# Template-based train replacement
 STR_TBTR_TEMPLATE_REPLACEMENT                                   :Template Replacement
-STR_TBTR_TRAINS_IN_GROUP                                        :{BLACK}Trains in group
-STR_TBTR_AVAILABLE_ENGINES                                      :{BLACK}Available Engines
-STR_TBTR_AVAILABLE_TEMPLATES                                    :{BLACK}Available Templates
-STR_TBTR_ADD_TEMPLATE                                           :{BLACK}Add Engine
-STR_TBTR_CREATE_CLONE_VEH                                       :{BLACK}Clone
-STR_TBTR_DELETE_TEMPLATE                                        :{BLACK}Delete Template
-STR_TBTR_DELETE_TEMPLATE_LAST_VEH                               :{BLACK}Delete last Engine
-STR_TBTR_RPL_ALL_TMPL                                           :{TINY_FONT}{GRAY}Replace All Templates
-STR_TBTR_CONFIRM                                                :{BLACK}Ok
-STR_TBTR_CANCEL                                                 :{BLACK}Cancel
-STR_TBTR_NEW                                                    :{BLACK}New Template Vehicle
-STR_TBTR_REFIT                                                  :{BLACK}Refit
-STR_TBTR_GROUP_INFO                                             :{BLACK}Group Info: {ORANGE}
-STR_TBTR_TEMPLATE_INFO                                          :{BLACK}Template Info
-STR_TBTR_RPL_START                                              :{BLACK}Start replacing
-STR_TBTR_RPL_STOP                                               :{BLACK}Stop replacing
-STR_TBTR_TRAIN_OVR_VALUE                                        :{TINY_FONT}{BLACK}Train Value: {CURRENCY_SHORT}
-STR_TBTR_TEMPLATE_OVR_VALUE                                     :{TINY_FONT}{BLACK}Buying Cost: {GOLD}{CURRENCY_LONG}
-STR_TBTR_TEMPLATE_OVR_VALUE_nogold                              :{TINY_FONT}{BLACK}Buying Cost: {CURRENCY_LONG}
-STR_TBTR_TEMPLATE_OVR_VALUE_nogoldandcurrency                   :{TINY_FONT}{BLACK}Buying Cost:
-STR_TBTR_TEMPLATE_OVR_VALUE_notinyfont                          :{BLACK}Buying Cost: {GOLD}{CURRENCY_LONG}
-STR_TBTR_TEMPLATE_OVR_VALUE_notinyfontandblack                  :Buying Cost: {GOLD}{CURRENCY_LONG}
-STR_TBTR_WARNING_FREE_WAGON                                     :{RED}Free Chain: not runnable!
-STR_TBTR_TEST                                                   :{ORANGE}Test String: {RAW_STRING} {RAW_STRING}
-STR_TBTR_TEMPLATE_USED_BY_GROUP                                 :{BLACK}Template in use: {NUM}
-STR_TBTR_TEMPLATE_IN_USE                                        :Template in use (#groups: {NUM})
-STR_TBTR_GROUP_NUM_TRAINS                                       :{BLACK}{NUM}
-STR_TBTR_CREATEGUI_TITLE                                        :{WHITE}Create/Edit Template Vehicle
-STR_TBTR_MAINGUI_DEFINEDGROUPS                                  :{BLACK}Defined Groups for Company
-STR_TBTR_TMPLRPL_EX_DIFF_RAILTYPE                               :Uses Template of different rail type
+STR_TBTR_UI_TITLE                                               :{WHITE}Template Replacement
 
-STR_TBTR_SET_USEDEPOT                                           :{BLACK}Use vehicles in depot
-STR_TBTR_SET_USEDEPOT_TIP                                       :{BLACK}Use vehicles inside the depot that are in a neutral and idle state to compose trains on template replacement in order to reduce buying costs
-STR_TBTR_SET_KEEPREMAINDERS                                     :{BLACK}Keep remainders
-STR_TBTR_SET_KEEPREMAINDERS_TIP                                 :{BLACK}After finishing template replacement keep all remaining vehicles from the old train in a neutral and idle state for later use
-STR_TBTR_SET_REFIT                                              :{BLACK}Use Refit
-STR_TBTR_SET_REFIT_TIP                                          :{BLACK}If set, the train will use exactly the cargo refit specified by the template. If not every wagon that is to be newly bought or retrieved from the depot, will *attempt* to be refitted as the old one was. Standard refit if this is impossible.
+STR_TBTR_UI_LABEL_GROUPS                                        :{BLACK}Company groups
+STR_TBTR_UI_LABEL_ENGINES                                       :{BLACK}Available Engines
+STR_TBTR_UI_LABEL_TEMPLATE_INFO                                 :{BLACK}Template Info
+STR_TBTR_UI_LABEL_TEMPLATES                                     :{BLACK}Available Templates
 
-STR_TBTR_CONFIG_USEDEPOT                                        :use depot
-STR_TBTR_CONFIG_KEEPREMAINDERS                                  :keep rem
-STR_TBTR_CONFIG_REFIT                                           :refit
+STR_TBTR_UI_BUTTON_ADD_ENGINE                                   :{BLACK}Add Engine
+STR_TBTR_UI_BUTTON_CLONE_TEMPLATE                               :{BLACK}Clone
+STR_TBTR_UI_BUTTON_DELETE_TEMPLATE                              :{BLACK}Delete Template
+STR_TBTR_UI_BUTTON_DELETE_ENGINE                                :{BLACK}Delete last Engine
+STR_TBTR_UI_BUTTON_KEEP_REMAINDERS                              :{BLACK}Keep remainders
+STR_TBTR_UI_BUTTON_REPLACE_ALL                                  :{TINY_FONT}{GRAY}Replace All Templates
+STR_TBTR_UI_BUTTON_START_REPLACEMENT                            :{BLACK}Start replacing
+STR_TBTR_UI_BUTTON_STOP_REPLACEMENT                             :{BLACK}Stop replacing
+STR_TBTR_UI_BUTTON_USE_DEPOT                                    :{BLACK}Use vehicles in depot
+STR_TBTR_UI_BUTTON_USE_REFIT                                    :{BLACK}Use Refit
 
-STR_TBTR_NUM_TRAINS_NEED_RPL                                    :# trains to replace:
+STR_TBTR_UI_TOOLTIP_ADD_ENGINE                                  :{BLACK}Add a new engine to the selected template or create a new template if none is selected
+STR_TBTR_UI_TOOLTIP_CLONE_TEMPLATE                              :{BLACK}Create a new template by cloning from an existing train
+STR_TBTR_UI_TOOLTIP_DELETE_TEMPLATE                             :{BLACK}Delete the last engine of the selected template
+STR_TBTR_UI_TOOLTIP_DELETE_ENGINE                               :{BLACK}Delete the last engine of the selected template
+STR_TBTR_UI_TOOLTIP_ENGINES                                     :{BLACK}Available engines to be added to template vehicles
+STR_TBTR_UI_TOOLTIP_GROUPS                                      :{BLACK}Select a group and a template and click "Start replacement" to assign a template to this group
+STR_TBTR_UI_TOOLTIP_KEEP_REMAINDERS                             :{BLACK}After finishing template replacement keep all remaining vehicles from the old train in a neutral and idle state for later use
+STR_TBTR_UI_TOOLTIP_SELECT_RAILTYPE                             :{BLACK}Switch the current railtype
+STR_TBTR_UI_TOOLTIP_START_REPLACEMENT                           :{BLACK}Start replacement for the selected group and template
+STR_TBTR_UI_TOOLTIP_STOP_REPLACEMENT                            :{BLACK}Stop replacement for the selected group
+STR_TBTR_UI_TOOLTIP_TEMPLATES                                   :{BLACK}Select a template - for assigning it to a group or for modifying or deleting the template
+STR_TBTR_UI_TOOLTIP_USE_DEPOT                                   :{BLACK}Use vehicles inside the depot that are in a neutral and idle state to compose trains on template replacement in order to reduce buying costs
+STR_TBTR_UI_TOOLTIP_USE_REFIT                                   :{BLACK}If set, the train will use exactly the cargo refit specified by the template. If not every wagon that is to be newly bought or retrieved from the depot, will *attempt* to be refitted as the old one was. Standard refit if this is impossible.
 
-STR_TBTR_CARGO_SUMMARY                                          :{CARGO_LONG}
-STR_TBTR_CARGO_SUMMARY_MULTI                                    :{CARGO_LONG} (x{NUM})
+STR_TBTR_CONFIG_KEEP_REMAINDERS                                 :keep rem
+STR_TBTR_CONFIG_USE_DEPOT                                       :use depot
+STR_TBTR_CONFIG_USE_REFIT                                       :refit
 
-STR_TBTR_RPLALLGUI_TITLE                                        :{WHITE}Replace all Templace Vehicles
-STR_TBTR_RPLALLGUI_INSET_TOP                                    :{BLACK}Choose Vehicle Type and Replacement
-STR_TBTR_RPLALLGUI_INSET_TOP_1                                  :{BLACK}Template Engines
-STR_TBTR_RPLALLGUI_INSET_TOP_2                                  :{BLACK}Buyable Engines
-STR_TBTR_RPLALLGUI_INSET_BOTTOM                                 :{BLACK}Current Template List (updated only after replacement)
-STR_TBTR_RPLALLGUI_BUTTON_RPLALL                                :{BLACK}Replace All
-STR_TBTR_RPLALLGUI_BUTTON_APPLY                                 :{BLACK}Apply
-STR_TBTR_RPLALLGUI_BUTTON_CANCEL                                :{BLACK}Cancel
-STR_TBTR_RPLALLGUI_USE_TIP                                      :{BLACK}Select a vehicle type from each list and press 'Replace All'. If you are happy with the result displayed in the template list, press 'Apply' to actually apply these changes.
+STR_TBTR_INFO_CARGO_SUMMARY                                     :{CARGO_LONG}
+STR_TBTR_INFO_CARGO_SUMMARY_MULTI                               :{CARGO_LONG} (x{NUM})
+STR_TBTR_INFO_GROUP_USING_TEMPLATE                              :{BLACK}Template in use: {NUM}
+STR_TBTR_INFO_TEMPLATE_VALUE                                    :{TINY_FONT}{BLACK}Buying Cost: {GOLD}{CURRENCY_LONG}
+STR_TBTR_INFO_TEMPLATE_VALUE_notinyfont                         :{BLACK}Buying Cost: {GOLD}{CURRENCY_LONG}
+STR_TBTR_INFO_TEMPLATE_IN_USE                                   :Template in use (#groups: {NUM})
+STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT                           :# trains to replace:
+STR_TBTR_WARN_FREE_WAGON                                        :{RED}Free Chain: not runnable!
 
 # Tooltips for the main toolbar
 STR_TOOLBAR_TOOLTIP_PAUSE_GAME                                  :{BLACK}Pause game

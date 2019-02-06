@@ -71,7 +71,7 @@ static const NWidgetPart _widgets[] = {
 	/* Title bar */
 	NWidget(NWID_HORIZONTAL),
 		NWidget(WWT_CLOSEBOX, COLOUR_GREY),
-		NWidget(WWT_CAPTION, COLOUR_GREY, TRW_CAPTION), SetDataTip(STR_TBTR_RPL_TITLE, STR_TOOLTIP_WINDOW_TITLE_DRAG_THIS),
+		NWidget(WWT_CAPTION, COLOUR_GREY, TRW_CAPTION), SetDataTip(STR_TBTR_UI_TITLE, STR_TOOLTIP_WINDOW_TITLE_DRAG_THIS),
 		NWidget(WWT_SHADEBOX, COLOUR_GREY),
 		NWidget(WWT_STICKYBOX, COLOUR_GREY),
 	EndContainer(),
@@ -81,9 +81,9 @@ static const NWidgetPart _widgets[] = {
 
 		/* New engines */
 		NWidget(NWID_VERTICAL),
-			NWidget(WWT_INSET, COLOUR_GREY, TRW_WIDGET_INSET_ENGINES), SetMinimalSize(216,12), SetFill(1,0),  SetDataTip(STR_TBTR_AVAILABLE_ENGINES, STR_TBTR_AVAILABLE_ENGINES), SetResize(1, 0), EndContainer(),
+			NWidget(WWT_INSET, COLOUR_GREY, TRW_WIDGET_INSET_ENGINES), SetMinimalSize(216,12), SetFill(1,0),  SetDataTip(STR_TBTR_UI_LABEL_ENGINES, STR_TBTR_UI_LABEL_ENGINES), SetResize(1, 0), EndContainer(),
 			NWidget(NWID_HORIZONTAL),
-				NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_ENGINES), SetMinimalSize(100, 0), SetFill(1, 1), SetDataTip(0x1, STR_REPLACE_HELP_LEFT_ARRAY), SetResize(1, 0), SetScrollbar(TRW_WIDGET_SCROLLBAR_ENGINES),
+				NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_ENGINES), SetMinimalSize(100, 0), SetFill(1, 1), SetDataTip(0x1, STR_TBTR_UI_TOOLTIP_ENGINES), SetResize(1, 0), SetScrollbar(TRW_WIDGET_SCROLLBAR_ENGINES),
 				NWidget(NWID_VSCROLLBAR, COLOUR_GREY, TRW_WIDGET_SCROLLBAR_ENGINES),
 			EndContainer(),
 		EndContainer(),
@@ -92,18 +92,18 @@ static const NWidgetPart _widgets[] = {
 		NWidget(NWID_VERTICAL),
 			/*Top Matrix */
 			NWidget(NWID_VERTICAL),
-				NWidget(WWT_INSET, COLOUR_GREY, TRW_WIDGET_INSET_GROUPS), SetMinimalSize(216,12), SetDataTip(STR_TBTR_MAINGUI_DEFINEDGROUPS, STR_TBTR_MAINGUI_DEFINEDGROUPS), SetResize(1, 0), EndContainer(),
+				NWidget(WWT_INSET, COLOUR_GREY, TRW_WIDGET_INSET_GROUPS), SetMinimalSize(216,12), SetDataTip(STR_TBTR_UI_LABEL_GROUPS, 0), SetResize(1, 0), EndContainer(),
 				NWidget(NWID_HORIZONTAL),
-					NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_GROUPS), SetMinimalSize(216, 0), SetFill(1, 1), SetDataTip(0x1, STR_REPLACE_HELP_LEFT_ARRAY), SetResize(1, 0), SetScrollbar(TRW_WIDGET_SCROLLBAR_GROUPS),
+					NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_GROUPS), SetMinimalSize(216, 0), SetFill(1, 1), SetDataTip(0x1, STR_TBTR_UI_TOOLTIP_GROUPS), SetResize(1, 0), SetScrollbar(TRW_WIDGET_SCROLLBAR_GROUPS),
 					NWidget(NWID_VSCROLLBAR, COLOUR_GREY, TRW_WIDGET_SCROLLBAR_GROUPS),
 				EndContainer(),
 			EndContainer(),
 			/* Template Display */
 			NWidget(NWID_VERTICAL),
-				NWidget(WWT_INSET, COLOUR_GREY, TRW_WIDGET_INSET_TEMPLATES), SetMinimalSize(216,12), SetDataTip(STR_TBTR_AVAILABLE_TEMPLATES, STR_TBTR_AVAILABLE_TEMPLATES), SetResize(1, 0), EndContainer(),
+				NWidget(WWT_INSET, COLOUR_GREY, TRW_WIDGET_INSET_TEMPLATES), SetMinimalSize(216,12), SetDataTip(STR_TBTR_UI_LABEL_TEMPLATES, STR_TBTR_UI_LABEL_TEMPLATES), SetResize(1, 0), EndContainer(),
 				NWidget(NWID_VERTICAL),
 					NWidget(NWID_HORIZONTAL),
-						NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_TEMPLATES), SetMinimalSize(216, 0), SetFill(1, 1), SetDataTip(0x1, STR_REPLACE_HELP_RIGHT_ARRAY), SetResize(1, 1), SetScrollbar(TRW_WIDGET_SCROLLBAR_TEMPLATES),
+						NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_TEMPLATES), SetMinimalSize(216, 0), SetFill(1, 1), SetDataTip(0x1, STR_TBTR_UI_TOOLTIP_TEMPLATES), SetResize(1, 1), SetScrollbar(TRW_WIDGET_SCROLLBAR_TEMPLATES),
 						NWidget(NWID_VSCROLLBAR, COLOUR_GREY, TRW_WIDGET_SCROLLBAR_TEMPLATES),
 					EndContainer(),
 					NWidget(NWID_HSCROLLBAR, COLOUR_GREY, TRW_WIDGET_SCROLLBAR_TEMPLATES_HORIZ),
@@ -111,7 +111,7 @@ static const NWidgetPart _widgets[] = {
 			EndContainer(),
 			/* Info Area */
 			NWidget(NWID_VERTICAL),
-				NWidget(WWT_INSET, COLOUR_GREY, TRW_WIDGET_TMPL_INFO_INSET), SetMinimalSize(216,12), SetResize(1,0), SetDataTip(STR_TBTR_TEMPLATE_INFO, STR_TBTR_TEMPLATE_INFO), EndContainer(),
+				NWidget(WWT_INSET, COLOUR_GREY, TRW_WIDGET_TMPL_INFO_INSET), SetMinimalSize(216,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_LABEL_TEMPLATE_INFO, 0), EndContainer(),
 				NWidget(WWT_PANEL, COLOUR_GREY, TRW_WIDGET_TMPL_INFO_PANEL), SetMinimalSize(216,50), SetResize(1,0), EndContainer(),
 			EndContainer(),
 			/* Control Area */
@@ -120,28 +120,28 @@ static const NWidgetPart _widgets[] = {
 				NWidget(WWT_INSET, COLOUR_GREY, TRW_WIDGET_TMPL_PRE_BUTTON_FLUFF), SetMinimalSize(139, 12), SetResize(1,0), EndContainer(),
 				/* Config buttons */
 				NWidget(NWID_HORIZONTAL),
-					NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_CONFIGTMPL_REUSE), SetMinimalSize(150,12), SetResize(0,0), SetDataTip(STR_TBTR_SET_USEDEPOT, STR_TBTR_SET_USEDEPOT_TIP),
-					NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_CONFIGTMPL_KEEP), SetMinimalSize(150,12), SetResize(0,0), SetDataTip(STR_TBTR_SET_KEEPREMAINDERS, STR_TBTR_SET_KEEPREMAINDERS_TIP),
-					NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_CONFIGTMPL_REFIT), SetMinimalSize(150,12), SetResize(0,0), SetDataTip(STR_TBTR_SET_REFIT, STR_TBTR_SET_REFIT_TIP),
+					NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_CONFIGTMPL_REUSE), SetMinimalSize(150,12), SetResize(0,0), SetDataTip(STR_TBTR_UI_BUTTON_USE_DEPOT, STR_TBTR_UI_TOOLTIP_USE_DEPOT),
+					NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_CONFIGTMPL_KEEP), SetMinimalSize(150,12), SetResize(0,0), SetDataTip(STR_TBTR_UI_BUTTON_KEEP_REMAINDERS, STR_TBTR_UI_TOOLTIP_KEEP_REMAINDERS),
+					NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_CONFIGTMPL_REFIT), SetMinimalSize(150,12), SetResize(0,0), SetDataTip(STR_TBTR_UI_BUTTON_USE_REFIT, STR_TBTR_UI_TOOLTIP_USE_REFIT),
 					NWidget(WWT_PANEL, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_CONFIG_RIGHTPANEL), SetMinimalSize(12,12), SetResize(1,0), EndContainer(),
 				EndContainer(),
 				/* Edit buttons */
 				NWidget(NWID_HORIZONTAL),
-					NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_ADD), SetMinimalSize(100,12), SetResize(0,0), SetDataTip(STR_TBTR_ADD_TEMPLATE, STR_REPLACE_ENGINE_WAGON_SELECT_HELP),
-					NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_DELETE_LAST_VEH), SetMinimalSize(75,12), SetResize(0,0), SetDataTip(STR_TBTR_DELETE_TEMPLATE_LAST_VEH, STR_REPLACE_ENGINE_WAGON_SELECT_HELP),
-					NWidget(WWT_TEXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_CLONE), SetMinimalSize(75,12), SetResize(0,0), SetDataTip(STR_TBTR_CREATE_CLONE_VEH, STR_REPLACE_ENGINE_WAGON_SELECT_HELP),
-					NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_DELETE), SetMinimalSize(75,12), SetResize(0,0), SetDataTip(STR_TBTR_DELETE_TEMPLATE, STR_REPLACE_ENGINE_WAGON_SELECT_HELP),
-					NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_RPLALL), SetMinimalSize(150,12), SetResize(0,0), SetDataTip(STR_TBTR_RPL_ALL_TMPL, STR_REPLACE_ENGINE_WAGON_SELECT_HELP),
+					NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_ADD), SetMinimalSize(100,12), SetResize(0,0), SetDataTip(STR_TBTR_UI_BUTTON_ADD_ENGINE, STR_TBTR_UI_TOOLTIP_ADD_ENGINE),
+					NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_DELETE_LAST_VEH), SetMinimalSize(75,12), SetResize(0,0), SetDataTip(STR_TBTR_UI_BUTTON_DELETE_ENGINE, STR_TBTR_UI_TOOLTIP_DELETE_ENGINE),
+					NWidget(WWT_TEXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_CLONE), SetMinimalSize(75,12), SetResize(0,0), SetDataTip(STR_TBTR_UI_BUTTON_CLONE_TEMPLATE, STR_TBTR_UI_TOOLTIP_CLONE_TEMPLATE),
+					NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_DELETE), SetMinimalSize(75,12), SetResize(0,0), SetDataTip(STR_TBTR_UI_BUTTON_DELETE_TEMPLATE, STR_TBTR_UI_TOOLTIP_DELETE_TEMPLATE),
+					NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_RPLALL), SetMinimalSize(150,12), SetResize(0,0), SetDataTip(STR_TBTR_UI_BUTTON_REPLACE_ALL, STR_TBTR_UI_TOOLTIP_DELETE_TEMPLATE),
 					NWidget(WWT_PANEL, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_EDIT_RIGHTPANEL), SetMinimalSize(50,12), SetResize(1,0), EndContainer(),
 				EndContainer(),
 			EndContainer(),
 			/* Start/Stop buttons */
 			NWidget(NWID_HORIZONTAL),
-				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_START), SetMinimalSize(150, 12), SetDataTip(STR_TBTR_RPL_START, STR_REPLACE_ENGINE_WAGON_SELECT_HELP),
+				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_START), SetMinimalSize(150, 12), SetDataTip(STR_TBTR_UI_BUTTON_START_REPLACEMENT, STR_TBTR_UI_TOOLTIP_START_REPLACEMENT),
 				NWidget(WWT_PANEL, COLOUR_GREY, TRW_WIDGET_TRAIN_FLUFF_LEFT), SetMinimalSize(15, 12), EndContainer(),
-				NWidget(WWT_DROPDOWN, COLOUR_GREY, TRW_WIDGET_TRAIN_RAILTYPE_DROPDOWN), SetMinimalSize(150, 12), SetDataTip(0x0, STR_REPLACE_HELP_RAILTYPE), SetResize(1, 0),
+				NWidget(WWT_DROPDOWN, COLOUR_GREY, TRW_WIDGET_TRAIN_RAILTYPE_DROPDOWN), SetMinimalSize(150, 12), SetDataTip(0x0, STR_TBTR_UI_TOOLTIP_SELECT_RAILTYPE), SetResize(1, 0),
 				NWidget(WWT_PANEL, COLOUR_GREY, TRW_WIDGET_TRAIN_FLUFF_RIGHT), SetMinimalSize(16, 12), EndContainer(),
-				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_STOP), SetMinimalSize(150, 12), SetDataTip(STR_TBTR_RPL_STOP, STR_REPLACE_REMOVE_WAGON_HELP),
+				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_STOP), SetMinimalSize(150, 12), SetDataTip(STR_TBTR_UI_BUTTON_STOP_REPLACEMENT, STR_TBTR_UI_TOOLTIP_STOP_REPLACEMENT),
 				NWidget(WWT_RESIZEBOX, COLOUR_GREY),
 			EndContainer(),
 		EndContainer(),	// END Template Ctrl
@@ -223,8 +223,6 @@ void CcTemplateEngineAdded(const CommandCost &result, TileIndex tile, uint32 p1,
 {
 	if ( result.Succeeded() ) {
 		TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
-		// TODO rm
-		//tbtrGui->RebuildTemplateGuiList();
 		tbtrGui->UpdateGUI(ENGINE_ADDED);
 	}
 }
@@ -238,8 +236,6 @@ void CcTemplateEngineDeleted(const CommandCost &result, TileIndex tile, uint32 p
 {
 	if ( result.Succeeded() ) {
 		TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
-		// TODO rm
-		//tbtrGui->RebuildTemplateGuiListAfterDelete();
 		tbtrGui->UpdateGUI(ENGINE_DELETED);
 
 	}
@@ -254,8 +250,6 @@ void CcTemplateClonedFromTrain(const CommandCost &result, TileIndex tile, uint32
 {
 	if ( result.Succeeded() ) {
 		TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
-		// TODO rm
-		//tbtrGui->RebuildTemplateGuiListAfterClone();
 		tbtrGui->UpdateGUI(TEMPLATE_CLONED);
 	}
 }
@@ -269,8 +263,6 @@ void CcTemplateDeleted(const CommandCost &result, TileIndex tile, uint32 p1, uin
 {
 	if ( result.Succeeded() ) {
 		TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
-		// TODO rm
-		//tbtrGui->DeselectTemplate();
 		tbtrGui->UpdateGUI(TEMPLATE_DELETED);
 	}
 }
@@ -485,7 +477,7 @@ void TbtrGui::DrawGroups(const Rect& r) const
 		 * Note, that this is the index into the group list, not the template's ID. */
 		if ( group->template_id != INVALID_TEMPLATE ) {
 			SetDParam(0, FindTemplateIndexInGui(group->template_id));
-			DrawString ( left, right, y+2, STR_TBTR_TEMPLATE_USED_BY_GROUP, TC_BLACK, SA_HOR_CENTER);
+			DrawString ( left, right, y+2, STR_TBTR_INFO_GROUP_USING_TEMPLATE, TC_BLACK, SA_HOR_CENTER);
 		}
 
 		/* Draw the number of trains that still need to be treated */
@@ -493,7 +485,7 @@ void TbtrGui::DrawGroups(const Rect& r) const
 		/* Draw text */
 		TextColour color = TC_GREY;
 		if ( num_trains ) color = TC_BLACK;
-		DrawString(left, right-16, y+2, STR_TBTR_NUM_TRAINS_NEED_RPL, color, SA_RIGHT);
+		DrawString(left, right-16, y+2, STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT, color, SA_RIGHT);
 		/* Draw number */
 		if ( num_trains ) color = TC_ORANGE;
 		else color = TC_GREY;
@@ -537,7 +529,7 @@ void TbtrGui::DrawTemplateInfo(const Rect &r) const
 			SetDParam(0, i);
 			SetDParam(1, cargo_caps[i]);
 			SetDParam(2, _settings_game.vehicle.freight_trains);
-			DrawString(left, r.right, y, FreightWagonMult(i) > 1 ? STR_TBTR_CARGO_SUMMARY_MULTI : STR_TBTR_CARGO_SUMMARY, TC_WHITE, SA_LEFT);
+			DrawString(left, r.right, y, FreightWagonMult(i) > 1 ? STR_TBTR_INFO_CARGO_SUMMARY_MULTI : STR_TBTR_INFO_CARGO_SUMMARY, TC_WHITE, SA_LEFT);
 			y += this->line_height/2;
 			if ( count_rows % max_rows == 0 ) {
 				y = top;
@@ -568,7 +560,7 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 
 		/* Draw a notification string for chains that are not runnable */
 		if ( tv->IsFreeWagonChain() ) {
-			DrawString(left, right-2, y+this->line_height-FONT_HEIGHT_SMALL-WD_FRAMERECT_BOTTOM - 2, STR_TBTR_WARNING_FREE_WAGON, TC_RED, SA_RIGHT);
+			DrawString(left, right-2, y+this->line_height-FONT_HEIGHT_SMALL-WD_FRAMERECT_BOTTOM - 2, STR_TBTR_WARN_FREE_WAGON, TC_RED, SA_RIGHT);
 		}
 
 		/* Draw the template's length in tile-units */
@@ -581,7 +573,7 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 
 		/* Buying cost */
 		SetDParam(0, tv->CalculateCost());
-		DrawString(left+35, right, y + this->line_height - FONT_HEIGHT_SMALL - WD_FRAMERECT_BOTTOM - 2, STR_TBTR_TEMPLATE_OVR_VALUE_notinyfont, TC_BLUE, SA_LEFT);
+		DrawString(left+35, right, y + this->line_height - FONT_HEIGHT_SMALL - WD_FRAMERECT_BOTTOM - 2, STR_TBTR_INFO_TEMPLATE_VALUE_notinyfont, TC_BLUE, SA_LEFT);
 
 		/* Index of current template vehicle in the list of all templates for its company */
 		SetDParam(0, i);
@@ -591,20 +583,20 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 		int n_groups = tv->CountGroups();
 		if ( n_groups > 0 ) {
 			SetDParam(0, n_groups);
-			DrawString(left+200, right, y + this->line_height - FONT_HEIGHT_SMALL - WD_FRAMERECT_BOTTOM - 2, STR_TBTR_TEMPLATE_IN_USE, TC_GREEN, SA_LEFT);
+			DrawString(left+200, right, y + this->line_height - FONT_HEIGHT_SMALL - WD_FRAMERECT_BOTTOM - 2, STR_TBTR_INFO_TEMPLATE_IN_USE, TC_GREEN, SA_LEFT);
 		}
 
 		/* Draw information about template configuration settings */
 		TextColour color;
 		if ( tv->IsSetReuseDepotVehicles() ) color = TC_LIGHT_BLUE;
 		else color = TC_GREY;
-		DrawString(left+200, right, y+2, STR_TBTR_CONFIG_USEDEPOT, color, SA_LEFT);
+		DrawString(left+200, right, y+2, STR_TBTR_CONFIG_USE_DEPOT, color, SA_LEFT);
 		if ( tv->IsSetKeepRemainingVehicles() ) color = TC_LIGHT_BLUE;
 		else color = TC_GREY;
-		DrawString(left+275, right, y+2, STR_TBTR_CONFIG_KEEPREMAINDERS, color, SA_LEFT);
+		DrawString(left+275, right, y+2, STR_TBTR_CONFIG_KEEP_REMAINDERS, color, SA_LEFT);
 		if ( tv->IsSetRefitAsTemplate() ) color = TC_LIGHT_BLUE;
 		else color = TC_GREY;
-		DrawString(left+350, right, y+2, STR_TBTR_CONFIG_REFIT, color, SA_LEFT);
+		DrawString(left+350, right, y+2, STR_TBTR_CONFIG_USE_REFIT, color, SA_LEFT);
 
 		y += this->line_height;
 	}
