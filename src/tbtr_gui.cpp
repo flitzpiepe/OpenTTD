@@ -404,7 +404,7 @@ void TbtrGui::DrawGroups(const Rect& r) const
 
 		/* Fill the background of the current cell in a darker tone for the currently selected group */
 		if ( this->index_selected_group == i ) {
-			GfxFillRect(left, y, right, y+(this->line_height)/2, _colour_gradient[COLOUR_GREY][3]);
+			GfxFillRect(left, y, right, y+resize.step_height, _colour_gradient[COLOUR_GREY][3]);
 		}
 
 		/* Draw the group name */
