@@ -370,21 +370,26 @@ void TbtrGui::DrawWidget(const Rect& r, int widget) const
 void TbtrGui::DrawEngines(const Rect& r) const
 {
 	uint max = min(vscroll_engines->GetPosition() + vscroll_engines->GetCapacity(), this->engines.Length());
-	uint y = r.top + 16;
+	uint y = r.top;
+
 	for ( uint i = vscroll_engines->GetPosition(); i<max; ++i ) {
 		/* Fill the background of the current cell in a darker tone for the currently selected engine */
 		if ( this->index_selected_engine == (int)i ) {
-			GfxFillRect(r.left, y-this->resize.step_height/2, r.right, y+this->resize.step_height/2, _colour_gradient[COLOUR_GREY][3]);
+			GfxFillRect(r.left, y, r.right, y+this->resize.step_height, _colour_gradient[COLOUR_GREY][3]);
 		}
 		/* Draw the engine's image */
 		EngineID eid = (this->engines)[i];
 		const Engine* engine = Engine::Get(eid);
-		DrawVehicleEngine(r.left+10, r.right, r.left, y, engine->index, GetEnginePalette(engine->index, this->owner), EIT_PURCHASE);
+		DrawVehicleEngine(r.left+10, r.right, r.left, y+this->resize.step_height/2, engine->index, GetEnginePalette(engine->index, this->owner), EIT_PURCHASE);
 
-		/* Draw the engine's name */
-		DrawString(r.left+60, r.right, y-3, engine->info.string_id, TC_BLACK);
+		/* Draw the engine's name
+		 * Depending on the interface zoom level, the engine names are shifted
+		 * to the right by 200, 120 or 60 pixels */
+		uint offset_x = _gui_zoom==0 ? 200 : 120 / _gui_zoom;
+		DrawString(r.left+offset_x, r.right, y+this->resize.step_height/4, engine->info.string_id, TC_BLACK);
 
-		y += this->resize.step_height + 1;
+		// TODO need to add a constant according to the height of the seperator lines in the matrix
+		y += this->resize.step_height;
 	}
 }
 
