@@ -388,8 +388,8 @@ void TbtrGui::DrawEngines(const Rect& r) const
 		uint offset_x = _gui_zoom==0 ? 200 : 120 / _gui_zoom;
 		DrawString(r.left+offset_x, r.right, y+this->resize.step_height/4, engine->info.string_id, TC_BLACK);
 
-		// TODO need to add a constant according to the height of the seperator lines in the matrix
 		y += this->resize.step_height;
+		if ( _gui_zoom == 0 ) ++y;
 	}
 }
 
