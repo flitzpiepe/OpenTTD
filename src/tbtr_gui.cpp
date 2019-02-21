@@ -367,12 +367,17 @@ void TbtrGui::DrawWidget(const Rect& r, int widget) const
 /*
  * Draw all engines
  */
+#include <iostream>
+using namespace std;
 void TbtrGui::DrawEngines(const Rect& r) const
 {
 	uint max = min(vscroll_engines->GetPosition() + vscroll_engines->GetCapacity(), this->engines.Length());
 	uint y = r.top;
+	cout << "height: " << resize.step_height << endl;
 
 	for ( uint i = vscroll_engines->GetPosition(); i<max; ++i ) {
+
+		cout << y << endl;
 		/* Fill the background of the current cell in a darker tone for the currently selected engine */
 		if ( this->index_selected_engine == (int)i ) {
 			GfxFillRect(r.left, y, r.right, y+this->resize.step_height, _colour_gradient[COLOUR_GREY][3]);
@@ -389,8 +394,9 @@ void TbtrGui::DrawEngines(const Rect& r) const
 		DrawString(r.left+offset_x, r.right, y+this->resize.step_height/4, engine->info.string_id, TC_BLACK);
 
 		y += this->resize.step_height;
-		if ( _gui_zoom == 0 ) ++y;
+		//if ( _gui_zoom == 0 ) ++y;
 	}
+		cout << endl;
 }
 
 /*
