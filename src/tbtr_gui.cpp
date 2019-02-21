@@ -370,11 +370,11 @@ void TbtrGui::DrawWidget(const Rect& r, int widget) const
 void TbtrGui::DrawEngines(const Rect& r) const
 {
 	uint max = min(vscroll_engines->GetPosition() + vscroll_engines->GetCapacity(), this->engines.Length());
-	uint y = r.top + 6;
+	uint y = r.top + 16;
 	for ( uint i = vscroll_engines->GetPosition(); i<max; ++i ) {
 		/* Fill the background of the current cell in a darker tone for the currently selected engine */
 		if ( this->index_selected_engine == (int)i ) {
-			GfxFillRect(r.left, y-(this->resize.step_height)/2, r.right, y+(this->resize.step_height)/2, _colour_gradient[COLOUR_GREY][3]);
+			GfxFillRect(r.left, y-this->resize.step_height/2, r.right, y+this->resize.step_height/2, _colour_gradient[COLOUR_GREY][3]);
 		}
 		/* Draw the engine's image */
 		EngineID eid = (this->engines)[i];
@@ -384,7 +384,7 @@ void TbtrGui::DrawEngines(const Rect& r) const
 		/* Draw the engine's name */
 		DrawString(r.left+60, r.right, y-3, engine->info.string_id, TC_BLACK);
 
-		y += this->resize.step_height;
+		y += this->resize.step_height + 1;
 	}
 }
 
