@@ -227,9 +227,9 @@ TbtrGui::TbtrGui(WindowDesc* wdesc) : Window(wdesc)
 	 * this should be ok */
 	FinishInitNested(VEH_TRAIN);
 
-	this->vscroll_engines->SetStepSize(this->resize.step_height);
-	this->vscroll_groups->SetStepSize(this->resize.step_height / 2);
-	this->vscroll_templates->SetStepSize(this->resize.step_height);
+	this->vscroll_engines->SetStepSize(this->resize.step_height*2);
+	this->vscroll_groups->SetStepSize(this->resize.step_height);
+	this->vscroll_templates->SetStepSize(this->resize.step_height*2);
 
 	/* will be used to build the internal group and template lists
 	 *
@@ -374,7 +374,7 @@ void TbtrGui::DrawEngines(const Rect& r) const
 	for ( uint i = vscroll_engines->GetPosition(); i<max; ++i ) {
 		/* Fill the background of the current cell in a darker tone for the currently selected engine */
 		if ( this->index_selected_engine == (int)i ) {
-			GfxFillRect(r.left, y-(this->resize.step_height)/4, r.right, y+(this->resize.step_height)/4, _colour_gradient[COLOUR_GREY][3]);
+			GfxFillRect(r.left, y-(this->resize.step_height)/2, r.right, y+(this->resize.step_height)/2, _colour_gradient[COLOUR_GREY][3]);
 		}
 		/* Draw the engine's image */
 		EngineID eid = (this->engines)[i];
@@ -384,7 +384,7 @@ void TbtrGui::DrawEngines(const Rect& r) const
 		/* Draw the engine's name */
 		DrawString(r.left+60, r.right, y-3, engine->info.string_id, TC_BLACK);
 
-		y += this->resize.step_height / 2;
+		y += this->resize.step_height;
 	}
 }
 
@@ -470,7 +470,7 @@ void TbtrGui::DrawTemplateInfo(const Rect &r) const
 			SetDParam(1, cargo_caps[i]);
 			SetDParam(2, _settings_game.vehicle.freight_trains);
 			DrawString(left, r.right, y, FreightWagonMult(i) > 1 ? STR_TBTR_CARGO_SUMMARY_MULTI : STR_TBTR_CARGO_SUMMARY, TC_WHITE, SA_LEFT);
-			y += this->resize.step_height;
+			y += this->resize.step_height * 2;
 			if ( count_rows % max_rows == 0 ) {
 				y = top;
 				left += 150;
@@ -495,12 +495,12 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 
 		/* Fill the background of the current cell in a darker tone for the currently selected template */
 		if ( this->index_selected_template == (int32)i ) {
-			GfxFillRect(left, y, right, y+this->resize.step_height, _colour_gradient[COLOUR_GREY][3]);
+			GfxFillRect(left, y, right, y+this->resize.step_height*2, _colour_gradient[COLOUR_GREY][3]);
 		}
 
 		/* Draw a notification string for chains that are not runnable */
 		if ( tv->IsFreeWagonChain() ) {
-			DrawString(left, right-2, y+this->resize.step_height-FONT_HEIGHT_SMALL-WD_FRAMERECT_BOTTOM - 2, STR_TBTR_WARNING_FREE_WAGON, TC_RED, SA_RIGHT);
+			DrawString(left, right-2, y+this->resize.step_height*2-FONT_HEIGHT_SMALL-WD_FRAMERECT_BOTTOM - 2, STR_TBTR_WARNING_FREE_WAGON, TC_RED, SA_RIGHT);
 		}
 
 		/* Draw the template's length in tile-units */
@@ -513,17 +513,17 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 
 		/* Buying cost */
 		SetDParam(0, tv->CalculateCost());
-		DrawString(left+35, right, y + this->resize.step_height - FONT_HEIGHT_SMALL - WD_FRAMERECT_BOTTOM - 2, STR_TBTR_TEMPLATE_OVR_VALUE_notinyfont, TC_BLUE, SA_LEFT);
+		DrawString(left+35, right, y + this->resize.step_height*2 - FONT_HEIGHT_SMALL - WD_FRAMERECT_BOTTOM - 2, STR_TBTR_TEMPLATE_OVR_VALUE_notinyfont, TC_BLUE, SA_LEFT);
 
 		/* Index of current template vehicle in the list of all templates for its company */
 		SetDParam(0, i);
-		DrawString(left+5, left+25, y + this->resize.step_height/2, STR_BLACK_INT, TC_BLACK, SA_RIGHT);
+		DrawString(left+5, left+25, y + this->resize.step_height, STR_BLACK_INT, TC_BLACK, SA_RIGHT);
 
 		/* Draw whether the current template is in use by any group */
 		int n_groups = tv->CountGroups();
 		if ( n_groups > 0 ) {
 			SetDParam(0, n_groups);
-			DrawString(left+200, right, y + this->resize.step_height - FONT_HEIGHT_SMALL - WD_FRAMERECT_BOTTOM - 2, STR_TBTR_TEMPLATE_IN_USE, TC_GREEN, SA_LEFT);
+			DrawString(left+200, right, y + this->resize.step_height*2 - FONT_HEIGHT_SMALL - WD_FRAMERECT_BOTTOM - 2, STR_TBTR_TEMPLATE_IN_USE, TC_GREEN, SA_LEFT);
 		}
 
 		/* Draw information about template configuration settings */
@@ -538,7 +538,7 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 		else color = TC_GREY;
 		DrawString(left+350, right, y+2, STR_TBTR_CONFIG_REFIT, color, SA_LEFT);
 
-		y += this->resize.step_height;
+		y += this->resize.step_height*2;
 	}
 }
 
@@ -601,7 +601,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			break;
 		}
 		case TRW_WIDGET_MATRIX_ENGINES: {
-			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_ENGINES]->pos_y) / (this->resize.step_height/2) ) + this->vscroll_engines->GetPosition();
+			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_ENGINES]->pos_y) / (this->resize.step_height) ) + this->vscroll_engines->GetPosition();
 			if ( index_new >= this->engines.Length() )
 				this->index_selected_engine = -1;
 			else if ( this->index_selected_engine == index_new )
@@ -611,7 +611,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			break;
 		}
 		case TRW_WIDGET_MATRIX_GROUPS: {
-			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_GROUPS]->pos_y) / (this->resize.step_height/2) ) + this->vscroll_groups->GetPosition();
+			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_GROUPS]->pos_y) / (this->resize.step_height) ) + this->vscroll_groups->GetPosition();
 			if ( index_new >= this->groups.Length() )
 				this->index_selected_group = -1;
 			else if ( this->index_selected_group == index_new )
@@ -621,7 +621,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			break;
 		}
 		case TRW_WIDGET_MATRIX_TEMPLATES: {
-			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_TEMPLATES]->pos_y) / this->resize.step_height ) + this->vscroll_templates->GetPosition();
+			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_TEMPLATES]->pos_y) / (this->resize.step_height*2) ) + this->vscroll_templates->GetPosition();
 			if ( index_new >= this->templates.Length() )
 				this->index_selected_template = -1;
 			else if ( this->index_selected_template == index_new )
