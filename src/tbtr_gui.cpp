@@ -15,6 +15,8 @@
 #include "command_func.h"
 #include "engine_gui.h"
 
+/* TODO calc step height */
+#include "zoom_func.h"
 
 enum TemplateReplaceWindowWidgets {
 	TRW_CAPTION,
@@ -375,6 +377,24 @@ void TbtrGui::DrawEngines(const Rect& r) const
 	uint y = r.top;
 	cout << "height: " << resize.step_height << endl;
 
+	/* TODO calc step height */
+	int step_height = 0;
+	const Engine *e;
+	uint max_height = 0;
+	FOR_ALL_ENGINES_OF_TYPE(e, VEH_TRAIN) {
+		if (!e->IsEnabled()) continue;
+		EngineID eid = e->index;
+		uint __x, __y;
+		int __x_offs, __y_offs;
+		GetTrainSpriteSize(eid, __x, __y, __x_offs, __y_offs, EIT_PURCHASE); break;
+		if (y > max_height) max_height = y;
+	}
+	// TODO the 14 should be coming from depot_gui::GetVehicleHeight(VEH_TRAIN)
+	//step_height = max<uint>(ScaleGUITrad(14), max_height);
+	step_height = ScaleGUITrad(14) > max_height ? ScaleGUITrad(14) : max_height;
+	cout << "step height: " << step_height << "\nresize step height: " << resize.step_height << "\n";
+
+
 	for ( uint i = vscroll_engines->GetPosition(); i<max; ++i ) {
 
 		cout << y << endl;
@@ -393,8 +413,27 @@ void TbtrGui::DrawEngines(const Rect& r) const
 		uint offset_x = _gui_zoom==0 ? 200 : 120 / _gui_zoom;
 		DrawString(r.left+offset_x, r.right, y+this->resize.step_height/4, engine->info.string_id, TC_BLACK);
 
-		y += this->resize.step_height;
+
+	/* TODO calc step height */
+		/*
+		int step_size = GetEngineListHeight(type);
+		return max<uint>(FONT_HEIGHT_NORMAL + WD_MATRIX_TOP + WD_MATRIX_BOTTOM, GetVehicleImageCellSize(type, EIT_PURCHASE).height);
+		case EIT_PURCHASE: return _base_block_sizes_purchase[type];
+		static VehicleCellSize _base_block_sizes_purchase[VEH_COMPANY_END]; ///< Cell size for vehicle images in the purchase list.
+		static void InitBlocksizeForVehicles(VehicleType type, EngineImageType image_type)
+	FOR_ALL_ENGINES_OF_TYPE(e, type) {
+		case VEH_TRAIN:    GetTrainSpriteSize(   eid, x, y, x_offs, y_offs, image_type); break;
+		if (y > max_height) max_height = y;
+		_base_block_sizes_purchase[type].height       = max<uint>(ScaleGUITrad(GetVehicleHeight(type)), max_height);
+		static inline uint GetVehicleHeight(VehicleType type)
+		return (type == VEH_TRAIN || type == VEH_ROAD) ? 14 : 24;
+		*/
+
+
+
+		//y += this->resize.step_height;
 		//if ( _gui_zoom == 0 ) ++y;
+		y += step_height;
 	}
 		cout << endl;
 }
