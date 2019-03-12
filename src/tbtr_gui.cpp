@@ -393,8 +393,10 @@ void TbtrGui::DrawGroups(const Rect& r) const
 {
 	int left = r.left + WD_MATRIX_LEFT;
 	int right = r.right - WD_MATRIX_RIGHT;
-	int y = r.top + this->resize.step_height/8;
+	int y = r.top;
 	int max = min(this->vscroll_groups->GetPosition() + this->vscroll_groups->GetCapacity(), this->groups.Length());
+	int step_size = this->resize.step_height;
+	int offset = step_size / 4;
 
 	/* Then treat all groups defined by/for the current company */
 	for ( int i=this->vscroll_groups->GetPosition(); i<max; ++i ) {
@@ -403,19 +405,19 @@ void TbtrGui::DrawGroups(const Rect& r) const
 
 		/* Fill the background of the current cell in a darker tone for the currently selected group */
 		if ( this->index_selected_group == i ) {
-			GfxFillRect(left, y, right, y+this->resize.step_height, _colour_gradient[COLOUR_GREY][3]);
+			GfxFillRect(left, y, right, y+step_size, _colour_gradient[COLOUR_GREY][3]);
 		}
 
 		/* Draw the group name */
 		SetDParam(0, group_id);
 		StringID str = STR_GROUP_NAME;
-		DrawString(left+30, right, y+2, str, TC_BLACK);
+		DrawString(left+30, right, y+offset, str, TC_BLACK);
 
 		/* Draw the index of the selected template for this group
 		 * Note, that this is the index into the group list, not the template's ID. */
 		if ( group->template_id != INVALID_TEMPLATE ) {
 			SetDParam(0, FindTemplateIndexInGui(group->template_id));
-			DrawString ( left, right, y+2, STR_TBTR_TEMPLATE_USED_BY_GROUP, TC_BLACK, SA_HOR_CENTER);
+			DrawString(left, right, y+offset, STR_TBTR_TEMPLATE_USED_BY_GROUP, TC_BLACK, SA_HOR_CENTER);
 		}
 
 		/* Draw the number of trains that still need to be treated */
@@ -423,14 +425,14 @@ void TbtrGui::DrawGroups(const Rect& r) const
 		/* Draw text */
 		TextColour color = TC_GREY;
 		if ( num_trains ) color = TC_BLACK;
-		DrawString(left, right-16, y+2, STR_TBTR_NUM_TRAINS_NEED_RPL, color, SA_RIGHT);
+		DrawString(left, right-16, y+offset, STR_TBTR_NUM_TRAINS_NEED_RPL, color, SA_RIGHT);
 		/* Draw number */
 		if ( num_trains ) color = TC_ORANGE;
 		else color = TC_GREY;
 		SetDParam(0, num_trains);
-		DrawString(left, right-4, y+2, STR_JUST_INT, color, SA_RIGHT);
+		DrawString(left, right-4, y+offset, STR_JUST_INT, color, SA_RIGHT);
 
-		y += this->resize.step_height;
+		y += step_size;
 	}
 }
 
