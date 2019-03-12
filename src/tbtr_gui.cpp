@@ -253,6 +253,9 @@ void TbtrGui::UpdateWidgetSize(int widget, Dimension *size, const Dimension &pad
 {
 	switch (widget) {
 		case TRW_WIDGET_MATRIX_TEMPLATES:
+			resize->height = GetEngineListHeight(VEH_TRAIN) * 2;
+			size->height = 3 * resize->height;
+			break;
 		case TRW_WIDGET_MATRIX_GROUPS:
 		case TRW_WIDGET_MATRIX_ENGINES:
 			resize->height = GetEngineListHeight(VEH_TRAIN);
