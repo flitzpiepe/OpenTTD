@@ -15,14 +15,6 @@
 #include "command_func.h"
 #include "engine_gui.h"
 
-/* TODO calc step height */
-// TODO rm?
-#include "zoom_func.h"
-
-// TODO rm
-#include <iostream>
-using namespace std;
-
 enum TemplateReplaceWindowWidgets {
 	TRW_CAPTION,
 
@@ -260,21 +252,10 @@ TbtrGui::TbtrGui(WindowDesc* wdesc) : Window(wdesc)
 void TbtrGui::UpdateWidgetSize(int widget, Dimension *size, const Dimension &padding, Dimension *fill, Dimension *resize)
 {
 	switch (widget) {
-		case TRW_WIDGET_MATRIX_GROUPS:
-			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP) / 2;
-			cout << "groups rs: " << resize->height << endl;
-			size->height = 8 * resize->height;
-			break;
 		case TRW_WIDGET_MATRIX_TEMPLATES:
-			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP);
-			cout << "templates rs: " << resize->height << endl;
-			size->height = 4 * resize->height;
-			break;
+		case TRW_WIDGET_MATRIX_GROUPS:
 		case TRW_WIDGET_MATRIX_ENGINES:
-			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP) / 2;
-			// TODO testing
 			resize->height = GetEngineListHeight(VEH_TRAIN);
-			cout << "engines rs: " << resize->height << endl;
 			size->height = 3 * resize->height;
 			break;
 	}
@@ -381,76 +362,28 @@ void TbtrGui::DrawWidget(const Rect& r, int widget) const
  */
 void TbtrGui::DrawEngines(const Rect& r) const
 {
-	uint max = min(vscroll_engines->GetPosition() + vscroll_engines->GetCapacity(), this->engines.Length());
 	uint y = r.top;
-
-	/* TODO calc step height */
-	int step_height = 0;
-	const Engine *e;
-	uint max_height = 0;
-	FOR_ALL_ENGINES_OF_TYPE(e, VEH_TRAIN) {
-		if (!e->IsEnabled()) continue;
-		EngineID eid = e->index;
-		uint __x, __y;
-		int __x_offs, __y_offs;
-		GetTrainSpriteSize(eid, __x, __y, __x_offs, __y_offs, EIT_PURCHASE);// break;
-		if (__y > max_height) max_height = __y;
-	}
-	// TODO the 14 should be coming from depot_gui::GetVehicleHeight(VEH_TRAIN)
-	int scale = ScaleGUITrad(14);
-	step_height = scale > max_height ? scale : max_height;
-	cout << "  --------------------" << endl
-		<< "  resize step height: " << resize.step_height << endl
-		<< "  max height: " << max_height << endl
-		<< "  scaled: " << scale << endl
-		<< "  step height: " << step_height << endl
-		;
-
-	//step_height = this->resize.step_height;
-	//if ( _gui_zoom == 0 ) ++step_height;
-
-
+	int step_size = this->resize.step_height;
+	uint max = min(vscroll_engines->GetPosition() + vscroll_engines->GetCapacity(), this->engines.Length());
 	for ( uint i = vscroll_engines->GetPosition(); i<max; ++i ) {
 
-		//cout << y << endl;
 		/* Fill the background of the current cell in a darker tone for the currently selected engine */
 		if ( this->index_selected_engine == (int)i ) {
-			GfxFillRect(r.left, y, r.right, y+this->resize.step_height, _colour_gradient[COLOUR_GREY][3]);
+			GfxFillRect(r.left, y, r.right, y+step_size, _colour_gradient[COLOUR_GREY][3]);
 		}
 		/* Draw the engine's image */
 		EngineID eid = (this->engines)[i];
 		const Engine* engine = Engine::Get(eid);
-		DrawVehicleEngine(r.left+10, r.right, r.left, y+this->resize.step_height/2, engine->index, GetEnginePalette(engine->index, this->owner), EIT_PURCHASE);
+		DrawVehicleEngine(r.left+10, r.right, r.left, y+step_size/2, engine->index, GetEnginePalette(engine->index, this->owner), EIT_PURCHASE);
 
 		/* Draw the engine's name
 		 * Depending on the interface zoom level, the engine names are shifted
 		 * to the right by 200, 120 or 60 pixels */
 		uint offset_x = _gui_zoom==0 ? 200 : 120 / _gui_zoom;
-		DrawString(r.left+offset_x, r.right, y+this->resize.step_height/4, engine->info.string_id, TC_BLACK);
+		DrawString(r.left+offset_x, r.right, y+step_size/4, engine->info.string_id, TC_BLACK);
 
-
-	/* TODO calc step height */
-		/*
-		int step_size = GetEngineListHeight(type);
-		return max<uint>(FONT_HEIGHT_NORMAL + WD_MATRIX_TOP + WD_MATRIX_BOTTOM, GetVehicleImageCellSize(type, EIT_PURCHASE).height);
-		case EIT_PURCHASE: return _base_block_sizes_purchase[type];
-		static VehicleCellSize _base_block_sizes_purchase[VEH_COMPANY_END]; ///< Cell size for vehicle images in the purchase list.
-		static void InitBlocksizeForVehicles(VehicleType type, EngineImageType image_type)
-	FOR_ALL_ENGINES_OF_TYPE(e, type) {
-		case VEH_TRAIN:    GetTrainSpriteSize(   eid, x, y, x_offs, y_offs, image_type); break;
-		if (y > max_height) max_height = y;
-		_base_block_sizes_purchase[type].height       = max<uint>(ScaleGUITrad(GetVehicleHeight(type)), max_height);
-		static inline uint GetVehicleHeight(VehicleType type)
-		return (type == VEH_TRAIN || type == VEH_ROAD) ? 14 : 24;
-		*/
-
-
-
-		//y += this->resize.step_height;
-		//if ( _gui_zoom == 0 ) ++y;
-		y += step_height;
+		y += step_size;
 	}
-		//cout << endl;
 }
 
 /*
