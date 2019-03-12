@@ -16,7 +16,12 @@
 #include "engine_gui.h"
 
 /* TODO calc step height */
+// TODO rm?
 #include "zoom_func.h"
+
+// TODO rm
+#include <iostream>
+using namespace std;
 
 enum TemplateReplaceWindowWidgets {
 	TRW_CAPTION,
@@ -257,15 +262,20 @@ void TbtrGui::UpdateWidgetSize(int widget, Dimension *size, const Dimension &pad
 	switch (widget) {
 		case TRW_WIDGET_MATRIX_GROUPS:
 			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP) / 2;
+			cout << "groups rs: " << resize->height << endl;
 			size->height = 8 * resize->height;
 			break;
 		case TRW_WIDGET_MATRIX_TEMPLATES:
 			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP);
+			cout << "templates rs: " << resize->height << endl;
 			size->height = 4 * resize->height;
 			break;
 		case TRW_WIDGET_MATRIX_ENGINES:
 			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP) / 2;
-			size->height = 4 * resize->height;
+			// TODO testing
+			resize->height = GetEngineListHeight(VEH_TRAIN);
+			cout << "engines rs: " << resize->height << endl;
+			size->height = 3 * resize->height;
 			break;
 	}
 }
@@ -369,13 +379,10 @@ void TbtrGui::DrawWidget(const Rect& r, int widget) const
 /*
  * Draw all engines
  */
-#include <iostream>
-using namespace std;
 void TbtrGui::DrawEngines(const Rect& r) const
 {
 	uint max = min(vscroll_engines->GetPosition() + vscroll_engines->GetCapacity(), this->engines.Length());
 	uint y = r.top;
-	cout << "height: " << resize.step_height << endl;
 
 	/* TODO calc step height */
 	int step_height = 0;
@@ -386,18 +393,26 @@ void TbtrGui::DrawEngines(const Rect& r) const
 		EngineID eid = e->index;
 		uint __x, __y;
 		int __x_offs, __y_offs;
-		GetTrainSpriteSize(eid, __x, __y, __x_offs, __y_offs, EIT_PURCHASE); break;
-		if (y > max_height) max_height = y;
+		GetTrainSpriteSize(eid, __x, __y, __x_offs, __y_offs, EIT_PURCHASE);// break;
+		if (__y > max_height) max_height = __y;
 	}
 	// TODO the 14 should be coming from depot_gui::GetVehicleHeight(VEH_TRAIN)
-	//step_height = max<uint>(ScaleGUITrad(14), max_height);
-	step_height = ScaleGUITrad(14) > max_height ? ScaleGUITrad(14) : max_height;
-	cout << "step height: " << step_height << "\nresize step height: " << resize.step_height << "\n";
+	int scale = ScaleGUITrad(14);
+	step_height = scale > max_height ? scale : max_height;
+	cout << "  --------------------" << endl
+		<< "  resize step height: " << resize.step_height << endl
+		<< "  max height: " << max_height << endl
+		<< "  scaled: " << scale << endl
+		<< "  step height: " << step_height << endl
+		;
+
+	//step_height = this->resize.step_height;
+	//if ( _gui_zoom == 0 ) ++step_height;
 
 
 	for ( uint i = vscroll_engines->GetPosition(); i<max; ++i ) {
 
-		cout << y << endl;
+		//cout << y << endl;
 		/* Fill the background of the current cell in a darker tone for the currently selected engine */
 		if ( this->index_selected_engine == (int)i ) {
 			GfxFillRect(r.left, y, r.right, y+this->resize.step_height, _colour_gradient[COLOUR_GREY][3]);
@@ -435,7 +450,7 @@ void TbtrGui::DrawEngines(const Rect& r) const
 		//if ( _gui_zoom == 0 ) ++y;
 		y += step_height;
 	}
-		cout << endl;
+		//cout << endl;
 }
 
 /*
