@@ -266,3 +266,8 @@ void TemplateVehicle::UpdateLastVehicle(TemplateVehicle* last)
 		tmp = tmp->next;
 	}
 }
+
+void TemplateVehicle::UpdateZoom()
+{
+	this->cached_sprite_size = false;
+}

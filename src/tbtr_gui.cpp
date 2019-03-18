@@ -734,6 +734,8 @@ void TbtrGui::OnInvalidateData(int data = 0, bool gui_scope = true)
  */
 void TbtrGui::OnPaint()
 {
+	if ( _gui_zoom != this->gui_zoom )
+		this->UpdateZoom();
 	this->BuildTemplateEngineList();
 	this->BuildGroupList();
 	this->BuildTemplateList();
@@ -785,6 +787,15 @@ bool TbtrGui::OnVehicleSelect(const Vehicle* v)
 	this->CalculateTemplatesHScroll();
 
 	return true;
+}
+
+void TbtrGui::UpdateZoom()
+{
+	this->gui_zoom = _gui_zoom;
+	TemplateVehicle* tv;
+	FOR_ALL_TEMPLATES(tv) {
+		tv->UpdateZoom();
+	}
 }
 
 /*

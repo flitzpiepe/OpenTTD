@@ -52,6 +52,7 @@ private:
 	void DrawTemplates(const Rect&) const;
 	uint FindLongestTemplateDisplayWidth() const;
 	int FindTemplateIndexInGui(TemplateID) const;
+	void UpdateZoom();
 
 	Scrollbar* vscroll_engines;         ///< Scrollbar for the engines list
 	Scrollbar* vscroll_groups;          ///< Scrollbar for the group list
@@ -65,6 +66,7 @@ private:
 	GUIGroupList groups;                ///< List of groups
 	GUITemplateList templates;          ///< List of templates
 	RailType railtype;
+	ZoomLevelByte gui_zoom;				///< GUI Zoom level
 };
 
 void ShowTbtrGui();
