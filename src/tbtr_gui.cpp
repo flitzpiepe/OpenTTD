@@ -490,6 +490,9 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 	int left = r.left;
 	int right = r.right;
 	int y = r.top;
+	int ypos_lo = y+this->resize.step_height+this->resize.step_height/3;
+	int ypos_hi = y+this->resize.step_height/3;
+	int ypos_med = y+this->resize.step_height/2;
 
 	uint max = min(vscroll_templates->GetPosition() + vscroll_templates->GetCapacity(), this->templates.Length());
 	TemplateVehicle* tv;
@@ -501,47 +504,60 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 			GfxFillRect(left, y, right, y+this->resize.step_height*2, _colour_gradient[COLOUR_GREY][3]);
 		}
 
+		/*
+		 * text positions
+			buy:lo
+			tmpl:hi
+			ix:middle
+			tmpl_opt:hi
+			tmpl_len:hi
+			inuse:lo
+		 */
+
 		/* Draw a notification string for chains that are not runnable */
 		if ( tv->IsFreeWagonChain() ) {
-			DrawString(left, right-2, y+this->resize.step_height*2-FONT_HEIGHT_SMALL-WD_FRAMERECT_BOTTOM - 2, STR_TBTR_WARNING_FREE_WAGON, TC_RED, SA_RIGHT);
+			DrawString(left, right-2, ypos_lo, STR_TBTR_WARNING_FREE_WAGON, TC_RED, SA_RIGHT);
 		}
 
 		/* Draw the template's length in tile-units */
 		SetDParam(0, tv->GetRealLength());
 		SetDParam(1, 1);
-		DrawString(left, right-4, y+2, STR_TINY_BLACK_DECIMAL, TC_BLACK, SA_RIGHT);
+		DrawString(left, right-4, ypos_hi, STR_TINY_BLACK_DECIMAL, TC_BLACK, SA_RIGHT);
 
 		/* Draw the template */
-		tv->Draw(left+this->template_x_offset, right, y, hscroll_templates->GetPosition());
+		tv->Draw(left+this->template_x_offset, right, ypos_hi, hscroll_templates->GetPosition());
 
 		/* Buying cost */
 		SetDParam(0, tv->CalculateCost());
-		DrawString(left+35, right, y + this->resize.step_height*2 - FONT_HEIGHT_SMALL - WD_FRAMERECT_BOTTOM - 2, STR_TBTR_TEMPLATE_OVR_VALUE_notinyfont, TC_BLUE, SA_LEFT);
+		DrawString(left+35, right, ypos_lo, STR_TBTR_TEMPLATE_OVR_VALUE_notinyfont, TC_BLUE, SA_LEFT);
 
 		/* Index of current template vehicle in the list of all templates for its company */
 		SetDParam(0, i);
-		DrawString(left+5, left+25, y + this->resize.step_height, STR_BLACK_INT, TC_BLACK, SA_RIGHT);
+		DrawString(left+5, left+25, ypos_med, STR_BLACK_INT, TC_BLACK, SA_RIGHT);
 
 		/* Draw whether the current template is in use by any group */
 		int n_groups = tv->CountGroups();
 		if ( n_groups > 0 ) {
 			SetDParam(0, n_groups);
-			DrawString(left+200, right, y + this->resize.step_height*2 - FONT_HEIGHT_SMALL - WD_FRAMERECT_BOTTOM - 2, STR_TBTR_TEMPLATE_IN_USE, TC_GREEN, SA_LEFT);
+			DrawString(left+200, right, ypos_lo, STR_TBTR_TEMPLATE_IN_USE, TC_GREEN, SA_LEFT);
 		}
 
 		/* Draw information about template configuration settings */
 		TextColour color;
 		if ( tv->IsSetReuseDepotVehicles() ) color = TC_LIGHT_BLUE;
 		else color = TC_GREY;
-		DrawString(left+200, right, y+2, STR_TBTR_CONFIG_USEDEPOT, color, SA_LEFT);
+		DrawString(left+200, right, ypos_hi, STR_TBTR_CONFIG_USEDEPOT, color, SA_LEFT);
 		if ( tv->IsSetKeepRemainingVehicles() ) color = TC_LIGHT_BLUE;
 		else color = TC_GREY;
-		DrawString(left+275, right, y+2, STR_TBTR_CONFIG_KEEPREMAINDERS, color, SA_LEFT);
+		DrawString(left+275, right, ypos_hi, STR_TBTR_CONFIG_KEEPREMAINDERS, color, SA_LEFT);
 		if ( tv->IsSetRefitAsTemplate() ) color = TC_LIGHT_BLUE;
 		else color = TC_GREY;
-		DrawString(left+350, right, y+2, STR_TBTR_CONFIG_REFIT, color, SA_LEFT);
+		DrawString(left+350, right, ypos_hi, STR_TBTR_CONFIG_REFIT, color, SA_LEFT);
 
 		y += this->resize.step_height*2;
+		ypos_lo += this->resize.step_height*2;
+		ypos_med += this->resize.step_height*2;
+		ypos_hi += this->resize.step_height*2;
 	}
 }
 
