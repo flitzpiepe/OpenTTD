@@ -267,6 +267,9 @@ void TemplateVehicle::UpdateLastVehicle(TemplateVehicle* last)
 	}
 }
 
+/**
+ *	Update things according to the current UI zoom level
+ */
 void TemplateVehicle::UpdateZoom()
 {
 	this->cached_sprite_size = false;

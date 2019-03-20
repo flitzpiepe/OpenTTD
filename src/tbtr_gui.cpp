@@ -789,6 +789,9 @@ bool TbtrGui::OnVehicleSelect(const Vehicle* v)
 	return true;
 }
 
+/**
+ * Update TBTR things according to the current UI zoom level
+ */
 void TbtrGui::UpdateZoom()
 {
 	this->gui_zoom = _gui_zoom;
