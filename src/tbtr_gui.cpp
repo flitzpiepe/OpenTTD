@@ -14,6 +14,7 @@
 #include "tbtr_gui.h"
 #include "command_func.h"
 #include "engine_gui.h"
+#include "zoom_func.h"
 
 enum TemplateReplaceWindowWidgets {
 	TRW_CAPTION,
@@ -491,7 +492,7 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 	int right = r.right;
 	int y = r.top;
 	int ypos_lo = y+this->resize.step_height+this->resize.step_height/3;
-	int ypos_hi = y+this->resize.step_height/3;
+	int ypos_hi = y+ScaleGUITrad(7);
 	int ypos_med = y+this->resize.step_height/2;
 
 	uint max = min(vscroll_templates->GetPosition() + vscroll_templates->GetCapacity(), this->templates.Length());
