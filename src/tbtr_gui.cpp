@@ -751,8 +751,10 @@ void TbtrGui::OnInvalidateData(int data = 0, bool gui_scope = true)
  */
 void TbtrGui::OnPaint()
 {
-	if ( _gui_zoom != this->gui_zoom )
+	if ( _gui_zoom != this->gui_zoom ) {
+		this->gui_zoom = _gui_zoom;
 		this->UpdateZoom();
+	}
 	this->BuildTemplateEngineList();
 	this->BuildGroupList();
 	this->BuildTemplateList();
