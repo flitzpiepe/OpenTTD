@@ -540,20 +540,21 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 		int n_groups = tv->CountGroups();
 		if ( n_groups > 0 ) {
 			SetDParam(0, n_groups);
-			DrawString(left+200, right, ypos_lo, STR_TBTR_TEMPLATE_IN_USE, TC_GREEN, SA_LEFT);
+			uint _left = left + ScaleGUITrad(170);
+			DrawString(_left, right, ypos_lo, STR_TBTR_TEMPLATE_IN_USE, TC_GREEN, SA_LEFT);
 		}
 
 		/* Draw information about template configuration settings */
 		TextColour color;
 		if ( tv->IsSetReuseDepotVehicles() ) color = TC_LIGHT_BLUE;
 		else color = TC_GREY;
-		DrawString(left+200, right, ypos_hi, STR_TBTR_CONFIG_USEDEPOT, color, SA_LEFT);
+		DrawString(left+50+ScaleGUITrad(150), right, ypos_hi, STR_TBTR_CONFIG_USEDEPOT, color, SA_LEFT);
 		if ( tv->IsSetKeepRemainingVehicles() ) color = TC_LIGHT_BLUE;
 		else color = TC_GREY;
-		DrawString(left+275, right, ypos_hi, STR_TBTR_CONFIG_KEEPREMAINDERS, color, SA_LEFT);
+		DrawString(left+60+ScaleGUITrad(215), right, ypos_hi, STR_TBTR_CONFIG_KEEPREMAINDERS, color, SA_LEFT);
 		if ( tv->IsSetRefitAsTemplate() ) color = TC_LIGHT_BLUE;
 		else color = TC_GREY;
-		DrawString(left+350, right, ypos_hi, STR_TBTR_CONFIG_REFIT, color, SA_LEFT);
+		DrawString(left+80+ScaleGUITrad(270), right, ypos_hi, STR_TBTR_CONFIG_REFIT, color, SA_LEFT);
 
 		y += this->resize.step_height*2;
 		ypos_lo += this->resize.step_height*2;
