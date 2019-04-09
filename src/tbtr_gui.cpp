@@ -14,7 +14,7 @@
 #include "tbtr_gui.h"
 #include "command_func.h"
 #include "engine_gui.h"
-
+#include "zoom_func.h"
 
 enum TemplateReplaceWindowWidgets {
 	TRW_CAPTION,
@@ -266,15 +266,16 @@ TbtrGui::TbtrGui(WindowDesc* wdesc) : Window(wdesc)
 {
 	CreateNestedTree(wdesc);
 	this->vscroll_engines = GetScrollbar(TRW_WIDGET_SCROLLBAR_ENGINES);
-	this->vscroll_engines->SetStepSize(line_height);
 	this->vscroll_groups = GetScrollbar(TRW_WIDGET_SCROLLBAR_GROUPS);
 	this->hscroll_templates = GetScrollbar(TRW_WIDGET_SCROLLBAR_TEMPLATES_HORIZ);
 	this->vscroll_templates = GetScrollbar(TRW_WIDGET_SCROLLBAR_TEMPLATES);
-	this->vscroll_groups->SetStepSize(line_height / 2);
-	this->vscroll_templates->SetStepSize(line_height);
 	/* VEH_TRAIN should be 0; we want only 1 instance of this GUI to be present at the same time anyway, so
 	 * this should be ok */
 	FinishInitNested(VEH_TRAIN);
+
+	this->vscroll_engines->SetStepSize(this->resize.step_height*2);
+	this->vscroll_groups->SetStepSize(this->resize.step_height);
+	this->vscroll_templates->SetStepSize(this->resize.step_height*2);
 
 	/* will be used to build the internal group and template lists
 	 *
@@ -293,6 +294,7 @@ TbtrGui::TbtrGui(WindowDesc* wdesc) : Window(wdesc)
 	BuildTemplateList();
 }
 
+// TODO comment
 void TbtrGui::UpdateGUI(UpdateGuiMode mode)
 { 
 	uint num_templates = this->templates.Length();
@@ -421,22 +423,27 @@ void TbtrGui::DrawWidget(const Rect& r, int widget) const
  */
 void TbtrGui::DrawEngines(const Rect& r) const
 {
+	uint y = r.top;
+	int step_size = this->resize.step_height;
 	uint max = min(vscroll_engines->GetPosition() + vscroll_engines->GetCapacity(), this->engines.Length());
-	uint y = r.top + 6;
 	for ( uint i = vscroll_engines->GetPosition(); i<max; ++i ) {
+
 		/* Fill the background of the current cell in a darker tone for the currently selected engine */
 		if ( this->index_selected_engine == (int)i ) {
-			GfxFillRect(r.left, y-(this->line_height)/4, r.right, y+(this->line_height)/4, _colour_gradient[COLOUR_GREY][3]);
+			GfxFillRect(r.left, y, r.right, y+step_size, _colour_gradient[COLOUR_GREY][3]);
 		}
 		/* Draw the engine's image */
 		EngineID eid = (this->engines)[i];
 		const Engine* engine = Engine::Get(eid);
-		DrawVehicleEngine(r.left+10, r.right, r.left, y, engine->index, GetEnginePalette(engine->index, this->owner), EIT_PURCHASE);
+		DrawVehicleEngine(r.left+10, r.right, r.left, y+step_size/2, engine->index, GetEnginePalette(engine->index, this->owner), EIT_PURCHASE);
 
-		/* Draw the engine's name */
-		DrawString(r.left+60, r.right, y-3, engine->info.string_id, TC_BLACK);
+		/* Draw the engine's name
+		 * Depending on the interface zoom level, the engine names are shifted
+		 * to the right by 200, 120 or 60 pixels */
+		uint offset_x = _gui_zoom==0 ? 200 : 120 / _gui_zoom;
+		DrawString(r.left+offset_x, r.right, y+step_size/4, engine->info.string_id, TC_BLACK);
 
-		y += this->line_height / 2;
+		y += step_size;
 	}
 }
 
@@ -449,6 +456,8 @@ void TbtrGui::DrawGroups(const Rect& r) const
 	int right = r.right - WD_MATRIX_RIGHT;
 	int y = r.top;
 	int max = min(this->vscroll_groups->GetPosition() + this->vscroll_groups->GetCapacity(), this->groups.Length());
+	int step_size = this->resize.step_height;
+	int offset = step_size / 4;
 
 	/* Then treat all groups defined by/for the current company */
 	for ( int i=this->vscroll_groups->GetPosition(); i<max; ++i ) {
@@ -457,19 +466,19 @@ void TbtrGui::DrawGroups(const Rect& r) const
 
 		/* Fill the background of the current cell in a darker tone for the currently selected group */
 		if ( this->index_selected_group == i ) {
-			GfxFillRect(left, y, right, y+(this->line_height)/2, _colour_gradient[COLOUR_GREY][3]);
+			GfxFillRect(left, y, right, y+step_size, _colour_gradient[COLOUR_GREY][3]);
 		}
 
 		/* Draw the group name */
 		SetDParam(0, group_id);
 		StringID str = STR_GROUP_NAME;
-		DrawString(left+30, right, y+2, str, TC_BLACK);
+		DrawString(left+30, right, y+offset, str, TC_BLACK);
 
 		/* Draw the index of the selected template for this group
 		 * Note, that this is the index into the group list, not the template's ID. */
 		if ( group->template_id != INVALID_TEMPLATE ) {
 			SetDParam(0, FindTemplateIndexInGui(group->template_id));
-			DrawString ( left, right, y+2, STR_TBTR_INFO_GROUP_USING_TEMPLATE, TC_BLACK, SA_HOR_CENTER);
+			DrawString(left, right, y+offset, STR_TBTR_INFO_GROUP_USING_TEMPLATE, TC_BLACK, SA_HOR_CENTER);
 		}
 
 		/* Draw the number of trains that still need to be treated */
@@ -477,14 +486,14 @@ void TbtrGui::DrawGroups(const Rect& r) const
 		/* Draw text */
 		TextColour color = TC_GREY;
 		if ( num_trains ) color = TC_BLACK;
-		DrawString(left, right-16, y+2, STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT, color, SA_RIGHT);
+		DrawString(left, right-16, y+offset, STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT, color, SA_RIGHT);
 		/* Draw number */
 		if ( num_trains ) color = TC_ORANGE;
 		else color = TC_GREY;
 		SetDParam(0, num_trains);
-		DrawString(left, right-4, y+2, STR_JUST_INT, color, SA_RIGHT);
+		DrawString(left, right-4, y+offset, STR_JUST_INT, color, SA_RIGHT);
 
-		y += this->line_height / 2;
+		y += step_size;
 	}
 }
 
@@ -522,7 +531,7 @@ void TbtrGui::DrawTemplateInfo(const Rect &r) const
 			SetDParam(1, cargo_caps[i]);
 			SetDParam(2, _settings_game.vehicle.freight_trains);
 			DrawString(left, r.right, y, FreightWagonMult(i) > 1 ? STR_TBTR_INFO_CARGO_SUMMARY_MULTI : STR_TBTR_INFO_CARGO_SUMMARY, TC_WHITE, SA_LEFT);
-			y += this->line_height/2;
+			y += this->resize.step_height * 2;
 			if ( count_rows % max_rows == 0 ) {
 				y = top;
 				left += 150;
@@ -539,6 +548,9 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 	int left = r.left;
 	int right = r.right;
 	int y = r.top;
+	int ypos_lo = y+this->resize.step_height+this->resize.step_height/3;
+	int ypos_hi = y+ScaleGUITrad(7);
+	int ypos_med = y+this->resize.step_height/2;
 
 	uint max = min(vscroll_templates->GetPosition() + vscroll_templates->GetCapacity(), this->templates.Length());
 	TemplateVehicle* tv;
@@ -547,50 +559,64 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 
 		/* Fill the background of the current cell in a darker tone for the currently selected template */
 		if ( this->index_selected_template == (int32)i ) {
-			GfxFillRect(left, y, right, y+this->line_height, _colour_gradient[COLOUR_GREY][3]);
+			GfxFillRect(left, y, right, y+this->resize.step_height*2, _colour_gradient[COLOUR_GREY][3]);
 		}
+
+		/*
+		 * text positions
+			buy:lo
+			tmpl:hi
+			ix:middle
+			tmpl_opt:hi
+			tmpl_len:hi
+			inuse:lo
+		 */
 
 		/* Draw a notification string for chains that are not runnable */
 		if ( tv->IsFreeWagonChain() ) {
-			DrawString(left, right-2, y+this->line_height-FONT_HEIGHT_SMALL-WD_FRAMERECT_BOTTOM - 2, STR_TBTR_WARN_FREE_WAGON, TC_RED, SA_RIGHT);
+			DrawString(left, right-2, ypos_lo, STR_TBTR_WARN_FREE_WAGON, TC_RED, SA_RIGHT);
 		}
 
 		/* Draw the template's length in tile-units */
 		SetDParam(0, tv->GetRealLength());
 		SetDParam(1, 1);
-		DrawString(left, right-4, y+2, STR_TINY_BLACK_DECIMAL, TC_BLACK, SA_RIGHT);
+		DrawString(left, right-4, ypos_hi, STR_TINY_BLACK_DECIMAL, TC_BLACK, SA_RIGHT);
 
 		/* Draw the template */
-		tv->Draw(left+this->template_x_offset, right, y, hscroll_templates->GetPosition());
+		tv->Draw(left+this->template_x_offset, right, ypos_hi, hscroll_templates->GetPosition());
 
 		/* Buying cost */
 		SetDParam(0, tv->CalculateCost());
-		DrawString(left+35, right, y + this->line_height - FONT_HEIGHT_SMALL - WD_FRAMERECT_BOTTOM - 2, STR_TBTR_INFO_TEMPLATE_VALUE_notinyfont, TC_BLUE, SA_LEFT);
+		DrawString(left+35, right, ypos_lo, STR_TBTR_INFO_TEMPLATE_VALUE_notinyfont, TC_BLUE, SA_LEFT);
 
 		/* Index of current template vehicle in the list of all templates for its company */
 		SetDParam(0, i);
-		DrawString(left+5, left+25, y + this->line_height/2, STR_BLACK_INT, TC_BLACK, SA_RIGHT);
+		DrawString(left+5, left+25, ypos_med, STR_BLACK_INT, TC_BLACK, SA_RIGHT);
 
 		/* Draw whether the current template is in use by any group */
 		int n_groups = tv->CountGroups();
 		if ( n_groups > 0 ) {
 			SetDParam(0, n_groups);
-			DrawString(left+200, right, y + this->line_height - FONT_HEIGHT_SMALL - WD_FRAMERECT_BOTTOM - 2, STR_TBTR_INFO_TEMPLATE_IN_USE, TC_GREEN, SA_LEFT);
+			uint _left = left + ScaleGUITrad(170);
+			DrawString(_left, right, ypos_lo, STR_TBTR_INFO_TEMPLATE_IN_USE, TC_GREEN, SA_LEFT);
 		}
 
 		/* Draw information about template configuration settings */
 		TextColour color;
 		if ( tv->IsSetReuseDepotVehicles() ) color = TC_LIGHT_BLUE;
 		else color = TC_GREY;
-		DrawString(left+200, right, y+2, STR_TBTR_CONFIG_USE_DEPOT, color, SA_LEFT);
+		DrawString(left+50+ScaleGUITrad(150), right, ypos_hi, STR_TBTR_CONFIG_USE_DEPOT, color, SA_LEFT);
 		if ( tv->IsSetKeepRemainingVehicles() ) color = TC_LIGHT_BLUE;
 		else color = TC_GREY;
-		DrawString(left+275, right, y+2, STR_TBTR_CONFIG_KEEP_REMAINDERS, color, SA_LEFT);
+		DrawString(left+60+ScaleGUITrad(215), right, ypos_hi, STR_TBTR_CONFIG_KEEP_REMAINDERS, color, SA_LEFT);
 		if ( tv->IsSetRefitAsTemplate() ) color = TC_LIGHT_BLUE;
 		else color = TC_GREY;
-		DrawString(left+350, right, y+2, STR_TBTR_CONFIG_USE_REFIT, color, SA_LEFT);
+		DrawString(left+80+ScaleGUITrad(270), right, ypos_hi, STR_TBTR_CONFIG_USE_REFIT, color, SA_LEFT);
 
-		y += this->line_height;
+		y += this->resize.step_height*2;
+		ypos_lo += this->resize.step_height*2;
+		ypos_med += this->resize.step_height*2;
+		ypos_hi += this->resize.step_height*2;
 	}
 }
 
@@ -650,7 +676,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			break;
 		}
 		case TRW_WIDGET_MATRIX_ENGINES: {
-			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_ENGINES]->pos_y) / (this->line_height/2) ) + this->vscroll_engines->GetPosition();
+			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_ENGINES]->pos_y) / (this->resize.step_height) ) + this->vscroll_engines->GetPosition();
 			if ( index_new >= this->engines.Length() )
 				this->index_selected_engine = -1;
 			else if ( this->index_selected_engine == index_new )
@@ -660,7 +686,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			break;
 		}
 		case TRW_WIDGET_MATRIX_GROUPS: {
-			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_GROUPS]->pos_y) / (this->line_height/2) ) + this->vscroll_groups->GetPosition();
+			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_GROUPS]->pos_y) / (this->resize.step_height) ) + this->vscroll_groups->GetPosition();
 			if ( index_new >= this->groups.Length() )
 				this->index_selected_group = -1;
 			else if ( this->index_selected_group == index_new )
@@ -670,7 +696,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			break;
 		}
 		case TRW_WIDGET_MATRIX_TEMPLATES: {
-			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_TEMPLATES]->pos_y) / this->line_height ) + this->vscroll_templates->GetPosition();
+			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_TEMPLATES]->pos_y) / (this->resize.step_height*2) ) + this->vscroll_templates->GetPosition();
 			if ( index_new >= this->templates.Length() )
 				this->index_selected_template = -1;
 			else if ( this->index_selected_template == index_new )
@@ -761,6 +787,10 @@ void TbtrGui::OnInvalidateData(int data = 0, bool gui_scope = true)
  */
 void TbtrGui::OnPaint()
 {
+	if ( _gui_zoom != this->gui_zoom ) {
+		this->gui_zoom = _gui_zoom;
+		this->UpdateZoom();
+	}
 	this->BuildTemplateEngineList();
 	this->BuildGroupList();
 	this->BuildTemplateList();
@@ -804,26 +834,56 @@ bool TbtrGui::OnVehicleSelect(const Vehicle* v)
 	return true;
 }
 
+/**
+ * Update TBTR things according to the current UI zoom level
+ */
+void TbtrGui::UpdateZoom()
+{
+	this->gui_zoom = _gui_zoom;
+	TemplateVehicle* tv;
+	FOR_ALL_TEMPLATES(tv) {
+		tv->UpdateZoom();
+	}
+}
+
 /*
  * Recalculate the size of the window's components
  */
 void TbtrGui::UpdateWidgetSize(int widget, Dimension *size, const Dimension &padding, Dimension *fill, Dimension *resize)
 {
 	switch (widget) {
-		case TRW_WIDGET_MATRIX_GROUPS:
-			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP) / 2;
-			size->height = 8 * resize->height;
-			break;
 		case TRW_WIDGET_MATRIX_TEMPLATES:
-			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP);
-			size->height = 4 * resize->height;
+			resize->height = GetEngineListHeight(VEH_TRAIN) * 2;
+			size->height = 3 * resize->height;
 			break;
+		case TRW_WIDGET_MATRIX_GROUPS:
 		case TRW_WIDGET_MATRIX_ENGINES:
-			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP) / 2;
-			size->height = 4 * resize->height;
+			resize->height = GetEngineListHeight(VEH_TRAIN);
+			size->height = 3 * resize->height;
 			break;
 	}
+	this->CalculateTemplatesHScroll();
 }
+///*
+// * Recalculate the size of the window's components
+// */
+//void TbtrGui::UpdateWidgetSize(int widget, Dimension *size, const Dimension &padding, Dimension *fill, Dimension *resize)
+//{
+//	switch (widget) {
+//		case TRW_WIDGET_MATRIX_GROUPS:
+//			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP) / 2;
+//			size->height = 8 * resize->height;
+//			break;
+//		case TRW_WIDGET_MATRIX_TEMPLATES:
+//			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP);
+//			size->height = 4 * resize->height;
+//			break;
+//		case TRW_WIDGET_MATRIX_ENGINES:
+//			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP) / 2;
+//			size->height = 4 * resize->height;
+//			break;
+//	}
+//}
 
 /*
  * Show the TBTR Gui

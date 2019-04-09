@@ -169,7 +169,7 @@ void TemplateVehicle::Draw(uint left, uint right, int y, int x_offset=0)
 
 	/* draw this + rest of the chain */
 	if ( x_offset <= 0 ) {
-		DrawVehicleEngine(left, right, left, y+10, this->engine_type, GetEnginePalette(this->engine_type, this->owner), EIT_PURCHASE);
+		DrawVehicleEngine(left, right, left, y, this->engine_type, GetEnginePalette(this->engine_type, this->owner), EIT_PURCHASE);
 		left += this->sprite_width;
 	}
 	TemplateVehicle* next = this->GetNextUnit();
@@ -265,4 +265,12 @@ void TemplateVehicle::UpdateLastVehicle(TemplateVehicle* last)
 		tmp->last = last;
 		tmp = tmp->next;
 	}
+}
+
+/**
+ *	Update things according to the current UI zoom level
+ */
+void TemplateVehicle::UpdateZoom()
+{
+	this->cached_sprite_size = false;
 }
