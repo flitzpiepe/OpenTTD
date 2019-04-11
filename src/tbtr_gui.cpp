@@ -77,16 +77,16 @@ static const NWidgetPart _widgets[] = {
 
 		/* New engines */
 		NWidget(NWID_VERTICAL),
-			NWidget(WWT_INSET, COLOUR_GREY, TRW_WIDGET_INSET_ENGINES), SetMinimalSize(216,12), SetFill(1,0),  SetDataTip(STR_TBTR_UI_LABEL_ENGINES, STR_TBTR_UI_LABEL_ENGINES), SetResize(1, 0), EndContainer(),
+			NWidget(WWT_INSET, COLOUR_GREY, TRW_WIDGET_INSET_ENGINES), SetMinimalSize(216,12), SetFill(1,0), SetDataTip(STR_TBTR_UI_LABEL_ENGINES, STR_TBTR_UI_LABEL_ENGINES), SetResize(1, 0), EndContainer(),
 			NWidget(NWID_HORIZONTAL),
-				NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_ENGINES), SetMinimalSize(100, 0), SetFill(1, 1), SetDataTip(0x1, STR_TBTR_UI_TOOLTIP_ENGINES), SetResize(1, 0), SetScrollbar(TRW_WIDGET_SCROLLBAR_ENGINES),
+				NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_ENGINES), SetMinimalSize(216,12), SetFill(1,1), SetDataTip(0x1, STR_TBTR_UI_TOOLTIP_ENGINES), SetResize(1, 0), SetScrollbar(TRW_WIDGET_SCROLLBAR_ENGINES),
 				NWidget(NWID_VSCROLLBAR, COLOUR_GREY, TRW_WIDGET_SCROLLBAR_ENGINES),
 			EndContainer(),
 		EndContainer(),
 
 		/* Template Ctrl */
 		NWidget(NWID_VERTICAL),
-			/*Top Matrix */
+			/* Groups Display */
 			NWidget(NWID_VERTICAL),
 				NWidget(WWT_INSET, COLOUR_GREY, TRW_WIDGET_INSET_GROUPS), SetMinimalSize(216,12), SetDataTip(STR_TBTR_UI_LABEL_GROUPS, 0), SetResize(1, 0), EndContainer(),
 				NWidget(NWID_HORIZONTAL),
@@ -864,26 +864,6 @@ void TbtrGui::UpdateWidgetSize(int widget, Dimension *size, const Dimension &pad
 	}
 	this->CalculateTemplatesHScroll();
 }
-///*
-// * Recalculate the size of the window's components
-// */
-//void TbtrGui::UpdateWidgetSize(int widget, Dimension *size, const Dimension &padding, Dimension *fill, Dimension *resize)
-//{
-//	switch (widget) {
-//		case TRW_WIDGET_MATRIX_GROUPS:
-//			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP) / 2;
-//			size->height = 8 * resize->height;
-//			break;
-//		case TRW_WIDGET_MATRIX_TEMPLATES:
-//			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP);
-//			size->height = 4 * resize->height;
-//			break;
-//		case TRW_WIDGET_MATRIX_ENGINES:
-//			resize->height = GetVehicleListHeight(VEH_TRAIN, FONT_HEIGHT_NORMAL + WD_MATRIX_TOP) / 2;
-//			size->height = 4 * resize->height;
-//			break;
-//	}
-//}
 
 /*
  * Show the TBTR Gui
