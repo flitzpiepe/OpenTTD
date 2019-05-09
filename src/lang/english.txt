@@ -316,10 +316,10 @@ STR_SORT_BY_RATING                                              :Rating
 STR_TBTR_TEMPLATE_REPLACEMENT                                   :Template Replacement
 STR_TBTR_UI_TITLE                                               :{WHITE}Template Replacement
 
-STR_TBTR_UI_LABEL_GROUPS                                        :{BLACK}Company groups
-STR_TBTR_UI_LABEL_ENGINES                                       :{BLACK}Available Engines
-STR_TBTR_UI_LABEL_TEMPLATE_INFO                                 :{BLACK}Template Info
-STR_TBTR_UI_LABEL_TEMPLATES                                     :{BLACK}Available Templates
+STR_TBTR_UI_LABEL_GROUPS                                        :{YELLOW}Company groups
+STR_TBTR_UI_LABEL_ENGINES                                       :{YELLOW}Available Engines
+STR_TBTR_UI_LABEL_TEMPLATE_INFO                                 :{YELLOW}Template Info
+STR_TBTR_UI_LABEL_TEMPLATES                                     :{YELLOW}Available Templates
 
 STR_TBTR_UI_BUTTON_ADD_ENGINE                                   :{BLACK}Add Engine
 STR_TBTR_UI_BUTTON_CLONE_TEMPLATE                               :{BLACK}Clone

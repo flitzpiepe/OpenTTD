@@ -116,6 +116,7 @@ public:
 	bool TrainNeedsReplacement(Train*);
 
 	void UpdateLastVehicle(TemplateVehicle*);
+	void UpdateZoom();					///< take the changed UI zoom into account
 };
 
 TemplateID FindTemplateIndexForGroup(GroupID);
