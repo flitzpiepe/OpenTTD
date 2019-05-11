@@ -286,9 +286,9 @@ TbtrGui::TbtrGui(WindowDesc* wdesc) : Window(wdesc)
 	 * this should be ok */
 	FinishInitNested(VEH_TRAIN);
 
-	this->vscroll_engines->SetStepSize(this->resize.step_height*2);
-	this->vscroll_groups->SetStepSize(this->resize.step_height);
-	this->vscroll_templates->SetStepSize(this->resize.step_height*2);
+	this->vscroll_engines->SetStepSize(this->height_cell_engines);
+	this->vscroll_groups->SetStepSize(this->height_cell_groups);
+	this->vscroll_templates->SetStepSize(this->height_cell_templates);
 
 	/* will be used to build the internal group and template lists
 	 *
@@ -437,7 +437,7 @@ void TbtrGui::DrawWidget(const Rect& r, int widget) const
 void TbtrGui::DrawEngines(const Rect& r) const
 {
 	uint y = r.top;
-	int step_size = this->resize.step_height;
+	int step_size = this->height_cell_engines;
 	uint max = min(vscroll_engines->GetPosition() + vscroll_engines->GetCapacity(), this->engines.Length());
 	for ( uint i = vscroll_engines->GetPosition(); i<max; ++i ) {
 
@@ -469,7 +469,7 @@ void TbtrGui::DrawGroups(const Rect& r) const
 	int right = r.right - WD_MATRIX_RIGHT;
 	int y = r.top;
 	int max = min(this->vscroll_groups->GetPosition() + this->vscroll_groups->GetCapacity(), this->groups.Length());
-	int step_size = this->resize.step_height;
+	int step_size = this->height_cell_groups;
 	int offset = step_size / 4;
 
 	/* Then treat all groups defined by/for the current company */
@@ -544,7 +544,7 @@ void TbtrGui::DrawTemplateInfo(const Rect &r) const
 			SetDParam(1, cargo_caps[i]);
 			SetDParam(2, _settings_game.vehicle.freight_trains);
 			DrawString(left, r.right, y, FreightWagonMult(i) > 1 ? STR_TBTR_INFO_CARGO_SUMMARY_MULTI : STR_TBTR_INFO_CARGO_SUMMARY, TC_WHITE, SA_LEFT);
-			y += this->resize.step_height * 2;
+			y += this->height_cell_templates;
 			if ( count_rows % max_rows == 0 ) {
 				y = top;
 				left += 150;
@@ -561,9 +561,8 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 	int left = r.left;
 	int right = r.right;
 	int y = r.top;
-	int ypos_lo = y+this->resize.step_height+this->resize.step_height/3;
+    int ypos_lo = y + this->height_cell_templates/2 + this->height_cell_templates/6;
 	int ypos_hi = y+ScaleGUITrad(7);
-	int ypos_med = y+this->resize.step_height/2;
 
 	uint max = min(vscroll_templates->GetPosition() + vscroll_templates->GetCapacity(), this->templates.Length());
 	TemplateVehicle* tv;
@@ -572,18 +571,8 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 
 		/* Fill the background of the current cell in a darker tone for the currently selected template */
 		if ( this->index_selected_template == (int32)i ) {
-			GfxFillRect(left, y, right, y+this->resize.step_height*2, _colour_gradient[COLOUR_GREY][3]);
+			GfxFillRect(left, y, right, y+this->height_cell_templates, _colour_gradient[COLOUR_GREY][3]);
 		}
-
-		/*
-		 * text positions
-			buy:lo
-			tmpl:hi
-			ix:middle
-			tmpl_opt:hi
-			tmpl_len:hi
-			inuse:lo
-		 */
 
 		/* Draw a notification string for chains that are not runnable */
 		if ( tv->IsFreeWagonChain() ) {
@@ -604,7 +593,7 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 
 		/* Index of current template vehicle in the list of all templates for its company */
 		SetDParam(0, i);
-		DrawString(left+5, left+25, ypos_med, STR_BLACK_INT, TC_BLACK, SA_RIGHT);
+		DrawString(left+5, left+25, ypos_hi, STR_BLACK_INT, TC_BLACK, SA_RIGHT);
 
 		/* Draw whether the current template is in use by any group */
 		int n_groups = tv->CountGroups();
@@ -626,10 +615,9 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 		else color = TC_GREY;
 		DrawString(left+80+ScaleGUITrad(270), right, ypos_hi, STR_TBTR_CONFIG_USE_REFIT, color, SA_LEFT);
 
-		y += this->resize.step_height*2;
-		ypos_lo += this->resize.step_height*2;
-		ypos_med += this->resize.step_height*2;
-		ypos_hi += this->resize.step_height*2;
+		y += this->height_cell_templates;
+		ypos_lo += this->height_cell_templates;
+		ypos_hi += this->height_cell_templates;
 	}
 }
 
@@ -689,7 +677,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			break;
 		}
 		case TRW_WIDGET_MATRIX_ENGINES: {
-			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_ENGINES]->pos_y) / (this->resize.step_height) ) + this->vscroll_engines->GetPosition();
+			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_ENGINES]->pos_y) / (this->height_cell_engines) ) + this->vscroll_engines->GetPosition();
 			if ( index_new >= this->engines.Length() )
 				this->index_selected_engine = -1;
 			else if ( this->index_selected_engine == index_new )
@@ -699,7 +687,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			break;
 		}
 		case TRW_WIDGET_MATRIX_GROUPS: {
-			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_GROUPS]->pos_y) / (this->resize.step_height) ) + this->vscroll_groups->GetPosition();
+			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_GROUPS]->pos_y) / (this->height_cell_groups) ) + this->vscroll_groups->GetPosition();
 			if ( index_new >= this->groups.Length() )
 				this->index_selected_group = -1;
 			else if ( this->index_selected_group == index_new )
@@ -709,13 +697,47 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			break;
 		}
 		case TRW_WIDGET_MATRIX_TEMPLATES: {
-			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_TEMPLATES]->pos_y) / (this->resize.step_height*2) ) + this->vscroll_templates->GetPosition();
-			if ( index_new >= this->templates.Length() )
+			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_TEMPLATES]->pos_y) / (this->height_cell_templates) ) + this->vscroll_templates->GetPosition();
+			uint16 click_y_incell = (pt.y - nested_array[widget]->pos_y) % (this->height_cell_templates);
+
+			if ( index_new >= this->templates.Length() ) {
 				this->index_selected_template = -1;
-			else if ( this->index_selected_template == index_new )
+				break;
+			}
+
+			if ( index_new == this->index_selected_template )
 				this->index_selected_template = -1;
+
 			else
 				this->index_selected_template = index_new;
+
+			int str_usedepot_left = nested_array[widget]->pos_x + 50 + ScaleGUITrad(150);
+			int str_keeprem_left = nested_array[widget]->pos_x + 60 + ScaleGUITrad(215);
+			int str_userefit_left = nested_array[widget]->pos_x + 80 + ScaleGUITrad(270);
+			int str_pos_hi = ScaleGUITrad(7);
+			Dimension str_usedepot_bb = GetStringBoundingBox(STR_TBTR_CONFIG_USE_DEPOT);
+			Dimension str_keeprem_bb = GetStringBoundingBox(STR_TBTR_CONFIG_KEEP_REMAINDERS);
+			Dimension str_userefit_bb = GetStringBoundingBox(STR_TBTR_CONFIG_USE_REFIT);
+			uint str_height = str_usedepot_bb.height;       // string height is assumed to be the same for all config option strings
+
+			/* clicked on one of the template config option strings select the template and toggle the config
+			* option */
+			if ( click_y_incell >= str_pos_hi && click_y_incell <= str_pos_hi + str_height ) {
+				TemplateVehicle* tv = TemplateVehicle::Get(this->templates[index_new]->index);
+				if ( pt.x >= str_usedepot_left && pt.x <= str_usedepot_left + (int)str_usedepot_bb.width ) {
+					tv->reuse_depot_vehicles = !tv->reuse_depot_vehicles;
+					this->index_selected_template = index_new;
+				}
+				else if ( pt.x >= str_keeprem_left && pt.x <= str_keeprem_left + (int)str_keeprem_bb.width ) {
+					tv->keep_remaining_vehicles = !tv->keep_remaining_vehicles;
+					this->index_selected_template = index_new;
+				}
+				else if ( pt.x >= str_userefit_left && pt.x <= str_userefit_left + (int)str_userefit_bb.width ) {
+					tv->refit_as_template = !tv->refit_as_template;
+					this->index_selected_template = index_new;
+				}
+			}
+
 			break;
 		}
 		case TRW_WIDGET_START: {
@@ -815,6 +837,10 @@ void TbtrGui::OnPaint()
  */
 void TbtrGui::OnResize()
 {
+    this->height_cell_engines = this->resize.step_height;
+    this->height_cell_groups = this->resize.step_height;
+    this->height_cell_templates = this->resize.step_height * 2;
+
 	/* Top Matrix */
 	NWidgetCore* nwi = this->GetWidget<NWidgetCore>(TRW_WIDGET_MATRIX_GROUPS);
 	this->vscroll_groups->SetCapacityFromWidget(this, TRW_WIDGET_MATRIX_GROUPS);
