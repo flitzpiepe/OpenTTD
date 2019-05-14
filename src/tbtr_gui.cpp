@@ -35,12 +35,6 @@ enum TemplateReplaceWindowWidgets {
 	TRW_WIDGET_TMPL_INFO_INSET,
 	TRW_WIDGET_TMPL_INFO_PANEL,
 
-	TRW_WIDGET_TMPL_BUTTONS_CONFIGTMPL_REUSE,
-	TRW_WIDGET_TMPL_BUTTONS_CONFIGTMPL_KEEP,
-	TRW_WIDGET_TMPL_BUTTONS_CONFIGTMPL_REFIT,
-	TRW_WIDGET_TMPL_BUTTONS_CONFIG_RIGHTPANEL,
-	TRW_WIDGET_TMPL_BUTTONS_CONFIG_LEFTPANEL,
-
 	TRW_WIDGET_TMPL_BUTTONS_ADD,
 	TRW_WIDGET_TMPL_BUTTONS_CLONE,
 	TRW_WIDGET_TMPL_BUTTONS_DELETE,
@@ -126,14 +120,6 @@ static const NWidgetPart _widgets[] = {
 
 		/* Buttons Area */
 		NWidget(NWID_VERTICAL),
-			/* Config buttons */
-			NWidget(NWID_HORIZONTAL),
-				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_CONFIGTMPL_REUSE), SetMinimalSize(150,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_USE_DEPOT, STR_TBTR_UI_TOOLTIP_USE_DEPOT),
-				NWidget(WWT_PANEL, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_CONFIG_LEFTPANEL), SetMinimalSize(12,12), SetResize(1,0), EndContainer(),
-				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_CONFIGTMPL_KEEP), SetMinimalSize(150,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_KEEP_REMAINDERS, STR_TBTR_UI_TOOLTIP_KEEP_REMAINDERS),
-				NWidget(WWT_PANEL, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_CONFIG_RIGHTPANEL), SetMinimalSize(12,12), SetResize(1,0), EndContainer(),
-				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_CONFIGTMPL_REFIT), SetMinimalSize(150,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_USE_REFIT, STR_TBTR_UI_TOOLTIP_USE_REFIT),
-			EndContainer(),
 			/* Edit buttons */
 			NWidget(NWID_HORIZONTAL),
 				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_ADD), SetMinimalSize(100,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_ADD_ENGINE, STR_TBTR_UI_TOOLTIP_ADD_ENGINE),
@@ -723,18 +709,20 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			/* clicked on one of the template config option strings select the template and toggle the config
 			* option */
 			if ( click_y_incell >= str_pos_hi && click_y_incell <= str_pos_hi + str_height ) {
-				TemplateVehicle* tv = TemplateVehicle::Get(this->templates[index_new]->index);
 				if ( pt.x >= str_usedepot_left && pt.x <= str_usedepot_left + (int)str_usedepot_bb.width ) {
-					tv->reuse_depot_vehicles = !tv->reuse_depot_vehicles;
 					this->index_selected_template = index_new;
+                    TemplateID template_index = ((this->templates)[index_new])->index;
+                    DoCommandP(0, template_index, TBTR_OPT_REUSE_DEPOT_VEHICLES, CMD_TOGGLE_TEMPLATE_OPTION);
 				}
 				else if ( pt.x >= str_keeprem_left && pt.x <= str_keeprem_left + (int)str_keeprem_bb.width ) {
-					tv->keep_remaining_vehicles = !tv->keep_remaining_vehicles;
 					this->index_selected_template = index_new;
+                    TemplateID template_index = ((this->templates)[index_new])->index;
+                    DoCommandP(0, template_index, TBTR_OPT_KEEP_REMAINDERS, CMD_TOGGLE_TEMPLATE_OPTION);
 				}
 				else if ( pt.x >= str_userefit_left && pt.x <= str_userefit_left + (int)str_userefit_bb.width ) {
-					tv->refit_as_template = !tv->refit_as_template;
 					this->index_selected_template = index_new;
+                    TemplateID template_index = ((this->templates)[index_new])->index;
+                    DoCommandP(0, template_index, TBTR_OPT_REFIT_VEHICLE, CMD_TOGGLE_TEMPLATE_OPTION);
 				}
 			}
 
@@ -781,27 +769,6 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 
 			/* delete the last engine */
 			DoCommandP(0, tid, 0, CMD_TEMPLATE_DELETE_ENGINE, CcTemplateEngineDeleted);
-			break;
-		}
-		case TRW_WIDGET_TMPL_BUTTONS_CONFIGTMPL_REUSE: {
-			if ( index_selected_template >= 0 && index_selected_template < (int)(this->templates.Length()) ) {
-				TemplateID template_index = ((this->templates)[index_selected_template])->index;
-				DoCommandP(0, template_index, TBTR_OPT_REUSE_DEPOT_VEHICLES, CMD_TOGGLE_TEMPLATE_OPTION);
-			}
-			break;
-		}
-		case TRW_WIDGET_TMPL_BUTTONS_CONFIGTMPL_KEEP: {
-			if ( index_selected_template >= 0 && index_selected_template < (int)(this->templates.Length()) ) {
-				TemplateID template_index = ((this->templates)[index_selected_template])->index;
-				DoCommandP(0, template_index, TBTR_OPT_KEEP_REMAINDERS, CMD_TOGGLE_TEMPLATE_OPTION);
-			}
-			break;
-		}
-		case TRW_WIDGET_TMPL_BUTTONS_CONFIGTMPL_REFIT: {
-			if ( index_selected_template >= 0 && index_selected_template < (int)(this->templates.Length()) ) {
-				TemplateID template_index = ((this->templates)[index_selected_template])->index;
-				DoCommandP(0, template_index, TBTR_OPT_REFIT_VEHICLE, CMD_TOGGLE_TEMPLATE_OPTION);
-			}
 			break;
 		}
 	}
