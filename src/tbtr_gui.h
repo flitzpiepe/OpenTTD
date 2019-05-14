@@ -66,6 +66,11 @@ private:
 	Scrollbar* vscroll_groups;          ///< Scrollbar for the group list
 	Scrollbar* hscroll_templates;       ///< Horizontal scrollbar for the template list
 	Scrollbar* vscroll_templates;       ///< Vertical scrollbar for the template list
+
+    uint16 height_cell_engines;         ///< the height of a line in the engines matrix
+    uint16 height_cell_groups;          ///< the height of a line in the groups matrix
+    uint16 height_cell_templates;       ///< the height of a line in the templates matrix
+
 	uint16 template_x_offset = 50;      ///< LHS spacing for templates in the GUI
 	int index_selected_engine = -1;
 	int index_selected_group = -1;
