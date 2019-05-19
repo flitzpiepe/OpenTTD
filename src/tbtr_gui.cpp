@@ -89,7 +89,7 @@ static const NWidgetPart _widgets[] = {
 						NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_GROUPS, 0x0), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
 					EndContainer(),
 					NWidget(NWID_HORIZONTAL),
-						NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_GROUPS), SetMinimalSize(MIN_WIDTH_RIGHT, 0), SetFill(1, 1), SetDataTip(0x1, STR_TBTR_UI_TOOLTIP_GROUPS), SetResize(1, 0), SetScrollbar(TRW_WIDGET_SCROLLBAR_GROUPS),
+						NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_GROUPS), SetMinimalSize(MIN_WIDTH_RIGHT, 0), SetFill(1, 1), SetDataTip(0x1, STR_TBTR_UI_TOOLTIP_GROUPS), SetResize(1, 1), SetScrollbar(TRW_WIDGET_SCROLLBAR_GROUPS),
 						NWidget(NWID_VSCROLLBAR, COLOUR_GREY, TRW_WIDGET_SCROLLBAR_GROUPS),
 					EndContainer(),
 				EndContainer(),
@@ -545,7 +545,7 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 	int left = r.left;
 	int right = r.right;
 	int y = r.top;
-    int ypos_lo = y + this->height_cell_templates/2 + this->height_cell_templates/6;
+	int ypos_lo = y + this->height_cell_templates/2 + this->height_cell_templates/6;
 	int ypos_hi = y+ScaleGUITrad(7);
 
 	uint max = min(vscroll_templates->GetPosition() + vscroll_templates->GetCapacity(), this->templates.Length());
@@ -709,18 +709,18 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			if ( click_y_incell >= str_pos_hi && click_y_incell <= str_pos_hi + str_height ) {
 				if ( pt.x >= str_usedepot_left && pt.x <= str_usedepot_left + (int)str_usedepot_bb.width ) {
 					this->index_selected_template = index_new;
-                    TemplateID template_index = ((this->templates)[index_new])->index;
-                    DoCommandP(0, template_index, TBTR_OPT_REUSE_DEPOT_VEHICLES, CMD_TOGGLE_TEMPLATE_OPTION);
+					TemplateID template_index = ((this->templates)[index_new])->index;
+					DoCommandP(0, template_index, TBTR_OPT_REUSE_DEPOT_VEHICLES, CMD_TOGGLE_TEMPLATE_OPTION);
 				}
 				else if ( pt.x >= str_keeprem_left && pt.x <= str_keeprem_left + (int)str_keeprem_bb.width ) {
 					this->index_selected_template = index_new;
-                    TemplateID template_index = ((this->templates)[index_new])->index;
-                    DoCommandP(0, template_index, TBTR_OPT_KEEP_REMAINDERS, CMD_TOGGLE_TEMPLATE_OPTION);
+					TemplateID template_index = ((this->templates)[index_new])->index;
+					DoCommandP(0, template_index, TBTR_OPT_KEEP_REMAINDERS, CMD_TOGGLE_TEMPLATE_OPTION);
 				}
 				else if ( pt.x >= str_userefit_left && pt.x <= str_userefit_left + (int)str_userefit_bb.width ) {
 					this->index_selected_template = index_new;
-                    TemplateID template_index = ((this->templates)[index_new])->index;
-                    DoCommandP(0, template_index, TBTR_OPT_REFIT_VEHICLE, CMD_TOGGLE_TEMPLATE_OPTION);
+					TemplateID template_index = ((this->templates)[index_new])->index;
+					DoCommandP(0, template_index, TBTR_OPT_REFIT_VEHICLE, CMD_TOGGLE_TEMPLATE_OPTION);
 				}
 			}
 
@@ -802,9 +802,9 @@ void TbtrGui::OnPaint()
  */
 void TbtrGui::OnResize()
 {
-    this->height_cell_engines = this->resize.step_height;
-    this->height_cell_groups = this->resize.step_height;
-    this->height_cell_templates = this->resize.step_height * 2;
+	this->height_cell_engines = this->resize.step_height;
+	this->height_cell_groups = this->resize.step_height * 2;
+	this->height_cell_templates = this->resize.step_height * 2;
 
 	/* Groups List */
 	NWidgetCore* nwi = this->GetWidget<NWidgetCore>(TRW_WIDGET_MATRIX_GROUPS);
@@ -856,13 +856,17 @@ void TbtrGui::UpdateZoom()
 void TbtrGui::UpdateWidgetSize(int widget, Dimension *size, const Dimension &padding, Dimension *fill, Dimension *resize)
 {
 	switch (widget) {
+		// TODO sort by name
 		case TRW_WIDGET_MATRIX_TEMPLATES:
-			resize->height = GetEngineListHeight(VEH_TRAIN) * 2;
+			resize->height = GetEngineListHeight(VEH_TRAIN);
+			size->height = 3 * resize->height;
+			break;
+		case TRW_WIDGET_MATRIX_ENGINES:
+			resize->height = GetEngineListHeight(VEH_TRAIN);
 			size->height = 3 * resize->height;
 			break;
 		case TRW_WIDGET_MATRIX_GROUPS:
-		case TRW_WIDGET_MATRIX_ENGINES:
-			resize->height = GetEngineListHeight(VEH_TRAIN);
+			resize->height = GetEngineListHeight(VEH_TRAIN) * 2;
 			size->height = 3 * resize->height;
 			break;
 	}
