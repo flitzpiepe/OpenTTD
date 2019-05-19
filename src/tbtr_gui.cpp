@@ -270,9 +270,9 @@ TbtrGui::TbtrGui(WindowDesc* wdesc) : Window(wdesc)
 	 * this should be ok */
 	FinishInitNested(VEH_TRAIN);
 
-	this->vscroll_engines->SetStepSize(this->height_cell_engines);
-	this->vscroll_groups->SetStepSize(this->height_cell_groups);
-	this->vscroll_templates->SetStepSize(this->height_cell_templates);
+	this->vscroll_engines->SetStepSize(2);
+	this->vscroll_groups->SetStepSize(1);
+	this->vscroll_templates->SetStepSize(1);
 
 	/* will be used to build the internal group and template lists
 	 *
@@ -361,6 +361,7 @@ void TbtrGui::BuildGroupList()
 	this->groups.Compact();
 	this->groups.Sort(&GroupNameSorter);
 	this->groups.RebuildDone();
+	this->vscroll_groups->SetCount(this->groups.Length());
 	this->index_selected_group = -1;
 }
 
