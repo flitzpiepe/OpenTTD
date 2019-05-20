@@ -545,8 +545,7 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 	int left = r.left;
 	int right = r.right;
 	int y = r.top;
-	int ypos_lo = y + this->height_cell_templates/2 + this->height_cell_templates/6;
-	int ypos_hi = y+ScaleGUITrad(7);
+	int ypos_hi = y+ScaleGUITrad(2);
 
 	uint max = min(vscroll_templates->GetPosition() + vscroll_templates->GetCapacity(), this->templates.Length());
 	TemplateVehicle* tv;
@@ -560,7 +559,7 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 
 		/* Draw a notification string for chains that are not runnable */
 		if ( tv->IsFreeWagonChain() ) {
-			DrawString(left, right-2, ypos_lo, STR_TBTR_WARN_FREE_WAGON, TC_RED, SA_RIGHT);
+			DrawString(left, right-20, ypos_hi, STR_TBTR_WARN_FREE_WAGON, TC_RED, SA_RIGHT);
 		}
 
 		/* Draw the template's length in tile-units */
@@ -569,11 +568,12 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 		DrawString(left, right-4, ypos_hi, STR_TINY_BLACK_DECIMAL, TC_BLACK, SA_RIGHT);
 
 		/* Draw the template */
-		tv->Draw(left+this->template_x_offset, right, ypos_hi, hscroll_templates->GetPosition());
+		tv->Draw(left+this->template_x_offset, right, ypos_hi+ScaleGUITrad(5), hscroll_templates->GetPosition());
 
+		// TODO move to template info box
 		/* Buying cost */
-		SetDParam(0, tv->CalculateCost());
-		DrawString(left+35, right, ypos_lo, STR_TBTR_INFO_TEMPLATE_VALUE_notinyfont, TC_BLUE, SA_LEFT);
+		//SetDParam(0, tv->CalculateCost());
+		//DrawString(left+35, right, ypos_lo, STR_TBTR_INFO_TEMPLATE_VALUE_notinyfont, TC_BLUE, SA_LEFT);
 
 		/* Index of current template vehicle in the list of all templates for its company */
 		SetDParam(0, i);
@@ -584,23 +584,23 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 		if ( n_groups > 0 ) {
 			SetDParam(0, n_groups);
 			uint _left = left + ScaleGUITrad(170);
-			DrawString(_left, right, ypos_lo, STR_TBTR_INFO_TEMPLATE_IN_USE, TC_GREEN, SA_LEFT);
+			DrawString(_left, right, ypos_hi, STR_TBTR_INFO_TEMPLATE_IN_USE, TC_GREEN, SA_LEFT);
 		}
 
+		// TODO move to template info box
 		/* Draw information about template configuration settings */
-		TextColour color;
-		if ( tv->IsSetReuseDepotVehicles() ) color = TC_LIGHT_BLUE;
-		else color = TC_GREY;
-		DrawString(left+50+ScaleGUITrad(150), right, ypos_hi, STR_TBTR_CONFIG_USE_DEPOT, color, SA_LEFT);
-		if ( tv->IsSetKeepRemainingVehicles() ) color = TC_LIGHT_BLUE;
-		else color = TC_GREY;
-		DrawString(left+60+ScaleGUITrad(215), right, ypos_hi, STR_TBTR_CONFIG_KEEP_REMAINDERS, color, SA_LEFT);
-		if ( tv->IsSetRefitAsTemplate() ) color = TC_LIGHT_BLUE;
-		else color = TC_GREY;
-		DrawString(left+80+ScaleGUITrad(270), right, ypos_hi, STR_TBTR_CONFIG_USE_REFIT, color, SA_LEFT);
+		//TextColour color;
+		//if ( tv->IsSetReuseDepotVehicles() ) color = TC_LIGHT_BLUE;
+		//else color = TC_GREY;
+		//DrawString(left+50+ScaleGUITrad(150), right, ypos_hi, STR_TBTR_CONFIG_USE_DEPOT, color, SA_LEFT);
+		//if ( tv->IsSetKeepRemainingVehicles() ) color = TC_LIGHT_BLUE;
+		//else color = TC_GREY;
+		//DrawString(left+60+ScaleGUITrad(215), right, ypos_hi, STR_TBTR_CONFIG_KEEP_REMAINDERS, color, SA_LEFT);
+		//if ( tv->IsSetRefitAsTemplate() ) color = TC_LIGHT_BLUE;
+		//else color = TC_GREY;
+		//DrawString(left+80+ScaleGUITrad(270), right, ypos_hi, STR_TBTR_CONFIG_USE_REFIT, color, SA_LEFT);
 
 		y += this->height_cell_templates;
-		ypos_lo += this->height_cell_templates;
 		ypos_hi += this->height_cell_templates;
 	}
 }
@@ -804,7 +804,7 @@ void TbtrGui::OnResize()
 {
 	this->height_cell_engines = this->resize.step_height;
 	this->height_cell_groups = this->resize.step_height * 2;
-	this->height_cell_templates = this->resize.step_height * 2;
+	this->height_cell_templates = this->resize.step_height;
 
 	/* Groups List */
 	NWidgetCore* nwi = this->GetWidget<NWidgetCore>(TRW_WIDGET_MATRIX_GROUPS);
