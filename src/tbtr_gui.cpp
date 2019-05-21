@@ -564,7 +564,7 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 
 		/* Draw a notification string for chains that are not runnable */
 		if ( tv->IsFreeWagonChain() ) {
-			DrawString(left, right-20, ypos_hi, STR_TBTR_WARN_FREE_WAGON, TC_RED, SA_RIGHT);
+			DrawString(left, right-ScaleGUITrad(20), ypos_hi, STR_TBTR_WARN_FREE_WAGON, TC_RED, SA_RIGHT);
 		}
 
 		/* Draw the template's length in tile-units */
