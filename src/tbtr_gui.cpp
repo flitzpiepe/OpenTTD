@@ -111,7 +111,7 @@ static const NWidgetPart _widgets[] = {
 					NWidget(WWT_PANEL, COLOUR_GREY),
 						NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_TEMPLATE_INFO, 0x0), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
 					EndContainer(),
-					NWidget(WWT_PANEL, COLOUR_GREY, TRW_WIDGET_TMPL_INFO_PANEL), SetMinimalSize(MIN_WIDTH_RIGHT,70), SetResize(1,0), EndContainer(),
+					NWidget(WWT_PANEL, COLOUR_GREY, TRW_WIDGET_TMPL_INFO_PANEL), SetMinimalSize(MIN_WIDTH_RIGHT, 70), SetResize(1, 0), EndContainer(),
 				EndContainer(),
 			EndContainer(),	// END Template Ctrl
 		EndContainer(), // END Matrixes
