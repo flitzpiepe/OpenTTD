@@ -111,7 +111,7 @@ static const NWidgetPart _widgets[] = {
 					NWidget(WWT_PANEL, COLOUR_GREY),
 						NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_TEMPLATE_INFO, 0x0), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
 					EndContainer(),
-					NWidget(WWT_PANEL, COLOUR_GREY, TRW_WIDGET_TMPL_INFO_PANEL), SetMinimalSize(MIN_WIDTH_RIGHT,50), SetResize(1,0), EndContainer(),
+					NWidget(WWT_PANEL, COLOUR_GREY, TRW_WIDGET_TMPL_INFO_PANEL), SetMinimalSize(MIN_WIDTH_RIGHT,70), SetResize(1,0), EndContainer(),
 				EndContainer(),
 			EndContainer(),	// END Template Ctrl
 		EndContainer(), // END Matrixes
@@ -502,6 +502,7 @@ void TbtrGui::DrawTemplateInfo(const Rect &r) const
 	if ( this->index_selected_template == -1 || (short)this->templates.Length() <= this->index_selected_template )
 		return;
 
+	// rename to tv
 	const TemplateVehicle *tmp = this->templates[this->index_selected_template];
 
 	/* Draw vehicle performance info */
@@ -511,8 +512,12 @@ void TbtrGui::DrawTemplateInfo(const Rect &r) const
 	SetDParam(3, tmp->max_te);
 	DrawString(r.left+8, r.right, r.top+4, STR_VEHICLE_INFO_WEIGHT_POWER_MAX_SPEED_MAX_TE);
 
+	/* Buying cost */
+	SetDParam(0, tmp->CalculateCost());
+	DrawString(r.left+8, r.right, r.top+16, STR_TBTR_INFO_TEMPLATE_VALUE_notinyfont, TC_BLUE, SA_LEFT);
+
 	/* Draw cargo summary */
-	short top = r.top + 24;
+	short top = r.top + 32;
 	short left = r.left + 8;
 	short count_rows = 0;
 	short max_rows = 2;
@@ -569,11 +574,6 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 
 		/* Draw the template */
 		tv->Draw(left+this->template_x_offset, right, ypos_hi+ScaleGUITrad(5), hscroll_templates->GetPosition());
-
-		// TODO move to template info box
-		/* Buying cost */
-		//SetDParam(0, tv->CalculateCost());
-		//DrawString(left+35, right, ypos_lo, STR_TBTR_INFO_TEMPLATE_VALUE_notinyfont, TC_BLUE, SA_LEFT);
 
 		/* Index of current template vehicle in the list of all templates for its company */
 		SetDParam(0, i);
