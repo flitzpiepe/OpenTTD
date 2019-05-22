@@ -581,9 +581,10 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 		/* Draw whether the current template is in use by any group */
 		int n_groups = tv->CountGroups();
 		if ( n_groups > 0 ) {
+			uint _left = left + 150 + ScaleGUITrad(100);
 			SetDParam(0, n_groups);
-			uint _left = left + ScaleGUITrad(170);
-			DrawString(_left, right, ypos_hi, STR_TBTR_INFO_TEMPLATE_IN_USE, TC_GREEN, SA_LEFT);
+			StringID str_id = n_groups==1 ? STR_TBTR_INFO_TEMPLATE_IN_USE_ONE : STR_TBTR_INFO_TEMPLATE_IN_USE;
+			DrawString(_left, right, ypos_hi, str_id, TC_GREEN, SA_LEFT);
 		}
 
 		// TODO move to template info box

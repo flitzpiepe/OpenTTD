@@ -355,7 +355,8 @@ STR_TBTR_INFO_CARGO_SUMMARY_MULTI                               :{CARGO_LONG} (x
 STR_TBTR_INFO_GROUP_USING_TEMPLATE                              :{BLACK}Template in use: {NUM}
 STR_TBTR_INFO_TEMPLATE_VALUE                                    :{TINY_FONT}{BLACK}Buying Cost: {GOLD}{CURRENCY_LONG}
 STR_TBTR_INFO_TEMPLATE_VALUE_notinyfont                         :{BLACK}Buying Cost: {GOLD}{CURRENCY_LONG}
-STR_TBTR_INFO_TEMPLATE_IN_USE                                   :Template in use (#groups: {NUM})
+STR_TBTR_INFO_TEMPLATE_IN_USE                                   :Template used by {GOLD}{NUM} {GREEN}groups
+STR_TBTR_INFO_TEMPLATE_IN_USE_ONE								:Template used by {GOLD}1 {GREEN}group
 STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT                           :# trains to replace:
 STR_TBTR_WARN_FREE_WAGON                                        :{RED}Free Chain: not runnable!
 
