@@ -53,8 +53,8 @@ enum TemplateReplaceWindowWidgets {
 	TRW_WIDGET_SEL_TMPL_DISPLAY_CREATE,
 };
 
-#define MIN_WIDTH_LEFT 216
-#define MIN_WIDTH_RIGHT 400
+#define MIN_WIDTH_LEFT 350
+#define MIN_WIDTH_RIGHT 350
 
 static const NWidgetPart _widgets[] = {
 	/* Title bar */
@@ -78,7 +78,7 @@ static const NWidgetPart _widgets[] = {
 						NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_GROUPS, 0x0), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
 					EndContainer(),
 					NWidget(NWID_HORIZONTAL),
-						NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_GROUPS), SetMinimalSize(MIN_WIDTH_RIGHT, 0), SetFill(1, 1), SetDataTip(0x1, STR_TBTR_UI_TOOLTIP_GROUPS), SetResize(1, 1), SetScrollbar(TRW_WIDGET_SCROLLBAR_GROUPS),
+						NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_GROUPS), SetMinimalSize(MIN_WIDTH_LEFT, 0), SetFill(1, 1), SetDataTip(0x1, STR_TBTR_UI_TOOLTIP_GROUPS), SetResize(1, 1), SetScrollbar(TRW_WIDGET_SCROLLBAR_GROUPS),
 						NWidget(NWID_VSCROLLBAR, COLOUR_GREY, TRW_WIDGET_SCROLLBAR_GROUPS),
 					EndContainer(),
 				EndContainer(), // END Groups
@@ -88,7 +88,7 @@ static const NWidgetPart _widgets[] = {
 						NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_ENGINES, STR_TBTR_UI_LABEL_ENGINES), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
 					EndContainer(),
 					NWidget(NWID_HORIZONTAL),
-						NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_ENGINES), SetMinimalSize(MIN_WIDTH_LEFT,12), SetFill(1,1), SetDataTip(0x1, STR_TBTR_UI_TOOLTIP_ENGINES), SetResize(1, 0), SetScrollbar(TRW_WIDGET_SCROLLBAR_ENGINES),
+						NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_ENGINES), SetMinimalSize(MIN_WIDTH_RIGHT, 0), SetFill(1,1), SetDataTip(0x1, STR_TBTR_UI_TOOLTIP_ENGINES), SetResize(1, 0), SetScrollbar(TRW_WIDGET_SCROLLBAR_ENGINES),
 						NWidget(NWID_VSCROLLBAR, COLOUR_GREY, TRW_WIDGET_SCROLLBAR_ENGINES),
 					EndContainer(),
 				EndContainer(), // END Engines
@@ -859,15 +859,15 @@ void TbtrGui::UpdateWidgetSize(int widget, Dimension *size, const Dimension &pad
 		// TODO sort by name
 		case TRW_WIDGET_MATRIX_TEMPLATES:
 			resize->height = GetEngineListHeight(VEH_TRAIN);
-			size->height = 3 * resize->height;
+			size->height = (_gui_zoom==0?3:8) * resize->height;
 			break;
 		case TRW_WIDGET_MATRIX_ENGINES:
 			resize->height = GetEngineListHeight(VEH_TRAIN);
-			size->height = 3 * resize->height;
+			size->height = (_gui_zoom==0?2:4) * resize->height;
 			break;
 		case TRW_WIDGET_MATRIX_GROUPS:
 			resize->height = GetEngineListHeight(VEH_TRAIN) * 2;
-			size->height = 3 * resize->height;
+			size->height = (_gui_zoom==0?2:4) * resize->height;
 			break;
 	}
 	this->CalculateTemplatesHScroll();
