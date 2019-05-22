@@ -53,8 +53,8 @@ enum TemplateReplaceWindowWidgets {
 	TRW_WIDGET_SEL_TMPL_DISPLAY_CREATE,
 };
 
-#define MIN_WIDTH_LEFT 216
-#define MIN_WIDTH_RIGHT 400
+#define MIN_WIDTH_LEFT 350
+#define MIN_WIDTH_RIGHT 350
 
 static const NWidgetPart _widgets[] = {
 	/* Title bar */
@@ -68,53 +68,52 @@ static const NWidgetPart _widgets[] = {
 	/* Toplevel container */
 	NWidget(NWID_VERTICAL),
 
-		/* Matrixes */
-		NWidget(NWID_HORIZONTAL),
-			/* New engines */
-			NWidget(NWID_VERTICAL),
-
-				NWidget(WWT_PANEL, COLOUR_GREY),
-					NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_ENGINES, STR_TBTR_UI_LABEL_ENGINES), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
-				EndContainer(),
-				NWidget(NWID_HORIZONTAL),
-					NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_ENGINES), SetMinimalSize(MIN_WIDTH_LEFT,12), SetFill(1,1), SetDataTip(0x1, STR_TBTR_UI_TOOLTIP_ENGINES), SetResize(1, 0), SetScrollbar(TRW_WIDGET_SCROLLBAR_ENGINES),
-					NWidget(NWID_VSCROLLBAR, COLOUR_GREY, TRW_WIDGET_SCROLLBAR_ENGINES),
-				EndContainer(),
-			EndContainer(),
-			/* Template Ctrl */
-			NWidget(NWID_VERTICAL),
-				/* Groups Display */
+		/* Matrices */
+		NWidget(NWID_VERTICAL),
+			/* Groups and Engines */
+			NWidget(NWID_HORIZONTAL),
+				/* Groups */
 				NWidget(NWID_VERTICAL),
 					NWidget(WWT_PANEL, COLOUR_GREY),
 						NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_GROUPS, 0x0), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
 					EndContainer(),
 					NWidget(NWID_HORIZONTAL),
-						NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_GROUPS), SetMinimalSize(MIN_WIDTH_RIGHT, 0), SetFill(1, 1), SetDataTip(0x1, STR_TBTR_UI_TOOLTIP_GROUPS), SetResize(1, 1), SetScrollbar(TRW_WIDGET_SCROLLBAR_GROUPS),
+						NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_GROUPS), SetMinimalSize(MIN_WIDTH_LEFT, 0), SetFill(1, 1), SetDataTip(0x1, STR_TBTR_UI_TOOLTIP_GROUPS), SetResize(1, 1), SetScrollbar(TRW_WIDGET_SCROLLBAR_GROUPS),
 						NWidget(NWID_VSCROLLBAR, COLOUR_GREY, TRW_WIDGET_SCROLLBAR_GROUPS),
 					EndContainer(),
-				EndContainer(),
-				/* Template Display */
+				EndContainer(), // END Groups
+				/* Engines */
 				NWidget(NWID_VERTICAL),
 					NWidget(WWT_PANEL, COLOUR_GREY),
-						NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_TEMPLATES, STR_TBTR_UI_LABEL_TEMPLATES), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
+						NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_ENGINES, STR_TBTR_UI_LABEL_ENGINES), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
 					EndContainer(),
-					NWidget(NWID_VERTICAL),
-						NWidget(NWID_HORIZONTAL),
-							NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_TEMPLATES), SetMinimalSize(MIN_WIDTH_RIGHT, 0), SetFill(1, 1), SetDataTip(0x1, STR_TBTR_UI_TOOLTIP_TEMPLATES), SetResize(1, 1), SetScrollbar(TRW_WIDGET_SCROLLBAR_TEMPLATES),
-							NWidget(NWID_VSCROLLBAR, COLOUR_GREY, TRW_WIDGET_SCROLLBAR_TEMPLATES),
-						EndContainer(),
-						NWidget(NWID_HSCROLLBAR, COLOUR_GREY, TRW_WIDGET_SCROLLBAR_TEMPLATES_HORIZ),
+					NWidget(NWID_HORIZONTAL),
+						NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_ENGINES), SetMinimalSize(MIN_WIDTH_RIGHT, 0), SetFill(1,1), SetDataTip(0x1, STR_TBTR_UI_TOOLTIP_ENGINES), SetResize(1, 0), SetScrollbar(TRW_WIDGET_SCROLLBAR_ENGINES),
+						NWidget(NWID_VSCROLLBAR, COLOUR_GREY, TRW_WIDGET_SCROLLBAR_ENGINES),
 					EndContainer(),
+				EndContainer(), // END Engines
+			EndContainer(), // END Groups + Engines
+			/* Templates */
+			NWidget(NWID_VERTICAL),
+				NWidget(WWT_PANEL, COLOUR_GREY),
+					NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_TEMPLATES, STR_TBTR_UI_LABEL_TEMPLATES), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
 				EndContainer(),
-				/* Info Area */
 				NWidget(NWID_VERTICAL),
-					NWidget(WWT_PANEL, COLOUR_GREY),
-						NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_TEMPLATE_INFO, 0x0), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
+					NWidget(NWID_HORIZONTAL),
+						NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_TEMPLATES), SetMinimalSize(MIN_WIDTH_RIGHT, 0), SetFill(1, 1), SetDataTip(0x1, STR_TBTR_UI_TOOLTIP_TEMPLATES), SetResize(1, 1), SetScrollbar(TRW_WIDGET_SCROLLBAR_TEMPLATES),
+						NWidget(NWID_VSCROLLBAR, COLOUR_GREY, TRW_WIDGET_SCROLLBAR_TEMPLATES),
 					EndContainer(),
-					NWidget(WWT_PANEL, COLOUR_GREY, TRW_WIDGET_TMPL_INFO_PANEL), SetMinimalSize(MIN_WIDTH_RIGHT, 70), SetResize(1, 0), EndContainer(),
+					NWidget(NWID_HSCROLLBAR, COLOUR_GREY, TRW_WIDGET_SCROLLBAR_TEMPLATES_HORIZ),
 				EndContainer(),
-			EndContainer(),	// END Template Ctrl
-		EndContainer(), // END Matrixes
+			EndContainer(), // END Templates
+			/* Info box */
+			NWidget(NWID_VERTICAL),
+				NWidget(WWT_PANEL, COLOUR_GREY),
+					NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_TEMPLATE_INFO, 0x0), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
+				EndContainer(),
+				NWidget(WWT_PANEL, COLOUR_GREY, TRW_WIDGET_TMPL_INFO_PANEL), SetMinimalSize(MIN_WIDTH_RIGHT, 70), SetResize(1, 0), EndContainer(),
+			EndContainer(), // END Info box
+	EndContainer(), // END Matrices
 
 		/* Buttons Area */
 		NWidget(NWID_VERTICAL),
@@ -582,9 +581,10 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 		/* Draw whether the current template is in use by any group */
 		int n_groups = tv->CountGroups();
 		if ( n_groups > 0 ) {
+			uint _left = left + 150 + ScaleGUITrad(100);
 			SetDParam(0, n_groups);
-			uint _left = left + ScaleGUITrad(170);
-			DrawString(_left, right, ypos_hi, STR_TBTR_INFO_TEMPLATE_IN_USE, TC_GREEN, SA_LEFT);
+			StringID str_id = n_groups==1 ? STR_TBTR_INFO_TEMPLATE_IN_USE_ONE : STR_TBTR_INFO_TEMPLATE_IN_USE;
+			DrawString(_left, right, ypos_hi, str_id, TC_GREEN, SA_LEFT);
 		}
 
 		// TODO move to template info box
@@ -859,15 +859,15 @@ void TbtrGui::UpdateWidgetSize(int widget, Dimension *size, const Dimension &pad
 		// TODO sort by name
 		case TRW_WIDGET_MATRIX_TEMPLATES:
 			resize->height = GetEngineListHeight(VEH_TRAIN);
-			size->height = 3 * resize->height;
+			size->height = (_gui_zoom==0?3:8) * resize->height;
 			break;
 		case TRW_WIDGET_MATRIX_ENGINES:
 			resize->height = GetEngineListHeight(VEH_TRAIN);
-			size->height = 3 * resize->height;
+			size->height = (_gui_zoom==0?2:4) * resize->height;
 			break;
 		case TRW_WIDGET_MATRIX_GROUPS:
 			resize->height = GetEngineListHeight(VEH_TRAIN) * 2;
-			size->height = 3 * resize->height;
+			size->height = (_gui_zoom==0?2:4) * resize->height;
 			break;
 	}
 	this->CalculateTemplatesHScroll();
