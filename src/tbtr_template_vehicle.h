@@ -85,11 +85,6 @@ public:
 	int sprite_yoff;                    ///< used for drawing in a GUI
 	bool cached_sprite_size;            ///< whether the sprite dimensions have already been cached for this template
 
-	/** Template usage configuration */
-	bool reuse_depot_vehicles;          ///< whether to allow using exising vehicles from a depot
-	bool keep_remaining_vehicles;       ///< whether to keep or sell not needed train parts
-	bool refit_as_template;             ///< whether to refit the cargo configuration
-
 	void Init(EngineID);
 
 public:
@@ -99,9 +94,6 @@ public:
 	inline bool HasOwner(Owner owner) const {return this->owner == owner;}
 	inline bool IsPrimaryVehicle() const {return HasBit(this->subtype, GVSF_FRONT);}
 	inline bool IsFreeWagonChain() const {return HasBit(this->subtype, GVSF_FREE_WAGON);}
-	inline bool IsSetReuseDepotVehicles() const {return reuse_depot_vehicles;}
-	inline bool IsSetKeepRemainingVehicles() const {return keep_remaining_vehicles;}
-	inline bool IsSetRefitAsTemplate() const {return refit_as_template;}
 
 	Money CalculateCost() const;
 	bool CloneFromTrain(const Train*, TemplateVehicle*);

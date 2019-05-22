@@ -222,10 +222,6 @@ void TemplateVehicle::Init(EngineID eid)
 	this->owner = _current_company;
 	this->real_length = 0;
 	this->cached_sprite_size = false;
-
-	this->reuse_depot_vehicles = true;
-	this->keep_remaining_vehicles = true;
-	this->refit_as_template = true;
 }
 
 /**

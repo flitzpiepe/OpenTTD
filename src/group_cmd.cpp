@@ -260,6 +260,9 @@ Group::Group(Owner owner)
 {
 	this->owner = owner;
 	this->template_id = INVALID_TEMPLATE;
+	this->keep_remaining_vehicles = true;
+	this->refit_as_template = true;
+	this->reuse_depot_vehicles = true;
 }
 
 Group::~Group()

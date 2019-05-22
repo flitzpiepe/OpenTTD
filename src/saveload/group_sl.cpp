@@ -24,7 +24,10 @@ static const SaveLoad _group_desc[] = {
 	     SLE_VAR(Group, vehicle_type,       SLE_UINT8),
 	     SLE_VAR(Group, replace_protection, SLE_BOOL),
 	 SLE_CONDVAR(Group, parent,             SLE_UINT16,                    189, SL_MAX_VERSION),
-	 SLE_VAR(Group,     template_id,        SLE_INT16),
+		SLE_VAR(Group,  template_id,        SLE_INT16),
+		SLE_VAR(Group,  reuse_depot_vehicles,      SLE_UINT8),
+		SLE_VAR(Group,  keep_remaining_vehicles,   SLE_UINT8),
+		SLE_VAR(Group,  refit_as_template,         SLE_UINT8),
 	     SLE_END()
 };
 
