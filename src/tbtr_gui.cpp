@@ -671,17 +671,54 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 		}
 		case TRW_WIDGET_MATRIX_GROUPS: {
 			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_GROUPS]->pos_y) / (this->height_cell_groups) ) + this->vscroll_groups->GetPosition();
-			if ( index_new >= this->groups.Length() )
+			uint16 click_y_incell = (pt.y - nested_array[widget]->pos_y) % (this->height_cell_groups);
+
+			if ( index_new >= this->groups.Length() ) {
 				this->index_selected_group = -1;
-			else if ( this->index_selected_group == index_new )
+				break;
+			}
+
+			else if ( index_new == this->index_selected_group )
 				this->index_selected_group = -1;
+
 			else
 				this->index_selected_group = index_new;
+
+			// TODO move this into another function
+			int str_usedepot_left = nested_array[widget]->pos_x + 60 + ScaleGUITrad(50);
+			int str_keeprem_left = nested_array[widget]->pos_x + 70 + ScaleGUITrad(110);
+			int str_userefit_left = nested_array[widget]->pos_x + 80 + ScaleGUITrad(170);
+			int str_pos_hi = ScaleGUITrad(7);
+			Dimension str_usedepot_bb = GetStringBoundingBox(STR_TBTR_CONFIG_USE_DEPOT);
+			Dimension str_keeprem_bb = GetStringBoundingBox(STR_TBTR_CONFIG_KEEP_REMAINDERS);
+			Dimension str_userefit_bb = GetStringBoundingBox(STR_TBTR_CONFIG_USE_REFIT);
+			uint str_height = str_usedepot_bb.height;       // string height is assumed to be the same for all config option strings
+
+			/* clicked on one of the template config option strings select the template and toggle the config
+			* option */
+			if ( click_y_incell >= str_pos_hi && click_y_incell <= str_pos_hi + str_height ) {
+				if ( pt.x >= str_usedepot_left && pt.x <= str_usedepot_left + (int)str_usedepot_bb.width ) {
+					this->index_selected_group = index_new;
+					GroupID gid = ((this->groups)[index_new])->index;
+					DoCommandP(0, gid, TBTR_OPT_REUSE_DEPOT_VEHICLES, CMD_TOGGLE_TEMPLATE_OPTION);
+				}
+				else if ( pt.x >= str_keeprem_left && pt.x <= str_keeprem_left + (int)str_keeprem_bb.width ) {
+					this->index_selected_group = index_new;
+					GroupID gid = ((this->groups)[index_new])->index;
+					DoCommandP(0, gid, TBTR_OPT_KEEP_REMAINDERS, CMD_TOGGLE_TEMPLATE_OPTION);
+				}
+				else if ( pt.x >= str_userefit_left && pt.x <= str_userefit_left + (int)str_userefit_bb.width ) {
+					this->index_selected_group = index_new;
+					GroupID gid = ((this->groups)[index_new])->index;
+					DoCommandP(0, gid, TBTR_OPT_REFIT_VEHICLE, CMD_TOGGLE_TEMPLATE_OPTION);
+				}
+			}
+			// ODOT move this into another function
+
 			break;
 		}
 		case TRW_WIDGET_MATRIX_TEMPLATES: {
 			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_TEMPLATES]->pos_y) / (this->height_cell_templates) ) + this->vscroll_templates->GetPosition();
-			uint16 click_y_incell = (pt.y - nested_array[widget]->pos_y) % (this->height_cell_templates);
 
 			if ( index_new >= this->templates.Length() ) {
 				this->index_selected_template = -1;
@@ -693,35 +730,6 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 
 			else
 				this->index_selected_template = index_new;
-
-			int str_usedepot_left = nested_array[widget]->pos_x + 50 + ScaleGUITrad(150);
-			int str_keeprem_left = nested_array[widget]->pos_x + 60 + ScaleGUITrad(215);
-			int str_userefit_left = nested_array[widget]->pos_x + 80 + ScaleGUITrad(270);
-			int str_pos_hi = ScaleGUITrad(7);
-			Dimension str_usedepot_bb = GetStringBoundingBox(STR_TBTR_CONFIG_USE_DEPOT);
-			Dimension str_keeprem_bb = GetStringBoundingBox(STR_TBTR_CONFIG_KEEP_REMAINDERS);
-			Dimension str_userefit_bb = GetStringBoundingBox(STR_TBTR_CONFIG_USE_REFIT);
-			uint str_height = str_usedepot_bb.height;       // string height is assumed to be the same for all config option strings
-
-			/* clicked on one of the template config option strings select the template and toggle the config
-			* option */
-			if ( click_y_incell >= str_pos_hi && click_y_incell <= str_pos_hi + str_height ) {
-				if ( pt.x >= str_usedepot_left && pt.x <= str_usedepot_left + (int)str_usedepot_bb.width ) {
-					this->index_selected_template = index_new;
-					TemplateID template_index = ((this->templates)[index_new])->index;
-					DoCommandP(0, template_index, TBTR_OPT_REUSE_DEPOT_VEHICLES, CMD_TOGGLE_TEMPLATE_OPTION);
-				}
-				else if ( pt.x >= str_keeprem_left && pt.x <= str_keeprem_left + (int)str_keeprem_bb.width ) {
-					this->index_selected_template = index_new;
-					TemplateID template_index = ((this->templates)[index_new])->index;
-					DoCommandP(0, template_index, TBTR_OPT_KEEP_REMAINDERS, CMD_TOGGLE_TEMPLATE_OPTION);
-				}
-				else if ( pt.x >= str_userefit_left && pt.x <= str_userefit_left + (int)str_userefit_bb.width ) {
-					this->index_selected_template = index_new;
-					TemplateID template_index = ((this->templates)[index_new])->index;
-					DoCommandP(0, template_index, TBTR_OPT_REFIT_VEHICLE, CMD_TOGGLE_TEMPLATE_OPTION);
-				}
-			}
 
 			break;
 		}
