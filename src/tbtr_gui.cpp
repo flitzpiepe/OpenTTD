@@ -53,8 +53,8 @@ enum TemplateReplaceWindowWidgets {
 	TRW_WIDGET_SEL_TMPL_DISPLAY_CREATE,
 };
 
-#define MIN_WIDTH_LEFT 350
-#define MIN_WIDTH_RIGHT 350
+#define MIN_WIDTH_LEFT 450
+#define MIN_WIDTH_RIGHT 250
 
 static const NWidgetPart _widgets[] = {
 	/* Title bar */
@@ -451,6 +451,7 @@ void TbtrGui::DrawGroups(const Rect& r) const
 	int left = r.left + WD_MATRIX_LEFT;
 	int right = r.right - WD_MATRIX_RIGHT;
 	int y = r.top;
+	int y_hi = ScaleGUITrad(7);
 	int max = min(this->vscroll_groups->GetPosition() + this->vscroll_groups->GetCapacity(), this->groups.Length());
 	int step_size = this->height_cell_groups;
 	int offset = step_size / 4;
@@ -488,6 +489,17 @@ void TbtrGui::DrawGroups(const Rect& r) const
 		else color = TC_GREY;
 		SetDParam(0, num_trains);
 		DrawString(left, right-4, y+offset, STR_JUST_INT, color, SA_RIGHT);
+
+		/* Draw information about template configuration settings */
+		if ( group->reuse_depot_vehicles ) color = TC_LIGHT_BLUE;
+		else color = TC_GREY;
+		DrawString(left+60+ScaleGUITrad(50), right, y+y_hi, STR_TBTR_CONFIG_USE_DEPOT, color, SA_LEFT);
+		if ( group->keep_remaining_vehicles ) color = TC_LIGHT_BLUE;
+		else color = TC_GREY;
+		DrawString(left+70+ScaleGUITrad(110), right, y+y_hi, STR_TBTR_CONFIG_KEEP_REMAINDERS, color, SA_LEFT);
+		if ( group->refit_as_template ) color = TC_LIGHT_BLUE;
+		else color = TC_GREY;
+		DrawString(left+80+ScaleGUITrad(170), right, y+y_hi, STR_TBTR_CONFIG_USE_REFIT, color, SA_LEFT);
 
 		y += step_size;
 	}
@@ -586,19 +598,6 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 			StringID str_id = n_groups==1 ? STR_TBTR_INFO_TEMPLATE_IN_USE_ONE : STR_TBTR_INFO_TEMPLATE_IN_USE;
 			DrawString(_left, right, ypos_hi, str_id, TC_GREEN, SA_LEFT);
 		}
-
-		// TODO move to template info box
-		/* Draw information about template configuration settings */
-		//TextColour color;
-		//if ( tv->IsSetReuseDepotVehicles() ) color = TC_LIGHT_BLUE;
-		//else color = TC_GREY;
-		//DrawString(left+50+ScaleGUITrad(150), right, ypos_hi, STR_TBTR_CONFIG_USE_DEPOT, color, SA_LEFT);
-		//if ( tv->IsSetKeepRemainingVehicles() ) color = TC_LIGHT_BLUE;
-		//else color = TC_GREY;
-		//DrawString(left+60+ScaleGUITrad(215), right, ypos_hi, STR_TBTR_CONFIG_KEEP_REMAINDERS, color, SA_LEFT);
-		//if ( tv->IsSetRefitAsTemplate() ) color = TC_LIGHT_BLUE;
-		//else color = TC_GREY;
-		//DrawString(left+80+ScaleGUITrad(270), right, ypos_hi, STR_TBTR_CONFIG_USE_REFIT, color, SA_LEFT);
 
 		y += this->height_cell_templates;
 		ypos_hi += this->height_cell_templates;
