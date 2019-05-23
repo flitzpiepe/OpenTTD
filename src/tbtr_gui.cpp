@@ -290,7 +290,6 @@ TbtrGui::TbtrGui(WindowDesc* wdesc) : Window(wdesc)
 	BuildTemplateList();
 }
 
-// TODO comment
 void TbtrGui::UpdateGUI(UpdateGuiMode mode)
 { 
 	uint num_templates = this->templates.Length();
@@ -633,6 +632,49 @@ int TbtrGui::FindTemplateIndexInGui(TemplateID tid) const
 	return -1;
 }
 
+/**
+ * Handle the click into the groups which will toggle one of the template replacement options.
+ * This function assumes that a cell was clicked which actually contains a group. No additional checking
+ * happens here in that regard.
+ *
+ * @param pt:        the point where the click happened
+ * @param widget:    the widget that was clicked
+ * @param index_new: the index of the group in that cell
+ */
+void TbtrGui::HandleClickGroupList(Point pt, int widget, uint16 index_new)
+{
+	uint16 click_y_incell = (pt.y - nested_array[widget]->pos_y) % (this->height_cell_groups);
+
+	int str_usedepot_left = nested_array[widget]->pos_x + 60 + ScaleGUITrad(50);
+	int str_keeprem_left = nested_array[widget]->pos_x + 70 + ScaleGUITrad(110);
+	int str_userefit_left = nested_array[widget]->pos_x + 80 + ScaleGUITrad(170);
+	int str_pos_hi = ScaleGUITrad(7);
+	Dimension str_usedepot_bb = GetStringBoundingBox(STR_TBTR_CONFIG_USE_DEPOT);
+	Dimension str_keeprem_bb = GetStringBoundingBox(STR_TBTR_CONFIG_KEEP_REMAINDERS);
+	Dimension str_userefit_bb = GetStringBoundingBox(STR_TBTR_CONFIG_USE_REFIT);
+	uint str_height = str_usedepot_bb.height;       // string height is assumed to be the same for all config option strings
+
+	/* clicked on one of the template config option strings select the template and toggle the config
+	* option */
+	if ( click_y_incell >= str_pos_hi && click_y_incell <= str_pos_hi + str_height ) {
+		if ( pt.x >= str_usedepot_left && pt.x <= str_usedepot_left + (int)str_usedepot_bb.width ) {
+			this->index_selected_group = index_new;
+			GroupID gid = ((this->groups)[index_new])->index;
+			DoCommandP(0, gid, TBTR_OPT_REUSE_DEPOT_VEHICLES, CMD_TOGGLE_TEMPLATE_OPTION);
+		}
+		else if ( pt.x >= str_keeprem_left && pt.x <= str_keeprem_left + (int)str_keeprem_bb.width ) {
+			this->index_selected_group = index_new;
+			GroupID gid = ((this->groups)[index_new])->index;
+			DoCommandP(0, gid, TBTR_OPT_KEEP_REMAINDERS, CMD_TOGGLE_TEMPLATE_OPTION);
+		}
+		else if ( pt.x >= str_userefit_left && pt.x <= str_userefit_left + (int)str_userefit_bb.width ) {
+			this->index_selected_group = index_new;
+			GroupID gid = ((this->groups)[index_new])->index;
+			DoCommandP(0, gid, TBTR_OPT_REFIT_VEHICLE, CMD_TOGGLE_TEMPLATE_OPTION);
+		}
+	}
+}
+
 /*
  * Handle mouse clicks on the GUI
  */
@@ -671,7 +713,6 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 		}
 		case TRW_WIDGET_MATRIX_GROUPS: {
 			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_GROUPS]->pos_y) / (this->height_cell_groups) ) + this->vscroll_groups->GetPosition();
-			uint16 click_y_incell = (pt.y - nested_array[widget]->pos_y) % (this->height_cell_groups);
 
 			if ( index_new >= this->groups.Length() ) {
 				this->index_selected_group = -1;
@@ -684,36 +725,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			else
 				this->index_selected_group = index_new;
 
-			// TODO move this into another function
-			int str_usedepot_left = nested_array[widget]->pos_x + 60 + ScaleGUITrad(50);
-			int str_keeprem_left = nested_array[widget]->pos_x + 70 + ScaleGUITrad(110);
-			int str_userefit_left = nested_array[widget]->pos_x + 80 + ScaleGUITrad(170);
-			int str_pos_hi = ScaleGUITrad(7);
-			Dimension str_usedepot_bb = GetStringBoundingBox(STR_TBTR_CONFIG_USE_DEPOT);
-			Dimension str_keeprem_bb = GetStringBoundingBox(STR_TBTR_CONFIG_KEEP_REMAINDERS);
-			Dimension str_userefit_bb = GetStringBoundingBox(STR_TBTR_CONFIG_USE_REFIT);
-			uint str_height = str_usedepot_bb.height;       // string height is assumed to be the same for all config option strings
-
-			/* clicked on one of the template config option strings select the template and toggle the config
-			* option */
-			if ( click_y_incell >= str_pos_hi && click_y_incell <= str_pos_hi + str_height ) {
-				if ( pt.x >= str_usedepot_left && pt.x <= str_usedepot_left + (int)str_usedepot_bb.width ) {
-					this->index_selected_group = index_new;
-					GroupID gid = ((this->groups)[index_new])->index;
-					DoCommandP(0, gid, TBTR_OPT_REUSE_DEPOT_VEHICLES, CMD_TOGGLE_TEMPLATE_OPTION);
-				}
-				else if ( pt.x >= str_keeprem_left && pt.x <= str_keeprem_left + (int)str_keeprem_bb.width ) {
-					this->index_selected_group = index_new;
-					GroupID gid = ((this->groups)[index_new])->index;
-					DoCommandP(0, gid, TBTR_OPT_KEEP_REMAINDERS, CMD_TOGGLE_TEMPLATE_OPTION);
-				}
-				else if ( pt.x >= str_userefit_left && pt.x <= str_userefit_left + (int)str_userefit_bb.width ) {
-					this->index_selected_group = index_new;
-					GroupID gid = ((this->groups)[index_new])->index;
-					DoCommandP(0, gid, TBTR_OPT_REFIT_VEHICLE, CMD_TOGGLE_TEMPLATE_OPTION);
-				}
-			}
-			// ODOT move this into another function
+			this->HandleClickGroupList(pt, widget, index_new);
 
 			break;
 		}
@@ -863,7 +875,6 @@ void TbtrGui::UpdateZoom()
 void TbtrGui::UpdateWidgetSize(int widget, Dimension *size, const Dimension &padding, Dimension *fill, Dimension *resize)
 {
 	switch (widget) {
-		// TODO sort by name
 		case TRW_WIDGET_MATRIX_TEMPLATES:
 			resize->height = GetEngineListHeight(VEH_TRAIN);
 			size->height = (_gui_zoom==0?3:8) * resize->height;
