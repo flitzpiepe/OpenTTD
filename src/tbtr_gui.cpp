@@ -470,24 +470,16 @@ void TbtrGui::DrawGroups(const Rect& r) const
 		StringID str = STR_GROUP_NAME;
 		DrawString(left+30, right, y+offset, str, TC_BLACK);
 
-		/* Draw the index of the selected template for this group
-		 * Note, that this is the index into the group list, not the template's ID. */
-		if ( group->template_id != INVALID_TEMPLATE ) {
-			SetDParam(0, FindTemplateIndexInGui(group->template_id));
-			DrawString(left, right, y+offset, STR_TBTR_INFO_GROUP_USING_TEMPLATE, TC_BLACK, SA_HOR_CENTER);
-		}
-
 		/* Draw the number of trains that still need to be treated */
 		int num_trains = CountTrainsToReplace(group);
 		/* Draw text */
 		TextColour color = TC_GREY;
-		if ( num_trains ) color = TC_BLACK;
-		DrawString(left, right-16, y+offset, STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT, color, SA_RIGHT);
-		/* Draw number */
-		if ( num_trains ) color = TC_ORANGE;
-		else color = TC_GREY;
-		SetDParam(0, num_trains);
-		DrawString(left, right-4, y+offset, STR_JUST_INT, color, SA_RIGHT);
+		if ( !num_trains ) DrawString(left, right-16, y+offset, STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_0, color, SA_RIGHT);
+		else if ( num_trains == 1 ) DrawString(left, right-16, y+offset, STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_1, color, SA_RIGHT);
+		else {
+			SetDParam(0, num_trains);
+			DrawString(left, right-16, y+offset, STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_N, color, SA_RIGHT);
+		}
 
 		/* Draw information about template configuration settings */
 		if ( group->reuse_depot_vehicles ) color = TC_LIGHT_BLUE;
@@ -594,7 +586,7 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 		if ( n_groups > 0 ) {
 			uint _left = left + 150 + ScaleGUITrad(100);
 			SetDParam(0, n_groups);
-			StringID str_id = n_groups==1 ? STR_TBTR_INFO_TEMPLATE_IN_USE_ONE : STR_TBTR_INFO_TEMPLATE_IN_USE;
+			StringID str_id = n_groups==1 ? STR_TBTR_INFO_TEMPLATE_IN_USE_1 : STR_TBTR_INFO_TEMPLATE_IN_USE;
 			DrawString(_left, right, ypos_hi, str_id, TC_GREEN, SA_LEFT);
 		}
 
