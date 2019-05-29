@@ -76,7 +76,12 @@ struct Group : GroupPool::PoolItem<&_group_pool> {
 
 	GroupID parent;                         ///< Parent group
 
+	/* Template-based train replacement */
 	TemplateID template_id;                 ///< Template used for replacement of trains belonging to this group
+	/* Template usage configuration */
+	bool reuse_depot_vehicles;              ///< whether to allow using exising vehicles from a depot
+	bool keep_remaining_vehicles;           ///< whether to keep or sell not needed train parts
+	bool refit_as_template;                 ///< whether to refit the cargo configuration
 
 	Group(CompanyID owner = INVALID_COMPANY);
 	~Group();

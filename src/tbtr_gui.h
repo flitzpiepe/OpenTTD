@@ -60,6 +60,8 @@ private:
 	void DrawTemplates(const Rect&) const;
 	uint FindLongestTemplateDisplayWidth() const;
 	int FindTemplateIndexInGui(TemplateID) const;
+	void HandleClickGroupList(Point, int, uint16);
+
 	void UpdateZoom();
 
 	Scrollbar* vscroll_engines;         ///< Scrollbar for the engines list

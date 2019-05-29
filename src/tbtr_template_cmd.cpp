@@ -192,10 +192,9 @@ void TransferCargo(Train* src, Train* dest)
  * @param train:  the train we are looking in
  * @return:       pointer to the train we found, may be null
  */
-Train* FindMatchingTrainInChain(TemplateVehicle* tv, Train* train)
+Train* FindMatchingTrainInChain(TemplateVehicle* tv, Train* train, bool check_refit)
 {
 	Train* found = NULL;
-	bool check_refit = tv->first->refit_as_template;
 	for ( Train* tmp=train; tmp!=NULL; tmp=tmp->GetNextUnit() ) {
 		/* minimal matching condition: by engine_type */
 		if ( tmp->engine_type == tv->engine_type ) {
@@ -230,11 +229,10 @@ Train* FindMatchingTrainInChain(TemplateVehicle* tv, Train* train)
  * @param ignore: vehicle must not be in this chain, default is NULL
  * @return:       pointer to the train we found, may be null
  */
-Train* FindMatchingTrainInDepot(TemplateVehicle* tv, TileIndex tile, Train* ignore=NULL)
+Train* FindMatchingTrainInDepot(TemplateVehicle* tv, TileIndex tile, bool check_refit, Train* ignore=NULL)
 {
 	Train* found = NULL;
 	Train* train;
-	bool check_refit = tv->first->refit_as_template;
 	FOR_ALL_TRAINS(train) {
 		/* If the veh belongs to a chain, wagons will not return true on IsStoppedInDepot(),
 		 * only primary vehicles will in case of t not a primary veh, we demand it to be a
@@ -274,6 +272,8 @@ CommandCost CmdTemplateReplacement(TileIndex ti, DoCommandFlag flags, uint32 p1,
 	Train* incoming = Train::GetIfValid(id_inc);
 	if ( incoming == NULL ) return CMD_ERROR;
 	if ( incoming->vehstatus & VS_CRASHED ) return CMD_ERROR;
+	GroupID gid = incoming->group_id;
+	const Group* g = Group::Get(gid);
 
 	CommandCost ret = CheckOwnership(incoming->owner);
 	if ( ret.Failed() ) return ret;
@@ -284,8 +284,8 @@ CommandCost CmdTemplateReplacement(TileIndex ti, DoCommandFlag flags, uint32 p1,
 	CommandCost cc(EXPENSES_NEW_VEHICLES);
 
 	bool stayInDepot = p2;
-	bool sellRemainders = !template_vehicle->keep_remaining_vehicles;
-	bool refit_train = template_vehicle->refit_as_template;
+	bool sellRemainders = !g->keep_remaining_vehicles;
+	bool refit_train = g->refit_as_template;
 
 	/* first some tests on necessity and sanity */
 	if ( template_vehicle == NULL )
@@ -326,11 +326,11 @@ CommandCost CmdTemplateReplacement(TileIndex ti, DoCommandFlag flags, uint32 p1,
 	 */
 	for ( TemplateVehicle* cur_tmpl=template_vehicle ; cur_tmpl!=NULL ; cur_tmpl=cur_tmpl->GetNextUnit() ) {
 		/* try to find a matching vehicle in the incoming train */
-		Train* new_vehicle = FindMatchingTrainInChain(cur_tmpl, incoming);
+		Train* new_vehicle = FindMatchingTrainInChain(cur_tmpl, incoming, g->refit_as_template);
 
 		/* nothing found -> try to find a matching vehicle in the depot */
-		if ( new_vehicle == NULL && template_vehicle->reuse_depot_vehicles )
-			new_vehicle = FindMatchingTrainInDepot(cur_tmpl, tile, new_chain);
+		if ( new_vehicle == NULL && g->reuse_depot_vehicles )
+			new_vehicle = FindMatchingTrainInDepot(cur_tmpl, tile, g->refit_as_template, new_chain);
 
 		/* found a matching vehicle somewhere: use it ... */
 		if ( new_vehicle != NULL ) {
@@ -556,22 +556,22 @@ CommandCost CmdStartStopTbtr(TileIndex ti, DoCommandFlag flags, uint32 p1, uint3
  */
 CommandCost CmdToggleTemplateOption(TileIndex ti, DoCommandFlag flags, uint32 p1, uint32 p2, char const* msg)
 {
-	TemplateVehicle* tv = TemplateVehicle::Get(p1);
-	if ( tv == NULL )
+	Group* g = Group::Get(p1);
+	if ( g == NULL )
 		return CMD_ERROR;
 
 	if ( flags == DC_EXEC ) {
 		switch (p2) {
 			case TBTR_OPT_KEEP_REMAINDERS: {
-				tv->keep_remaining_vehicles = !tv->keep_remaining_vehicles;
+				g->keep_remaining_vehicles = !g->keep_remaining_vehicles;
 				break;
 			}
 			case TBTR_OPT_REFIT_VEHICLE: {
-				tv->refit_as_template = !tv->refit_as_template;
+				g->refit_as_template = !g->refit_as_template;
 				break;
 			}
 			case TBTR_OPT_REUSE_DEPOT_VEHICLES: {
-				tv->reuse_depot_vehicles = !tv->reuse_depot_vehicles;
+				g->reuse_depot_vehicles = !g->reuse_depot_vehicles;
 				break;
 			}
 		}

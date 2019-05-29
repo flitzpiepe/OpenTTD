@@ -39,10 +39,6 @@ const SaveLoad* GetTemplateDescription() {
 
 		SLE_VAR(TemplateVehicle, real_length,               SLE_UINT16),
 
-		SLE_VAR(TemplateVehicle, reuse_depot_vehicles,      SLE_UINT8),
-		SLE_VAR(TemplateVehicle, keep_remaining_vehicles,   SLE_UINT8),
-		SLE_VAR(TemplateVehicle, refit_as_template,         SLE_UINT8),
-
 		SLE_END()
 	};
 

@@ -53,8 +53,8 @@ enum TemplateReplaceWindowWidgets {
 	TRW_WIDGET_SEL_TMPL_DISPLAY_CREATE,
 };
 
-#define MIN_WIDTH_LEFT 216
-#define MIN_WIDTH_RIGHT 400
+#define MIN_WIDTH_LEFT 450
+#define MIN_WIDTH_RIGHT 250
 
 static const NWidgetPart _widgets[] = {
 	/* Title bar */
@@ -68,53 +68,52 @@ static const NWidgetPart _widgets[] = {
 	/* Toplevel container */
 	NWidget(NWID_VERTICAL),
 
-		/* Matrixes */
-		NWidget(NWID_HORIZONTAL),
-			/* New engines */
-			NWidget(NWID_VERTICAL),
-
-				NWidget(WWT_PANEL, COLOUR_GREY),
-					NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_ENGINES, STR_TBTR_UI_LABEL_ENGINES), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
-				EndContainer(),
-				NWidget(NWID_HORIZONTAL),
-					NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_ENGINES), SetMinimalSize(MIN_WIDTH_LEFT,12), SetFill(1,1), SetDataTip(0x1, STR_TBTR_UI_TOOLTIP_ENGINES), SetResize(1, 0), SetScrollbar(TRW_WIDGET_SCROLLBAR_ENGINES),
-					NWidget(NWID_VSCROLLBAR, COLOUR_GREY, TRW_WIDGET_SCROLLBAR_ENGINES),
-				EndContainer(),
-			EndContainer(),
-			/* Template Ctrl */
-			NWidget(NWID_VERTICAL),
-				/* Groups Display */
+		/* Matrices */
+		NWidget(NWID_VERTICAL),
+			/* Groups and Engines */
+			NWidget(NWID_HORIZONTAL),
+				/* Groups */
 				NWidget(NWID_VERTICAL),
 					NWidget(WWT_PANEL, COLOUR_GREY),
 						NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_GROUPS, 0x0), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
 					EndContainer(),
 					NWidget(NWID_HORIZONTAL),
-						NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_GROUPS), SetMinimalSize(MIN_WIDTH_RIGHT, 0), SetFill(1, 1), SetDataTip(0x1, STR_TBTR_UI_TOOLTIP_GROUPS), SetResize(1, 0), SetScrollbar(TRW_WIDGET_SCROLLBAR_GROUPS),
+						NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_GROUPS), SetMinimalSize(MIN_WIDTH_LEFT, 0), SetFill(1, 1), SetDataTip(0x1, STR_TBTR_UI_TOOLTIP_GROUPS), SetResize(1, 1), SetScrollbar(TRW_WIDGET_SCROLLBAR_GROUPS),
 						NWidget(NWID_VSCROLLBAR, COLOUR_GREY, TRW_WIDGET_SCROLLBAR_GROUPS),
 					EndContainer(),
-				EndContainer(),
-				/* Template Display */
+				EndContainer(), // END Groups
+				/* Engines */
 				NWidget(NWID_VERTICAL),
 					NWidget(WWT_PANEL, COLOUR_GREY),
-						NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_TEMPLATES, STR_TBTR_UI_LABEL_TEMPLATES), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
+						NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_ENGINES, STR_TBTR_UI_LABEL_ENGINES), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
 					EndContainer(),
-					NWidget(NWID_VERTICAL),
-						NWidget(NWID_HORIZONTAL),
-							NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_TEMPLATES), SetMinimalSize(MIN_WIDTH_RIGHT, 0), SetFill(1, 1), SetDataTip(0x1, STR_TBTR_UI_TOOLTIP_TEMPLATES), SetResize(1, 1), SetScrollbar(TRW_WIDGET_SCROLLBAR_TEMPLATES),
-							NWidget(NWID_VSCROLLBAR, COLOUR_GREY, TRW_WIDGET_SCROLLBAR_TEMPLATES),
-						EndContainer(),
-						NWidget(NWID_HSCROLLBAR, COLOUR_GREY, TRW_WIDGET_SCROLLBAR_TEMPLATES_HORIZ),
+					NWidget(NWID_HORIZONTAL),
+						NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_ENGINES), SetMinimalSize(MIN_WIDTH_RIGHT, 0), SetFill(1,1), SetDataTip(0x1, STR_TBTR_UI_TOOLTIP_ENGINES), SetResize(1, 0), SetScrollbar(TRW_WIDGET_SCROLLBAR_ENGINES),
+						NWidget(NWID_VSCROLLBAR, COLOUR_GREY, TRW_WIDGET_SCROLLBAR_ENGINES),
 					EndContainer(),
+				EndContainer(), // END Engines
+			EndContainer(), // END Groups + Engines
+			/* Templates */
+			NWidget(NWID_VERTICAL),
+				NWidget(WWT_PANEL, COLOUR_GREY),
+					NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_TEMPLATES, STR_TBTR_UI_LABEL_TEMPLATES), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
 				EndContainer(),
-				/* Info Area */
 				NWidget(NWID_VERTICAL),
-					NWidget(WWT_PANEL, COLOUR_GREY),
-						NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_TEMPLATE_INFO, 0x0), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
+					NWidget(NWID_HORIZONTAL),
+						NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_TEMPLATES), SetMinimalSize(MIN_WIDTH_RIGHT, 0), SetFill(1, 1), SetDataTip(0x1, STR_TBTR_UI_TOOLTIP_TEMPLATES), SetResize(1, 1), SetScrollbar(TRW_WIDGET_SCROLLBAR_TEMPLATES),
+						NWidget(NWID_VSCROLLBAR, COLOUR_GREY, TRW_WIDGET_SCROLLBAR_TEMPLATES),
 					EndContainer(),
-					NWidget(WWT_PANEL, COLOUR_GREY, TRW_WIDGET_TMPL_INFO_PANEL), SetMinimalSize(MIN_WIDTH_RIGHT,50), SetResize(1,0), EndContainer(),
+					NWidget(NWID_HSCROLLBAR, COLOUR_GREY, TRW_WIDGET_SCROLLBAR_TEMPLATES_HORIZ),
 				EndContainer(),
-			EndContainer(),	// END Template Ctrl
-		EndContainer(), // END Matrixes
+			EndContainer(), // END Templates
+			/* Info box */
+			NWidget(NWID_VERTICAL),
+				NWidget(WWT_PANEL, COLOUR_GREY),
+					NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_TEMPLATE_INFO, 0x0), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
+				EndContainer(),
+				NWidget(WWT_PANEL, COLOUR_GREY, TRW_WIDGET_TMPL_INFO_PANEL), SetMinimalSize(MIN_WIDTH_RIGHT, 70), SetResize(1, 0), EndContainer(),
+			EndContainer(), // END Info box
+	EndContainer(), // END Matrices
 
 		/* Buttons Area */
 		NWidget(NWID_VERTICAL),
@@ -291,7 +290,6 @@ TbtrGui::TbtrGui(WindowDesc* wdesc) : Window(wdesc)
 	BuildTemplateList();
 }
 
-// TODO comment
 void TbtrGui::UpdateGUI(UpdateGuiMode mode)
 { 
 	uint num_templates = this->templates.Length();
@@ -453,14 +451,18 @@ void TbtrGui::DrawGroups(const Rect& r) const
 	int left = r.left + WD_MATRIX_LEFT;
 	int right = r.right - WD_MATRIX_RIGHT;
 	int y = r.top;
+	int y_hi = ScaleGUITrad(2);
+	int y_lo = ScaleGUITrad(14);
+	int y_med = ScaleGUITrad(7);
 	int max = min(this->vscroll_groups->GetPosition() + this->vscroll_groups->GetCapacity(), this->groups.Length());
 	int step_size = this->height_cell_groups;
-	int offset = step_size / 4;
 
 	/* Then treat all groups defined by/for the current company */
 	for ( int i=this->vscroll_groups->GetPosition(); i<max; ++i ) {
 		const Group* group = (this->groups)[i];
 		short group_id = group->index;
+		TextColour color = TC_GREY;
+		TemplateID tid = group->template_id;
 
 		/* Fill the background of the current cell in a darker tone for the currently selected group */
 		if ( this->index_selected_group == i ) {
@@ -470,26 +472,35 @@ void TbtrGui::DrawGroups(const Rect& r) const
 		/* Draw the group name */
 		SetDParam(0, group_id);
 		StringID str = STR_GROUP_NAME;
-		DrawString(left+30, right, y+offset, str, TC_BLACK);
+		DrawString(left+30, right, y+y_med, str, TC_BLACK);
 
-		/* Draw the index of the selected template for this group
-		 * Note, that this is the index into the group list, not the template's ID. */
-		if ( group->template_id != INVALID_TEMPLATE ) {
-			SetDParam(0, FindTemplateIndexInGui(group->template_id));
-			DrawString(left, right, y+offset, STR_TBTR_INFO_GROUP_USING_TEMPLATE, TC_BLACK, SA_HOR_CENTER);
-		}
-
-		/* Draw the number of trains that still need to be treated */
-		int num_trains = CountTrainsToReplace(group);
-		/* Draw text */
-		TextColour color = TC_GREY;
-		if ( num_trains ) color = TC_BLACK;
-		DrawString(left, right-16, y+offset, STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT, color, SA_RIGHT);
-		/* Draw number */
-		if ( num_trains ) color = TC_ORANGE;
+		/* Draw information about template configuration settings */
+		if ( group->reuse_depot_vehicles ) color = TC_LIGHT_BLUE;
 		else color = TC_GREY;
-		SetDParam(0, num_trains);
-		DrawString(left, right-4, y+offset, STR_JUST_INT, color, SA_RIGHT);
+		DrawString(left+60+ScaleGUITrad(50), right, y+y_med, STR_TBTR_CONFIG_USE_DEPOT, color, SA_LEFT);
+		if ( group->keep_remaining_vehicles ) color = TC_LIGHT_BLUE;
+		else color = TC_GREY;
+		DrawString(left+70+ScaleGUITrad(110), right, y+y_med, STR_TBTR_CONFIG_KEEP_REMAINDERS, color, SA_LEFT);
+		if ( group->refit_as_template ) color = TC_LIGHT_BLUE;
+		else color = TC_GREY;
+		DrawString(left+80+ScaleGUITrad(170), right, y+y_med, STR_TBTR_CONFIG_USE_REFIT, color, SA_LEFT);
+
+		/* Draw info about the template used by this group */
+		if ( tid == INVALID_TEMPLATE ) {
+			DrawString(left, right-16, y+y_med, STR_TBTR_INFO_GROUP_NO_TEMPLATE, TC_GREY|TC_NO_SHADE, SA_RIGHT);
+		} else {
+			/* Draw the template used by the group */
+			SetDParam(0, FindTemplateIndexInGui(tid));
+			DrawString(left, right-16, y+y_hi, STR_TBTR_INFO_GROUP_USES_TEMPLATE, TC_BLACK, SA_RIGHT);
+
+			/* Draw the number of trains that still need to be treated */
+			int num_trains = CountTrainsToReplace(group);
+			if ( !num_trains ) DrawString(left, right-16, y+y_lo, STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_0, TC_BLACK, SA_RIGHT);
+			else {
+				SetDParam(0, num_trains);
+				DrawString(left, right-16, y+y_lo, STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_N, TC_GREY, SA_RIGHT);
+			}
+		}
 
 		y += step_size;
 	}
@@ -503,6 +514,7 @@ void TbtrGui::DrawTemplateInfo(const Rect &r) const
 	if ( this->index_selected_template == -1 || (short)this->templates.Length() <= this->index_selected_template )
 		return;
 
+	// rename to tv
 	const TemplateVehicle *tmp = this->templates[this->index_selected_template];
 
 	/* Draw vehicle performance info */
@@ -512,8 +524,12 @@ void TbtrGui::DrawTemplateInfo(const Rect &r) const
 	SetDParam(3, tmp->max_te);
 	DrawString(r.left+8, r.right, r.top+4, STR_VEHICLE_INFO_WEIGHT_POWER_MAX_SPEED_MAX_TE);
 
+	/* Buying cost */
+	SetDParam(0, tmp->CalculateCost());
+	DrawString(r.left+8, r.right, r.top+16, STR_TBTR_INFO_TEMPLATE_VALUE_notinyfont, TC_BLUE, SA_LEFT);
+
 	/* Draw cargo summary */
-	short top = r.top + 24;
+	short top = r.top + 32;
 	short left = r.left + 8;
 	short count_rows = 0;
 	short max_rows = 2;
@@ -546,8 +562,7 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 	int left = r.left;
 	int right = r.right;
 	int y = r.top;
-    int ypos_lo = y + this->height_cell_templates/2 + this->height_cell_templates/6;
-	int ypos_hi = y+ScaleGUITrad(7);
+	int ypos_hi = y+ScaleGUITrad(2);
 
 	uint max = min(vscroll_templates->GetPosition() + vscroll_templates->GetCapacity(), this->templates.Length());
 	TemplateVehicle* tv;
@@ -561,7 +576,7 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 
 		/* Draw a notification string for chains that are not runnable */
 		if ( tv->IsFreeWagonChain() ) {
-			DrawString(left, right-2, ypos_lo, STR_TBTR_WARN_FREE_WAGON, TC_RED, SA_RIGHT);
+			DrawString(left, right-ScaleGUITrad(20), ypos_hi, STR_TBTR_WARN_FREE_WAGON, TC_RED, SA_RIGHT);
 		}
 
 		/* Draw the template's length in tile-units */
@@ -570,11 +585,7 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 		DrawString(left, right-4, ypos_hi, STR_TINY_BLACK_DECIMAL, TC_BLACK, SA_RIGHT);
 
 		/* Draw the template */
-		tv->Draw(left+this->template_x_offset, right, ypos_hi, hscroll_templates->GetPosition());
-
-		/* Buying cost */
-		SetDParam(0, tv->CalculateCost());
-		DrawString(left+35, right, ypos_lo, STR_TBTR_INFO_TEMPLATE_VALUE_notinyfont, TC_BLUE, SA_LEFT);
+		tv->Draw(left+this->template_x_offset, right, ypos_hi+ScaleGUITrad(5), hscroll_templates->GetPosition());
 
 		/* Index of current template vehicle in the list of all templates for its company */
 		SetDParam(0, i);
@@ -583,25 +594,13 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 		/* Draw whether the current template is in use by any group */
 		int n_groups = tv->CountGroups();
 		if ( n_groups > 0 ) {
+			uint _left = left + 150 + ScaleGUITrad(100);
 			SetDParam(0, n_groups);
-			uint _left = left + ScaleGUITrad(170);
-			DrawString(_left, right, ypos_lo, STR_TBTR_INFO_TEMPLATE_IN_USE, TC_GREEN, SA_LEFT);
+			StringID str_id = n_groups==1 ? STR_TBTR_INFO_TEMPLATE_IN_USE_1 : STR_TBTR_INFO_TEMPLATE_IN_USE;
+			DrawString(_left, right, ypos_hi, str_id, TC_GREEN, SA_LEFT);
 		}
 
-		/* Draw information about template configuration settings */
-		TextColour color;
-		if ( tv->IsSetReuseDepotVehicles() ) color = TC_LIGHT_BLUE;
-		else color = TC_GREY;
-		DrawString(left+50+ScaleGUITrad(150), right, ypos_hi, STR_TBTR_CONFIG_USE_DEPOT, color, SA_LEFT);
-		if ( tv->IsSetKeepRemainingVehicles() ) color = TC_LIGHT_BLUE;
-		else color = TC_GREY;
-		DrawString(left+60+ScaleGUITrad(215), right, ypos_hi, STR_TBTR_CONFIG_KEEP_REMAINDERS, color, SA_LEFT);
-		if ( tv->IsSetRefitAsTemplate() ) color = TC_LIGHT_BLUE;
-		else color = TC_GREY;
-		DrawString(left+80+ScaleGUITrad(270), right, ypos_hi, STR_TBTR_CONFIG_USE_REFIT, color, SA_LEFT);
-
 		y += this->height_cell_templates;
-		ypos_lo += this->height_cell_templates;
 		ypos_hi += this->height_cell_templates;
 	}
 }
@@ -633,6 +632,49 @@ int TbtrGui::FindTemplateIndexInGui(TemplateID tid) const
 		if ( templates[i]->index == tid )
 			return i;
 	return -1;
+}
+
+/**
+ * Handle the click into the groups which will toggle one of the template replacement options.
+ * This function assumes that a cell was clicked which actually contains a group. No additional checking
+ * happens here in that regard.
+ *
+ * @param pt:        the point where the click happened
+ * @param widget:    the widget that was clicked
+ * @param index_new: the index of the group in that cell
+ */
+void TbtrGui::HandleClickGroupList(Point pt, int widget, uint16 index_new)
+{
+	uint16 click_y_incell = (pt.y - nested_array[widget]->pos_y) % (this->height_cell_groups);
+
+	int str_usedepot_left = nested_array[widget]->pos_x + 60 + ScaleGUITrad(50);
+	int str_keeprem_left = nested_array[widget]->pos_x + 70 + ScaleGUITrad(110);
+	int str_userefit_left = nested_array[widget]->pos_x + 80 + ScaleGUITrad(170);
+	int str_pos_hi = ScaleGUITrad(7);
+	Dimension str_usedepot_bb = GetStringBoundingBox(STR_TBTR_CONFIG_USE_DEPOT);
+	Dimension str_keeprem_bb = GetStringBoundingBox(STR_TBTR_CONFIG_KEEP_REMAINDERS);
+	Dimension str_userefit_bb = GetStringBoundingBox(STR_TBTR_CONFIG_USE_REFIT);
+	uint str_height = str_usedepot_bb.height;       // string height is assumed to be the same for all config option strings
+
+	/* clicked on one of the template config option strings select the template and toggle the config
+	* option */
+	if ( click_y_incell >= str_pos_hi && click_y_incell <= str_pos_hi + str_height ) {
+		if ( pt.x >= str_usedepot_left && pt.x <= str_usedepot_left + (int)str_usedepot_bb.width ) {
+			this->index_selected_group = index_new;
+			GroupID gid = ((this->groups)[index_new])->index;
+			DoCommandP(0, gid, TBTR_OPT_REUSE_DEPOT_VEHICLES, CMD_TOGGLE_TEMPLATE_OPTION);
+		}
+		else if ( pt.x >= str_keeprem_left && pt.x <= str_keeprem_left + (int)str_keeprem_bb.width ) {
+			this->index_selected_group = index_new;
+			GroupID gid = ((this->groups)[index_new])->index;
+			DoCommandP(0, gid, TBTR_OPT_KEEP_REMAINDERS, CMD_TOGGLE_TEMPLATE_OPTION);
+		}
+		else if ( pt.x >= str_userefit_left && pt.x <= str_userefit_left + (int)str_userefit_bb.width ) {
+			this->index_selected_group = index_new;
+			GroupID gid = ((this->groups)[index_new])->index;
+			DoCommandP(0, gid, TBTR_OPT_REFIT_VEHICLE, CMD_TOGGLE_TEMPLATE_OPTION);
+		}
+	}
 }
 
 /*
@@ -673,17 +715,24 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 		}
 		case TRW_WIDGET_MATRIX_GROUPS: {
 			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_GROUPS]->pos_y) / (this->height_cell_groups) ) + this->vscroll_groups->GetPosition();
-			if ( index_new >= this->groups.Length() )
+
+			if ( index_new >= this->groups.Length() ) {
 				this->index_selected_group = -1;
-			else if ( this->index_selected_group == index_new )
+				break;
+			}
+
+			else if ( index_new == this->index_selected_group )
 				this->index_selected_group = -1;
+
 			else
 				this->index_selected_group = index_new;
+
+			this->HandleClickGroupList(pt, widget, index_new);
+
 			break;
 		}
 		case TRW_WIDGET_MATRIX_TEMPLATES: {
 			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_TEMPLATES]->pos_y) / (this->height_cell_templates) ) + this->vscroll_templates->GetPosition();
-			uint16 click_y_incell = (pt.y - nested_array[widget]->pos_y) % (this->height_cell_templates);
 
 			if ( index_new >= this->templates.Length() ) {
 				this->index_selected_template = -1;
@@ -695,35 +744,6 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 
 			else
 				this->index_selected_template = index_new;
-
-			int str_usedepot_left = nested_array[widget]->pos_x + 50 + ScaleGUITrad(150);
-			int str_keeprem_left = nested_array[widget]->pos_x + 60 + ScaleGUITrad(215);
-			int str_userefit_left = nested_array[widget]->pos_x + 80 + ScaleGUITrad(270);
-			int str_pos_hi = ScaleGUITrad(7);
-			Dimension str_usedepot_bb = GetStringBoundingBox(STR_TBTR_CONFIG_USE_DEPOT);
-			Dimension str_keeprem_bb = GetStringBoundingBox(STR_TBTR_CONFIG_KEEP_REMAINDERS);
-			Dimension str_userefit_bb = GetStringBoundingBox(STR_TBTR_CONFIG_USE_REFIT);
-			uint str_height = str_usedepot_bb.height;       // string height is assumed to be the same for all config option strings
-
-			/* clicked on one of the template config option strings select the template and toggle the config
-			* option */
-			if ( click_y_incell >= str_pos_hi && click_y_incell <= str_pos_hi + str_height ) {
-				if ( pt.x >= str_usedepot_left && pt.x <= str_usedepot_left + (int)str_usedepot_bb.width ) {
-					this->index_selected_template = index_new;
-                    TemplateID template_index = ((this->templates)[index_new])->index;
-                    DoCommandP(0, template_index, TBTR_OPT_REUSE_DEPOT_VEHICLES, CMD_TOGGLE_TEMPLATE_OPTION);
-				}
-				else if ( pt.x >= str_keeprem_left && pt.x <= str_keeprem_left + (int)str_keeprem_bb.width ) {
-					this->index_selected_template = index_new;
-                    TemplateID template_index = ((this->templates)[index_new])->index;
-                    DoCommandP(0, template_index, TBTR_OPT_KEEP_REMAINDERS, CMD_TOGGLE_TEMPLATE_OPTION);
-				}
-				else if ( pt.x >= str_userefit_left && pt.x <= str_userefit_left + (int)str_userefit_bb.width ) {
-					this->index_selected_template = index_new;
-                    TemplateID template_index = ((this->templates)[index_new])->index;
-                    DoCommandP(0, template_index, TBTR_OPT_REFIT_VEHICLE, CMD_TOGGLE_TEMPLATE_OPTION);
-				}
-			}
 
 			break;
 		}
@@ -803,9 +823,9 @@ void TbtrGui::OnPaint()
  */
 void TbtrGui::OnResize()
 {
-    this->height_cell_engines = this->resize.step_height;
-    this->height_cell_groups = this->resize.step_height;
-    this->height_cell_templates = this->resize.step_height * 2;
+	this->height_cell_engines = this->resize.step_height;
+	this->height_cell_groups = this->resize.step_height * 2;
+	this->height_cell_templates = this->resize.step_height;
 
 	/* Groups List */
 	NWidgetCore* nwi = this->GetWidget<NWidgetCore>(TRW_WIDGET_MATRIX_GROUPS);
@@ -858,13 +878,16 @@ void TbtrGui::UpdateWidgetSize(int widget, Dimension *size, const Dimension &pad
 {
 	switch (widget) {
 		case TRW_WIDGET_MATRIX_TEMPLATES:
-			resize->height = GetEngineListHeight(VEH_TRAIN) * 2;
-			size->height = 3 * resize->height;
+			resize->height = GetEngineListHeight(VEH_TRAIN);
+			size->height = (_gui_zoom==0?3:8) * resize->height;
 			break;
-		case TRW_WIDGET_MATRIX_GROUPS:
 		case TRW_WIDGET_MATRIX_ENGINES:
 			resize->height = GetEngineListHeight(VEH_TRAIN);
-			size->height = 3 * resize->height;
+			size->height = (_gui_zoom==0?2:4) * resize->height;
+			break;
+		case TRW_WIDGET_MATRIX_GROUPS:
+			resize->height = GetEngineListHeight(VEH_TRAIN) * 2;
+			size->height = (_gui_zoom==0?2:4) * resize->height;
 			break;
 	}
 	this->CalculateTemplatesHScroll();
