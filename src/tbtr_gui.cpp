@@ -484,21 +484,21 @@ void TbtrGui::DrawGroups(const Rect& r) const
 		else color = TC_GREY;
 		DrawString(left+80+ScaleGUITrad(170), right, y+y_med, STR_TBTR_CONFIG_USE_REFIT, color, SA_LEFT);
 
-		/* Draw the template used by the group */
-		if ( tid != INVALID_TEMPLATE ) {
+		/* Draw info about the template used by this group */
+		if ( tid == INVALID_TEMPLATE ) {
+			DrawString(left, right-16, y+y_med, STR_TBTR_INFO_GROUP_NO_TEMPLATE, TC_GREY|TC_NO_SHADE, SA_RIGHT);
+		} else {
+			/* Draw the template used by the group */
 			SetDParam(0, FindTemplateIndexInGui(tid));
 			DrawString(left, right-16, y+y_hi, STR_TBTR_INFO_GROUP_USES_TEMPLATE, TC_BLACK, SA_RIGHT);
-		} else {
-			DrawString(left, right-16, y+y_hi, STR_TBTR_INFO_GROUP_NO_TEMPLATE, TC_GREY, SA_RIGHT);
-		}
 
-		/* Draw the number of trains that still need to be treated */
-		int num_trains = CountTrainsToReplace(group);
-		/* Draw text */
-		if ( !num_trains ) DrawString(left, right-16, y+y_lo, STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_0, TC_GREY, SA_RIGHT);
-		else {
-			SetDParam(0, num_trains);
-			DrawString(left, right-16, y+y_lo, STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_N, TC_GREY, SA_RIGHT);
+			/* Draw the number of trains that still need to be treated */
+			int num_trains = CountTrainsToReplace(group);
+			if ( !num_trains ) DrawString(left, right-16, y+y_lo, STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_0, TC_BLACK, SA_RIGHT);
+			else {
+				SetDParam(0, num_trains);
+				DrawString(left, right-16, y+y_lo, STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_N, TC_GREY, SA_RIGHT);
+			}
 		}
 
 		y += step_size;
