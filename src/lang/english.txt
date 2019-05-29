@@ -352,13 +352,14 @@ STR_TBTR_CONFIG_USE_REFIT                                       :refit
 
 STR_TBTR_INFO_CARGO_SUMMARY                                     :{CARGO_LONG}
 STR_TBTR_INFO_CARGO_SUMMARY_MULTI                               :{CARGO_LONG} (x{NUM})
+STR_TBTR_INFO_GROUP_USES_TEMPLATE                               :{GREEN}Template {GOLD}{NUM}
+STR_TBTR_INFO_GROUP_NO_TEMPLATE                                 :No template set
 STR_TBTR_INFO_TEMPLATE_VALUE                                    :{TINY_FONT}{BLACK}Buying Cost: {GOLD}{CURRENCY_LONG}
 STR_TBTR_INFO_TEMPLATE_VALUE_notinyfont                         :{BLACK}Buying Cost: {GOLD}{CURRENCY_LONG}
 STR_TBTR_INFO_TEMPLATE_IN_USE                                   :Template used by {GOLD}{NUM} {GREEN}groups
 STR_TBTR_INFO_TEMPLATE_IN_USE_1                                 :Template used by {GOLD}1 {GREEN}group
-STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_0                         :{GRAY}0{GRAY} trains to replace
-STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_1                         :{ORANGE}1{BLACK} train to replace
-STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_N                         :{ORANGE}{NUM}{BLACK} trains to replace
+STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_0                         :No trains to replace
+STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_N                         :{GREEN}Trains to replace: {ORANGE}{NUM}
 STR_TBTR_WARN_FREE_WAGON                                        :{RED}Free Chain: not runnable!
 
 # Tooltips for the main toolbar

@@ -450,15 +450,18 @@ void TbtrGui::DrawGroups(const Rect& r) const
 	int left = r.left + WD_MATRIX_LEFT;
 	int right = r.right - WD_MATRIX_RIGHT;
 	int y = r.top;
-	int y_hi = ScaleGUITrad(7);
+	int y_hi = ScaleGUITrad(2);
+	int y_lo = ScaleGUITrad(14);
+	int y_med = ScaleGUITrad(7);
 	int max = min(this->vscroll_groups->GetPosition() + this->vscroll_groups->GetCapacity(), this->groups.Length());
 	int step_size = this->height_cell_groups;
-	int offset = step_size / 4;
 
 	/* Then treat all groups defined by/for the current company */
 	for ( int i=this->vscroll_groups->GetPosition(); i<max; ++i ) {
 		const Group* group = (this->groups)[i];
 		short group_id = group->index;
+		TextColour color = TC_GREY;
+		TemplateID tid = group->template_id;
 
 		/* Fill the background of the current cell in a darker tone for the currently selected group */
 		if ( this->index_selected_group == i ) {
@@ -468,29 +471,35 @@ void TbtrGui::DrawGroups(const Rect& r) const
 		/* Draw the group name */
 		SetDParam(0, group_id);
 		StringID str = STR_GROUP_NAME;
-		DrawString(left+30, right, y+offset, str, TC_BLACK);
-
-		/* Draw the number of trains that still need to be treated */
-		int num_trains = CountTrainsToReplace(group);
-		/* Draw text */
-		TextColour color = TC_GREY;
-		if ( !num_trains ) DrawString(left, right-16, y+offset, STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_0, color, SA_RIGHT);
-		else if ( num_trains == 1 ) DrawString(left, right-16, y+offset, STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_1, color, SA_RIGHT);
-		else {
-			SetDParam(0, num_trains);
-			DrawString(left, right-16, y+offset, STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_N, color, SA_RIGHT);
-		}
+		DrawString(left+30, right, y+y_med, str, TC_BLACK);
 
 		/* Draw information about template configuration settings */
 		if ( group->reuse_depot_vehicles ) color = TC_LIGHT_BLUE;
 		else color = TC_GREY;
-		DrawString(left+60+ScaleGUITrad(50), right, y+y_hi, STR_TBTR_CONFIG_USE_DEPOT, color, SA_LEFT);
+		DrawString(left+60+ScaleGUITrad(50), right, y+y_med, STR_TBTR_CONFIG_USE_DEPOT, color, SA_LEFT);
 		if ( group->keep_remaining_vehicles ) color = TC_LIGHT_BLUE;
 		else color = TC_GREY;
-		DrawString(left+70+ScaleGUITrad(110), right, y+y_hi, STR_TBTR_CONFIG_KEEP_REMAINDERS, color, SA_LEFT);
+		DrawString(left+70+ScaleGUITrad(110), right, y+y_med, STR_TBTR_CONFIG_KEEP_REMAINDERS, color, SA_LEFT);
 		if ( group->refit_as_template ) color = TC_LIGHT_BLUE;
 		else color = TC_GREY;
-		DrawString(left+80+ScaleGUITrad(170), right, y+y_hi, STR_TBTR_CONFIG_USE_REFIT, color, SA_LEFT);
+		DrawString(left+80+ScaleGUITrad(170), right, y+y_med, STR_TBTR_CONFIG_USE_REFIT, color, SA_LEFT);
+
+		/* Draw the template used by the group */
+		if ( tid != INVALID_TEMPLATE ) {
+			SetDParam(0, FindTemplateIndexInGui(tid));
+			DrawString(left, right-16, y+y_hi, STR_TBTR_INFO_GROUP_USES_TEMPLATE, TC_BLACK, SA_RIGHT);
+		} else {
+			DrawString(left, right-16, y+y_hi, STR_TBTR_INFO_GROUP_NO_TEMPLATE, TC_GREY, SA_RIGHT);
+		}
+
+		/* Draw the number of trains that still need to be treated */
+		int num_trains = CountTrainsToReplace(group);
+		/* Draw text */
+		if ( !num_trains ) DrawString(left, right-16, y+y_lo, STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_0, TC_GREY, SA_RIGHT);
+		else {
+			SetDParam(0, num_trains);
+			DrawString(left, right-16, y+y_lo, STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_N, TC_GREY, SA_RIGHT);
+		}
 
 		y += step_size;
 	}
