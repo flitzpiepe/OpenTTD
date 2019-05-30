@@ -698,7 +698,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 		case TRW_WIDGET_TMPL_BUTTONS_DELETE: {
 			TemplateID tid = this->templates[this->index_selected_template]->index;
 			DoCommandP(0, tid, 0, CMD_DELETE_TEMPLATE, CcTemplateDeleted);
-			BuildTemplateList();
+			this->BuildTemplateList();
 			this->CalculateTemplatesHScroll();
 
 			break;
@@ -764,15 +764,15 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 		}
 		case TRW_WIDGET_TMPL_BUTTONS_ADD: {
 			/* get the selected engine */
-			if ( index_selected_engine == -1 )
+			if ( this->index_selected_engine == -1 )
 				return;
 
 			/* selected engine */
-			EngineID eid = this->engines[index_selected_engine];
+			EngineID eid = this->engines[this->index_selected_engine];
 
 			/* selected template */
 			TemplateID tid = INVALID_TEMPLATE;
-			if ( index_selected_template >= 0 )
+			if ( this->index_selected_template >= 0 )
 				tid = this->templates[index_selected_template]->index;
 
 			/* add the engine */

@@ -445,9 +445,9 @@ CommandCost CmdTemplateReplacement(TileIndex ti, DoCommandFlag flags, uint32 p1,
  * Append a new engine to a template vehicle; if it doesn't exist yet, create a new template chain
  *
  * @param ti:   not used
- * @param p1:   pointer to the template vehicle, this can be any member of a template train or even NULL, in
- *              which case a new chain will be created
- * @param p2:   engine ID to be added
+ * @param p1:   index of the template vehicle to which the new engine will be appended, if it is
+ *              INVALID_TEMPLATE a new chain will be created
+ * @param p2:   EngineID to be added
  * @param msg:  not used
  *
  * @return:     either a default CommandCost object or CMD_ERROR
@@ -458,7 +458,7 @@ CommandCost CmdTemplateAddEngine(TileIndex ti, DoCommandFlag flags, uint32 p1, u
 	const Engine* engine = Engine::Get(p2);
 
 	if ( flags == DC_EXEC) {
-		if (!TemplateVehicle::CanAllocateItem())
+		if ( !TemplateVehicle::CanAllocateItem() )
 			return CMD_ERROR;
 		TemplateVehicle* tv = new TemplateVehicle(p2);
 
