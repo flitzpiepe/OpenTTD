@@ -757,7 +757,8 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 		}
 		case TRW_WIDGET_STOP: {
 			if ( this->index_selected_group>=0 ) {
-				DoCommandP(0, this->index_selected_group, 0, CMD_START_STOP_TBTR);
+				const Group* g = *(this->groups.Get(this->index_selected_group));
+				DoCommandP(0, g->index, 0, CMD_START_STOP_TBTR);
 			}
 			break;
 		}
