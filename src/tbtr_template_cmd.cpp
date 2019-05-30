@@ -461,6 +461,7 @@ CommandCost CmdTemplateAddEngine(TileIndex ti, DoCommandFlag flags, uint32 p1, u
 		if ( !TemplateVehicle::CanAllocateItem() )
 			return CMD_ERROR;
 		TemplateVehicle* tv = new TemplateVehicle(p2);
+		TemplateVehicle::last_template = tv->index;
 
 		TemplateVehicle* head = TemplateVehicle::GetIfValid(tid);
 		if ( head ) {

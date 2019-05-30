@@ -17,6 +17,8 @@
 TemplatePool _template_pool("Template");
 INSTANTIATE_POOL_METHODS(Template)
 
+TemplateID TemplateVehicle::last_template = INVALID_TEMPLATE;
+
 /*
  * Default CTOR
  */

@@ -55,6 +55,7 @@ public:
 	TemplateVehicle(EngineID);
 	~TemplateVehicle();
 	TemplateID index;                   ///< Vehicle index
+	static TemplateID last_template;    ///< remember the ID of the template vehicle that was created last
 
 	TemplateVehicle* next;              ///< pointer to the next template vehicle in the chain
 	TemplateVehicle* prev;              ///< pointer to the previous template vehicle in the chain

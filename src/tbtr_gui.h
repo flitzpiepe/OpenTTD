@@ -60,6 +60,7 @@ private:
 	void DrawTemplates(const Rect&) const;
 	uint FindLongestTemplateDisplayWidth() const;
 	int FindTemplateIndexInGui(TemplateID) const;
+	int FindNewestTemplateInGui() const;
 	void HandleClickGroupList(Point, int, uint16);
 
 	void UpdateZoom();
