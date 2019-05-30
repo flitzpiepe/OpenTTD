@@ -699,6 +699,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			TemplateID tid = this->templates[this->index_selected_template]->index;
 			DoCommandP(0, tid, 0, CMD_DELETE_TEMPLATE, CcTemplateDeleted);
 			this->BuildTemplateList();
+			this->index_selected_template = -1;
 			this->CalculateTemplatesHScroll();
 
 			break;
