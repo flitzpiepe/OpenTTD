@@ -14,6 +14,8 @@
 #include "tbtr_template_vehicle.h"
 #include "engine_gui.h"
 
+#include "tbtr_debug.h"
+
 TemplatePool _template_pool("Template");
 INSTANTIATE_POOL_METHODS(Template)
 
@@ -42,6 +44,7 @@ TemplateVehicle::TemplateVehicle(EngineID eid)
  */
 TemplateVehicle::~TemplateVehicle()
 {
+	printf("delete tmpl: ix:%d, ptr:%x\n", (int)index, this);
 	TemplateVehicle* tv = this->next;
 	this->next = NULL;
 	delete tv;
