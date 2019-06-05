@@ -696,12 +696,13 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			break;
 		}
 		case TRW_WIDGET_TMPL_BUTTONS_DELETE: {
-			TemplateID tid = this->templates[this->index_selected_template]->index;
-			DoCommandP(0, tid, 0, CMD_DELETE_TEMPLATE, CcTemplateDeleted);
-			this->BuildTemplateList();
-			this->index_selected_template = -1;
-			this->CalculateTemplatesHScroll();
-
+			if ( this->index_selected_template >= 0 ) {
+				TemplateID tid = this->templates[this->index_selected_template]->index;
+				DoCommandP(0, tid, 0, CMD_DELETE_TEMPLATE, CcTemplateDeleted);
+				this->BuildTemplateList();
+				this->index_selected_template = -1;
+				this->CalculateTemplatesHScroll();
+			}
 			break;
 		}
 		case TRW_WIDGET_MATRIX_ENGINES: {
