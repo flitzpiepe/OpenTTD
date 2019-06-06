@@ -256,6 +256,26 @@ void CcTemplateDeleted(const CommandCost &result, TileIndex tile, uint32 p1, uin
 }
 
 /**
+ * Count the number of trains (chains) that need to be treated for a given group
+ *
+ * @param group:	the group for which we want the count
+ * @return:			int, number of chains to be treated, i.e. not the invidual vehicles
+ */
+int CountTrainsToReplace(const Group* group)
+{
+	int count = 0;
+	if ( group->template_id == INVALID_TEMPLATE )
+		return count;
+	TemplateVehicle* tv = TemplateVehicle::Get(group->template_id);
+	Train* t;
+	FOR_ALL_TRAINS(t) {
+		if ( t->IsPrimaryVehicle() && t->group_id == group->index && tv && tv->TrainNeedsReplacement(t) )
+			++count;
+	}
+	return count;
+}
+
+/**
  * Find the gui line which contains the engine that was added last to any template
  *
  * @return:    the index into the templates gui list containing the engine added last to any template
@@ -922,24 +942,4 @@ void TbtrGui::UpdateWidgetSize(int widget, Dimension *size, const Dimension &pad
 void ShowTbtrGui()
 {
 	new TbtrGui(&_tbtr_gui_desc);
-}
-
-/**
- * Count the number of trains (chains) that need to be treated for a given group
- *
- * @param group:	the group for which we want the count
- * @return:			int, number of chains to be treated, i.e. not the invidual vehicles
- */
-int CountTrainsToReplace(const Group* group)
-{
-	int count = 0;
-	if ( group->template_id == INVALID_TEMPLATE )
-		return count;
-	TemplateVehicle* tv = TemplateVehicle::Get(group->template_id);
-	Train* t;
-	FOR_ALL_TRAINS(t) {
-		if ( t->IsPrimaryVehicle() && t->group_id == group->index && tv && tv->TrainNeedsReplacement(t) )
-			++count;
-	}
-	return count;
 }
