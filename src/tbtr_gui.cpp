@@ -873,7 +873,7 @@ bool TbtrGui::OnVehicleSelect(const Vehicle* v)
 {
 	if (v->type != VEH_TRAIN)
 		return false;
-	DoCommandP(0, v->index, 0, CMD_CLONE_TEMPLATE_FROM_TRAIN);
+	DoCommandP(0, v->index, 0, CMD_CLONE_TEMPLATE_FROM_TRAIN, CcTemplateClonedFromTrain);
 	return true;
 }
 
