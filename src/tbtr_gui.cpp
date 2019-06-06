@@ -576,7 +576,7 @@ void TbtrGui::DrawTemplateInfo(const Rect &r) const
 	for ( ; tmp; tmp=tmp->Next() )
 		cargo_caps[tmp->cargo_type] += tmp->cargo_cap;
 	int y = top;
-	int y_offset = _gui_zoom == 2 ? 0 : 10;
+	int y_offset = _gui_zoom == 2 ? 0 : ScaleGUITrad(5)+5;
 	for (CargoID i = 0; i < NUM_CARGO; ++i) {
 		if ( cargo_caps[i] > 0 ) {
 			count_rows++;
