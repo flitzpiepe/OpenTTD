@@ -304,6 +304,11 @@ TbtrGui::TbtrGui(WindowDesc* wdesc) : Window(wdesc)
 	BuildTemplateList();
 }
 
+/**
+ * Update the UI, depending on the action that made the update necessary
+ *
+ * @param mode:  the action that triggered the gui update
+ */
 void TbtrGui::UpdateGUI(UpdateGuiMode mode)
 { 
 	uint num_templates = this->templates.Length();
@@ -895,10 +900,6 @@ void TbtrGui::UpdateZoom()
 void TbtrGui::UpdateWidgetSize(int widget, Dimension *size, const Dimension &padding, Dimension *fill, Dimension *resize)
 {
 	switch (widget) {
-		case TRW_WIDGET_MATRIX_TEMPLATES:
-			resize->height = GetEngineListHeight(VEH_TRAIN);
-			size->height = (_gui_zoom==0?3:8) * resize->height;
-			break;
 		case TRW_WIDGET_MATRIX_ENGINES:
 			resize->height = GetEngineListHeight(VEH_TRAIN);
 			size->height = (_gui_zoom==0?2:4) * resize->height;
@@ -906,6 +907,10 @@ void TbtrGui::UpdateWidgetSize(int widget, Dimension *size, const Dimension &pad
 		case TRW_WIDGET_MATRIX_GROUPS:
 			resize->height = GetEngineListHeight(VEH_TRAIN) * 2;
 			size->height = (_gui_zoom==0?2:4) * resize->height;
+			break;
+		case TRW_WIDGET_MATRIX_TEMPLATES:
+			resize->height = GetEngineListHeight(VEH_TRAIN);
+			size->height = (_gui_zoom==0?3:8) * resize->height;
 			break;
 	}
 	this->CalculateTemplatesHScroll();
