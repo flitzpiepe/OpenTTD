@@ -97,7 +97,7 @@ public:
 	inline bool IsFreeWagonChain() const {return HasBit(this->subtype, GVSF_FREE_WAGON);}
 
 	Money CalculateCost() const;
-	bool CloneFromTrain(const Train*, TemplateVehicle*);
+	void CloneFromTrain(const Train*, TemplateVehicle*);
 	bool ContainsRailType(RailType) const;
 	/* Count the number of groups which use this template vehicle */
 	int CountGroups() const;

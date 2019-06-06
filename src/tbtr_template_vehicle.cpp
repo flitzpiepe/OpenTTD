@@ -76,14 +76,14 @@ Money TemplateVehicle::CalculateCost() const
  *
  * @param train:  the (first vehicle of the) train which acts as preimage for the template
  */
-bool TemplateVehicle::CloneFromTrain(const Train* train, TemplateVehicle* chainHead)
+void TemplateVehicle::CloneFromTrain(const Train* train, TemplateVehicle* chainHead)
 {
 	if ( !train )
-		return false;
+		return;
 
 	int len = CountVehiclesInChain(train);
 	if ( !TemplateVehicle::CanAllocateItem(len) )
-		return false;
+		return;
 
 	this->first = chainHead ? chainHead : this;
 	this->first->last = this;
@@ -108,7 +108,7 @@ bool TemplateVehicle::CloneFromTrain(const Train* train, TemplateVehicle* chainH
 		this->next = tv;
 	}
 
-	return true;
+	return;
 }
 
 /**
