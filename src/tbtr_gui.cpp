@@ -534,7 +534,7 @@ void TbtrGui::DrawTemplateInfo(const Rect &r) const
 		return;
 
 	// rename to tv
-	const TemplateVehicle *tmp = this->templates[this->index_selected_template];
+	const TemplateVehicle *tmp = (*this->templates.Get(this->index_selected_template));
 
 	/* Draw vehicle performance info */
 	SetDParam(2, tmp->max_speed);
@@ -631,7 +631,7 @@ uint TbtrGui::FindLongestTemplateDisplayWidth() const
 {
 	uint max_len = 0;
 	for ( uint i=0; i<this->templates.Length(); ++i ) {
-		TemplateVehicle* tv = TemplateVehicle::Get(this->templates[i]->index);
+		TemplateVehicle* tv = TemplateVehicle::Get((*this->templates.Get(i))->index);
 		uint len = tv->GetChainDisplayLength();
 		if ( len > max_len )
 			max_len = len;
@@ -648,7 +648,7 @@ uint TbtrGui::FindLongestTemplateDisplayWidth() const
 int TbtrGui::FindTemplateIndexInGui(TemplateID tid) const
 {
 	for ( uint i=0; i<templates.Length(); ++i )
-		if ( templates[i]->index == tid )
+		if ( (*this->templates.Get(i))->index == tid )
 			return i;
 	return -1;
 }
@@ -716,7 +716,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 		}
 		case TRW_WIDGET_TMPL_BUTTONS_DELETE: {
 			if ( this->index_selected_template >= 0 ) {
-				TemplateID tid = this->templates[this->index_selected_template]->index;
+				TemplateID tid = (*this->templates.Get(this->index_selected_template))->index;
 				DoCommandP(0, tid, 0, CMD_DELETE_TEMPLATE, CcTemplateDeleted);
 				this->BuildTemplateList();
 				this->index_selected_template = -1;
@@ -794,7 +794,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			/* selected template */
 			TemplateID tid = INVALID_TEMPLATE;
 			if ( this->index_selected_template >= 0 )
-				tid = this->templates[index_selected_template]->index;
+				tid = (*this->templates.Get(index_selected_template))->index;
 
 			/* add the engine */
 			DoCommandP(0, tid, eid, CMD_TEMPLATE_ADD_ENGINE, CcTemplateEngineAdded);
@@ -805,7 +805,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			/* get the currently selected template */
 			TemplateID tid = INVALID_TEMPLATE;
 			if ( index_selected_template >= 0 )
-				tid = this->templates[index_selected_template]->index;
+				tid = (*this->templates.Get(index_selected_template))->index;
 			else
 				return;
 
