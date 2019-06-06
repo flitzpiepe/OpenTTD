@@ -256,6 +256,20 @@ void CcTemplateDeleted(const CommandCost &result, TileIndex tile, uint32 p1, uin
 }
 
 /**
+ * Find the gui line which contains the engine that was added last to any template
+ *
+ * @return:    the index into the templates gui list containing the engine added last to any template
+ */
+int TbtrGui::FindNewestTemplateInGui() const
+{
+	for ( uint16 i=0; i<this->templates.Length(); ++i )
+		for ( TemplateVehicle* tmp=TemplateVehicle::Get((*(this->templates.Get(i)))->index); tmp; tmp=tmp->next )
+			if ( tmp->index == TemplateVehicle::last_template )
+				return i;
+	return -1;
+}
+
+/**
  * Constructor, initialize GUI with a window descriptor
  */
 TbtrGui::TbtrGui(WindowDesc* wdesc) : Window(wdesc)
@@ -779,6 +793,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 
 			/* add the engine */
 			DoCommandP(0, tid, eid, CMD_TEMPLATE_ADD_ENGINE, CcTemplateEngineAdded);
+			this->index_selected_template = FindNewestTemplateInGui();
 			break;
 		}
 		case TRW_WIDGET_TMPL_BUTTONS_DELETE_LAST_VEH: {

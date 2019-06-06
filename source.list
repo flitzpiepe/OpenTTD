@@ -88,6 +88,7 @@ strings.cpp
 story.cpp
 subsidy.cpp
 tbtr_template_vehicle.cpp
+tbtr_debug.h
 tbtr_template_cmd.cpp
 textbuf.cpp
 texteff.cpp

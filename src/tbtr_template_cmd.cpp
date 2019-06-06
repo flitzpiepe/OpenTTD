@@ -461,6 +461,7 @@ CommandCost CmdTemplateAddEngine(TileIndex ti, DoCommandFlag flags, uint32 p1, u
 		if ( !TemplateVehicle::CanAllocateItem() )
 			return CMD_ERROR;
 		TemplateVehicle* tv = new TemplateVehicle(p2);
+		TemplateVehicle::last_template = tv->index;
 
 		TemplateVehicle* head = TemplateVehicle::GetIfValid(tid);
 		if ( head ) {
@@ -601,6 +602,7 @@ CommandCost CmdCloneTemplateFromTrain(TileIndex ti, DoCommandFlag flags, uint32 
 		TemplateVehicle* tv  = new TemplateVehicle(train->engine_type);
 		tv->CloneFromTrain(train, NULL);
 		tv->real_length = CeilDiv(train->gcache.cached_total_length * 10, TILE_SIZE);
+		tv->first->UpdateLastVehicle(tv->last);
 	}
 
 	return CommandCost();

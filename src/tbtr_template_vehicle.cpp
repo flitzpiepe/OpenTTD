@@ -14,8 +14,12 @@
 #include "tbtr_template_vehicle.h"
 #include "engine_gui.h"
 
+#include "tbtr_debug.h"
+
 TemplatePool _template_pool("Template");
 INSTANTIATE_POOL_METHODS(Template)
+
+TemplateID TemplateVehicle::last_template = INVALID_TEMPLATE;
 
 /*
  * Default CTOR
@@ -40,9 +44,16 @@ TemplateVehicle::TemplateVehicle(EngineID eid)
  */
 TemplateVehicle::~TemplateVehicle()
 {
-	TemplateVehicle* tv = this->next;
-	this->next = NULL;
-	delete tv;
+	/*
+	 * NOP
+	 *
+	 * Template consistency ensured outside of this scope, e.g. when a part of a template is removed, the
+	 * according part of the code needs to take care that prev/next/first/last pointers are all still valid or
+	 * be invalidated.
+	 *
+	 * A single template engine always consists of only one object, i.e. articulated vehicles and such are
+	 * resembled as a single template object.
+	 */
 }
 
 /**
