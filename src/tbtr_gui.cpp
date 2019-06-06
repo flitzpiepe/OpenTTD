@@ -561,11 +561,11 @@ void TbtrGui::DrawTemplateInfo(const Rect &r) const
 	SetDParam(1, tmp->power);
 	SetDParam(0, tmp->weight);
 	SetDParam(3, tmp->max_te);
-	DrawString(r.left+8, r.right, r.top+4, STR_VEHICLE_INFO_WEIGHT_POWER_MAX_SPEED_MAX_TE);
+	DrawString(r.left+8, r.right, r.top+ScaleGUITrad(4), STR_VEHICLE_INFO_WEIGHT_POWER_MAX_SPEED_MAX_TE);
 
 	/* Buying cost */
 	SetDParam(0, tmp->CalculateCost());
-	DrawString(r.left+8, r.right, r.top+16, STR_TBTR_INFO_TEMPLATE_VALUE_notinyfont, TC_BLUE, SA_LEFT);
+	DrawString(r.left+8, r.right, r.top+ScaleGUITrad(16), STR_TBTR_INFO_TEMPLATE_VALUE_notinyfont, TC_BLUE, SA_LEFT);
 
 	/* Draw cargo summary */
 	short top = r.top + 32;
@@ -577,13 +577,14 @@ void TbtrGui::DrawTemplateInfo(const Rect &r) const
 	for ( ; tmp; tmp=tmp->Next() )
 		cargo_caps[tmp->cargo_type] += tmp->cargo_cap;
 	int y = top;
+	int y_offset = _gui_zoom == 2 ? 0 : 10;
 	for (CargoID i = 0; i < NUM_CARGO; ++i) {
 		if ( cargo_caps[i] > 0 ) {
 			count_rows++;
 			SetDParam(0, i);
 			SetDParam(1, cargo_caps[i]);
 			SetDParam(2, _settings_game.vehicle.freight_trains);
-			DrawString(left, r.right, y, FreightWagonMult(i) > 1 ? STR_TBTR_INFO_CARGO_SUMMARY_MULTI : STR_TBTR_INFO_CARGO_SUMMARY, TC_WHITE, SA_LEFT);
+			DrawString(left, r.right, y+ScaleGUITrad(y_offset), FreightWagonMult(i) > 1 ? STR_TBTR_INFO_CARGO_SUMMARY_MULTI : STR_TBTR_INFO_CARGO_SUMMARY, TC_WHITE, SA_LEFT);
 			y += this->height_cell_templates;
 			if ( count_rows % max_rows == 0 ) {
 				y = top;
