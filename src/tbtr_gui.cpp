@@ -67,7 +67,6 @@ static const NWidgetPart _widgets[] = {
 
 	/* Toplevel container */
 	NWidget(NWID_VERTICAL),
-
 		/* Matrices */
 		NWidget(NWID_VERTICAL),
 			/* Groups and Engines */
@@ -932,6 +931,9 @@ void TbtrGui::UpdateWidgetSize(int widget, Dimension *size, const Dimension &pad
 		case TRW_WIDGET_MATRIX_TEMPLATES:
 			resize->height = GetEngineListHeight(VEH_TRAIN);
 			size->height = (_gui_zoom==0?3:8) * resize->height;
+			break;
+		case TRW_WIDGET_TMPL_INFO_PANEL:
+			size->height = ScaleGUITrad(70);
 			break;
 	}
 	this->CalculateTemplatesHScroll();
