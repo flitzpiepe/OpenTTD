@@ -552,42 +552,43 @@ void TbtrGui::DrawTemplateInfo(const Rect &r) const
 	if ( this->index_selected_template == -1 || (short)this->templates.Length() <= this->index_selected_template )
 		return;
 
-	// rename to tv
+	// TODO rename to tv
 	const TemplateVehicle *tmp = (*this->templates.Get(this->index_selected_template));
+
+	/* String offsets */
+	short top = r.top + ScaleGUITrad(32);
+	short left = r.left + ScaleGUITrad(4)+4;
+	short left_offset = ScaleGUITrad(90) + 50;
 
 	/* Draw vehicle performance info */
 	SetDParam(2, tmp->max_speed);
 	SetDParam(1, tmp->power);
 	SetDParam(0, tmp->weight);
 	SetDParam(3, tmp->max_te);
-	DrawString(r.left+8, r.right, r.top+ScaleGUITrad(4), STR_VEHICLE_INFO_WEIGHT_POWER_MAX_SPEED_MAX_TE);
+	DrawString(left, r.right, r.top+ScaleGUITrad(4), STR_VEHICLE_INFO_WEIGHT_POWER_MAX_SPEED_MAX_TE);
 
 	/* Buying cost */
 	SetDParam(0, tmp->CalculateCost());
-	DrawString(r.left+8, r.right, r.top+ScaleGUITrad(16), STR_TBTR_INFO_TEMPLATE_VALUE_notinyfont, TC_BLUE, SA_LEFT);
+	DrawString(left, r.right, r.top+ScaleGUITrad(16), STR_TBTR_INFO_TEMPLATE_VALUE_notinyfont, TC_BLUE, SA_LEFT);
 
 	/* Draw cargo summary */
-	short top = r.top + 32;
-	short left = r.left + 8;
+	int  y = top;
 	short count_rows = 0;
 	short max_rows = 2;
-
 	CargoArray cargo_caps;
 	for ( ; tmp; tmp=tmp->Next() )
 		cargo_caps[tmp->cargo_type] += tmp->cargo_cap;
-	int y = top;
-	int y_offset = _gui_zoom == 2 ? 0 : ScaleGUITrad(5)+5;
 	for (CargoID i = 0; i < NUM_CARGO; ++i) {
 		if ( cargo_caps[i] > 0 ) {
 			count_rows++;
 			SetDParam(0, i);
 			SetDParam(1, cargo_caps[i]);
 			SetDParam(2, _settings_game.vehicle.freight_trains);
-			DrawString(left, r.right, y+ScaleGUITrad(y_offset), FreightWagonMult(i) > 1 ? STR_TBTR_INFO_CARGO_SUMMARY_MULTI : STR_TBTR_INFO_CARGO_SUMMARY, TC_WHITE, SA_LEFT);
+			DrawString(left, r.right, y, FreightWagonMult(i) > 1 ? STR_TBTR_INFO_CARGO_SUMMARY_MULTI : STR_TBTR_INFO_CARGO_SUMMARY, TC_WHITE, SA_LEFT);
 			y += this->height_cell_templates;
 			if ( count_rows % max_rows == 0 ) {
 				y = top;
-				left += 150;
+				left += left_offset;
 			}
 		}
 	}
