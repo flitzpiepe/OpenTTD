@@ -31,26 +31,18 @@ enum TemplateReplaceWindowWidgets {
 
 	TRW_WIDGET_TMPL_INFO_PANEL,
 
-	TRW_WIDGET_TMPL_BUTTONS_ADD,
-	TRW_WIDGET_TMPL_BUTTONS_CLONE,
-	TRW_WIDGET_TMPL_BUTTONS_DELETE,
-	TRW_WIDGET_TMPL_BUTTONS_DELETE_LAST_VEH,
-	TRW_WIDGET_TMPL_BUTTON_FLUFF,
+	TRW_WIDGET_TMPL_BUTTONS_ADD_ENGINE,
+	TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE,
+	TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE,
+	TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE_ENGINE,
 	TRW_WIDGET_TMPL_BUTTONS_EDIT_RIGHTPANEL,
 
 	TRW_WIDGET_TITLE_INFO_GROUP,
 	TRW_WIDGET_TITLE_INFO_TEMPLATE,
 
-	TRW_WIDGET_INFO_GROUP,
- 	TRW_WIDGET_INFO_TEMPLATE,
-
-	TRW_WIDGET_TMPL_BUTTONS_SPACER,
-
 	TRW_WIDGET_START,
 	TRW_WIDGET_TRAIN_FLUFF,
 	TRW_WIDGET_STOP,
-
-	TRW_WIDGET_SEL_TMPL_DISPLAY_CREATE,
 };
 
 #define MIN_WIDTH_LEFT 450
@@ -118,11 +110,11 @@ static const NWidgetPart _widgets[] = {
 		NWidget(NWID_VERTICAL),
 			/* Edit buttons */
 			NWidget(NWID_HORIZONTAL),
-				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_ADD), SetMinimalSize(100,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_ADD_ENGINE, STR_TBTR_UI_TOOLTIP_ADD_ENGINE),
-				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_DELETE_LAST_VEH), SetMinimalSize(75,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_DELETE_ENGINE, STR_TBTR_UI_TOOLTIP_DELETE_ENGINE),
+				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_ADD_ENGINE), SetMinimalSize(100,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_ADD_ENGINE, STR_TBTR_UI_TOOLTIP_ADD_ENGINE),
+				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE_ENGINE), SetMinimalSize(75,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_DELETE_ENGINE, STR_TBTR_UI_TOOLTIP_DELETE_ENGINE),
 				NWidget(WWT_PANEL, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_EDIT_RIGHTPANEL), SetMinimalSize(50,12), SetResize(1,0), EndContainer(),
-				NWidget(WWT_TEXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_CLONE), SetMinimalSize(75,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_CLONE_TEMPLATE, STR_TBTR_UI_TOOLTIP_CLONE_TEMPLATE),
-				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_DELETE), SetMinimalSize(75,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_DELETE_TEMPLATE, STR_TBTR_UI_TOOLTIP_DELETE_TEMPLATE),
+				NWidget(WWT_TEXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE), SetMinimalSize(75,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_CLONE_TEMPLATE, STR_TBTR_UI_TOOLTIP_CLONE_TEMPLATE),
+				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE), SetMinimalSize(75,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_DELETE_TEMPLATE, STR_TBTR_UI_TOOLTIP_DELETE_TEMPLATE),
 			EndContainer(),
 		EndContainer(),
 		/* Start/Stop buttons */
@@ -344,7 +336,7 @@ void TbtrGui::UpdateGUI(UpdateGuiMode mode)
 				this->index_selected_template = -1;
 			break;
 		case TEMPLATE_CLONED:
-			this->ToggleWidgetLoweredState(TRW_WIDGET_TMPL_BUTTONS_CLONE);
+			this->ToggleWidgetLoweredState(TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE);
 			ResetObjectToPlace();
 			this->SetDirty();
 			break;
@@ -551,9 +543,7 @@ void TbtrGui::DrawTemplateInfo(const Rect &r) const
 {
 	if ( this->index_selected_template == -1 || (short)this->templates.Length() <= this->index_selected_template )
 		return;
-
-	// TODO rename to tv
-	const TemplateVehicle *tmp = (*this->templates.Get(this->index_selected_template));
+	const TemplateVehicle *tv = (*this->templates.Get(this->index_selected_template));
 
 	/* String offsets */
 	short top = r.top + ScaleGUITrad(32);
@@ -561,14 +551,14 @@ void TbtrGui::DrawTemplateInfo(const Rect &r) const
 	short left_offset = ScaleGUITrad(90) + 50;
 
 	/* Draw vehicle performance info */
-	SetDParam(2, tmp->max_speed);
-	SetDParam(1, tmp->power);
-	SetDParam(0, tmp->weight);
-	SetDParam(3, tmp->max_te);
+	SetDParam(2, tv->max_speed);
+	SetDParam(1, tv->power);
+	SetDParam(0, tv->weight);
+	SetDParam(3, tv->max_te);
 	DrawString(left, r.right, r.top+ScaleGUITrad(4), STR_VEHICLE_INFO_WEIGHT_POWER_MAX_SPEED_MAX_TE);
 
 	/* Buying cost */
-	SetDParam(0, tmp->CalculateCost());
+	SetDParam(0, tv->CalculateCost());
 	DrawString(left, r.right, r.top+ScaleGUITrad(16), STR_TBTR_INFO_TEMPLATE_VALUE_notinyfont, TC_BLUE, SA_LEFT);
 
 	/* Draw cargo summary */
@@ -576,8 +566,8 @@ void TbtrGui::DrawTemplateInfo(const Rect &r) const
 	short count_rows = 0;
 	short max_rows = 2;
 	CargoArray cargo_caps;
-	for ( ; tmp; tmp=tmp->Next() )
-		cargo_caps[tmp->cargo_type] += tmp->cargo_cap;
+	for ( ; tv; tv=tv->Next() )
+		cargo_caps[tv->cargo_type] += tv->cargo_cap;
 	for (CargoID i = 0; i < NUM_CARGO; ++i) {
 		if ( cargo_caps[i] > 0 ) {
 			count_rows++;
@@ -723,11 +713,11 @@ void TbtrGui::HandleClickGroupList(Point pt, int widget, uint16 index_new)
 void TbtrGui::OnClick(Point pt, int widget, int click_count)
 {
 	switch (widget) {
-		case TRW_WIDGET_TMPL_BUTTONS_CLONE: {
-			this->SetWidgetDirty(TRW_WIDGET_TMPL_BUTTONS_CLONE);
-			this->ToggleWidgetLoweredState(TRW_WIDGET_TMPL_BUTTONS_CLONE);
+		case TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE: {
+			this->SetWidgetDirty(TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE);
+			this->ToggleWidgetLoweredState(TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE);
 
-			if (this->IsWidgetLowered(TRW_WIDGET_TMPL_BUTTONS_CLONE)) {
+			if (this->IsWidgetLowered(TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE)) {
 				static const CursorID clone_icon =	SPR_CURSOR_CLONE_TRAIN;
 				SetObjectToPlaceWnd(clone_icon, PAL_NONE, HT_VEHICLE, this);
 			} else {
@@ -735,7 +725,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			}
 			break;
 		}
-		case TRW_WIDGET_TMPL_BUTTONS_DELETE: {
+		case TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE: {
 			if ( this->index_selected_template >= 0 ) {
 				TemplateID tid = (*this->templates.Get(this->index_selected_template))->index;
 				DoCommandP(0, tid, 0, CMD_DELETE_TEMPLATE, CcTemplateDeleted);
@@ -804,7 +794,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			}
 			break;
 		}
-		case TRW_WIDGET_TMPL_BUTTONS_ADD: {
+		case TRW_WIDGET_TMPL_BUTTONS_ADD_ENGINE: {
 			/* get the selected engine */
 			if ( this->index_selected_engine == -1 )
 				return;
@@ -822,7 +812,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			this->index_selected_template = FindNewestTemplateInGui();
 			break;
 		}
-		case TRW_WIDGET_TMPL_BUTTONS_DELETE_LAST_VEH: {
+		case TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE_ENGINE: {
 			/* get the currently selected template */
 			TemplateID tid = INVALID_TEMPLATE;
 			if ( index_selected_template >= 0 )
