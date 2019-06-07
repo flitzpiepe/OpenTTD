@@ -67,7 +67,6 @@ static const NWidgetPart _widgets[] = {
 
 	/* Toplevel container */
 	NWidget(NWID_VERTICAL),
-
 		/* Matrices */
 		NWidget(NWID_VERTICAL),
 			/* Groups and Engines */
@@ -553,30 +552,32 @@ void TbtrGui::DrawTemplateInfo(const Rect &r) const
 	if ( this->index_selected_template == -1 || (short)this->templates.Length() <= this->index_selected_template )
 		return;
 
-	// rename to tv
+	// TODO rename to tv
 	const TemplateVehicle *tmp = (*this->templates.Get(this->index_selected_template));
+
+	/* String offsets */
+	short top = r.top + ScaleGUITrad(32);
+	short left = r.left + ScaleGUITrad(4)+4;
+	short left_offset = ScaleGUITrad(90) + 50;
 
 	/* Draw vehicle performance info */
 	SetDParam(2, tmp->max_speed);
 	SetDParam(1, tmp->power);
 	SetDParam(0, tmp->weight);
 	SetDParam(3, tmp->max_te);
-	DrawString(r.left+8, r.right, r.top+4, STR_VEHICLE_INFO_WEIGHT_POWER_MAX_SPEED_MAX_TE);
+	DrawString(left, r.right, r.top+ScaleGUITrad(4), STR_VEHICLE_INFO_WEIGHT_POWER_MAX_SPEED_MAX_TE);
 
 	/* Buying cost */
 	SetDParam(0, tmp->CalculateCost());
-	DrawString(r.left+8, r.right, r.top+16, STR_TBTR_INFO_TEMPLATE_VALUE_notinyfont, TC_BLUE, SA_LEFT);
+	DrawString(left, r.right, r.top+ScaleGUITrad(16), STR_TBTR_INFO_TEMPLATE_VALUE_notinyfont, TC_BLUE, SA_LEFT);
 
 	/* Draw cargo summary */
-	short top = r.top + 32;
-	short left = r.left + 8;
+	int  y = top;
 	short count_rows = 0;
 	short max_rows = 2;
-
 	CargoArray cargo_caps;
 	for ( ; tmp; tmp=tmp->Next() )
 		cargo_caps[tmp->cargo_type] += tmp->cargo_cap;
-	int y = top;
 	for (CargoID i = 0; i < NUM_CARGO; ++i) {
 		if ( cargo_caps[i] > 0 ) {
 			count_rows++;
@@ -587,7 +588,7 @@ void TbtrGui::DrawTemplateInfo(const Rect &r) const
 			y += this->height_cell_templates;
 			if ( count_rows % max_rows == 0 ) {
 				y = top;
-				left += 150;
+				left += left_offset;
 			}
 		}
 	}
@@ -931,6 +932,9 @@ void TbtrGui::UpdateWidgetSize(int widget, Dimension *size, const Dimension &pad
 		case TRW_WIDGET_MATRIX_TEMPLATES:
 			resize->height = GetEngineListHeight(VEH_TRAIN);
 			size->height = (_gui_zoom==0?3:8) * resize->height;
+			break;
+		case TRW_WIDGET_TMPL_INFO_PANEL:
+			size->height = ScaleGUITrad(70);
 			break;
 	}
 	this->CalculateTemplatesHScroll();
