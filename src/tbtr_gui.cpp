@@ -34,7 +34,7 @@ enum TemplateReplaceWindowWidgets {
 	TRW_WIDGET_TMPL_BUTTONS_ADD_ENGINE,
 	TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE,
 	TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE,
-	TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE_ENGINE,
+	TRW_WIDGET_TMPL_BUTTONS_DELETE_ENGINE,
 	TRW_WIDGET_TMPL_BUTTONS_EDIT_RIGHTPANEL,
 
 	TRW_WIDGET_TITLE_INFO_GROUP,
@@ -111,7 +111,7 @@ static const NWidgetPart _widgets[] = {
 			/* Edit buttons */
 			NWidget(NWID_HORIZONTAL),
 				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_ADD_ENGINE), SetMinimalSize(100,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_ADD_ENGINE_DA, STR_TBTR_UI_TOOLTIP_ADD_ENGINE),
-				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE_ENGINE), SetMinimalSize(75,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_DELETE_ENGINE_DA, STR_TBTR_UI_TOOLTIP_DELETE_ENGINE),
+				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_DELETE_ENGINE), SetMinimalSize(75,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_DELETE_ENGINE_DA, STR_TBTR_UI_TOOLTIP_DELETE_ENGINE),
 				NWidget(WWT_PANEL, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_EDIT_RIGHTPANEL), SetMinimalSize(50,12), SetResize(1,0), EndContainer(),
 				NWidget(WWT_TEXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE), SetMinimalSize(75,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_CLONE_TEMPLATE, STR_TBTR_UI_TOOLTIP_CLONE_TEMPLATE),
 				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE), SetMinimalSize(75,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_DELETE_TEMPLATE_DA, STR_TBTR_UI_TOOLTIP_DELETE_TEMPLATE),
@@ -822,7 +822,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			}
 			break;
 		}
-		case TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE_ENGINE: {
+		case TRW_WIDGET_TMPL_BUTTONS_DELETE_ENGINE: {
 			/* get the currently selected template */
 			TemplateID tid = INVALID_TEMPLATE;
 			if ( index_selected_template >= 0 )
@@ -908,9 +908,8 @@ bool TbtrGui::OnVehicleSelect(const Vehicle* v)
 void TbtrGui::UpdateButtonState()
 {
 	NWidgetCore* delete_template = this->GetWidget<NWidgetCore>(TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE);
-	// TODO omg rename this to delete_engine??
 	NWidgetCore* add_engine = this->GetWidget<NWidgetCore>(TRW_WIDGET_TMPL_BUTTONS_ADD_ENGINE);
-	NWidgetCore* delete_engine = this->GetWidget<NWidgetCore>(TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE_ENGINE);
+	NWidgetCore* delete_engine = this->GetWidget<NWidgetCore>(TRW_WIDGET_TMPL_BUTTONS_DELETE_ENGINE);
 	NWidgetCore* start_rpl = this->GetWidget<NWidgetCore>(TRW_WIDGET_START);
 	NWidgetCore* stop_rpl = this->GetWidget<NWidgetCore>(TRW_WIDGET_STOP);
 
