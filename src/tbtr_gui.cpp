@@ -675,6 +675,7 @@ int TbtrGui::FindTemplateIndexInGui(TemplateID tid) const
  */
 void TbtrGui::HandleClickGroupList(Point pt, int widget, uint16 index_new)
 {
+	/* height of the clicked point within the clicked cell */
 	uint16 click_y_incell = (pt.y - nested_array[widget]->pos_y) % (this->height_cell_groups);
 
 	int str_usedepot_left = nested_array[widget]->pos_x + 60 + ScaleGUITrad(50);
@@ -737,7 +738,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			break;
 		}
 		case TRW_WIDGET_MATRIX_ENGINES: {
-			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_ENGINES]->pos_y) / (this->height_cell_engines) ) + this->vscroll_engines->GetPosition();
+			uint16 index_new = this->vscroll_engines->GetScrolledRowFromWidget(pt.y, this, widget);
 			if ( index_new >= this->engines.Length() )
 				this->index_selected_engine = -1;
 			else if ( this->index_selected_engine == index_new )
@@ -747,8 +748,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			break;
 		}
 		case TRW_WIDGET_MATRIX_GROUPS: {
-			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_GROUPS]->pos_y) / (this->height_cell_groups) ) + this->vscroll_groups->GetPosition();
-
+			uint16 index_new = this->vscroll_engines->GetScrolledRowFromWidget(pt.y, this, widget);
 			if ( index_new >= this->groups.Length() ) {
 				this->index_selected_group = -1;
 				break;
@@ -765,7 +765,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			break;
 		}
 		case TRW_WIDGET_MATRIX_TEMPLATES: {
-			uint16 index_new = (uint16)((pt.y - this->nested_array[TRW_WIDGET_MATRIX_TEMPLATES]->pos_y) / (this->height_cell_templates) ) + this->vscroll_templates->GetPosition();
+			uint16 index_new = this->vscroll_engines->GetScrolledRowFromWidget(pt.y, this, widget);
 
 			if ( index_new >= this->templates.Length() ) {
 				this->index_selected_template = -1;
