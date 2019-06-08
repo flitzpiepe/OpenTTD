@@ -816,8 +816,8 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 				this->BuildTemplateList();
 				this->index_selected_template = -1;
 				this->CalculateTemplatesHScroll();
-				this->vscroll_templates->ScrollTowards(this->index_selected_template);
 			}
+			this->UpdateButtonState();
 			break;
 		}
 		case TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE_ENGINE: {
