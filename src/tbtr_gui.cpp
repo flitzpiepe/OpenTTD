@@ -732,6 +732,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 				this->BuildTemplateList();
 				this->index_selected_template = -1;
 				this->CalculateTemplatesHScroll();
+				this->vscroll_templates->ScrollTowards(this->index_selected_template);
 			}
 			break;
 		}
@@ -784,6 +785,9 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 				const TemplateVehicle* tv = *(this->templates.Get(this->index_selected_template));
 				const Group* g = *(this->groups.Get(this->index_selected_group));
 				DoCommandP(0, g->index | (1 << 16), tv->index, CMD_START_STOP_TBTR);
+
+				this->vscroll_templates->ScrollTowards(this->index_selected_template);
+				this->vscroll_groups->ScrollTowards(this->index_selected_group);
 			}
 			break;
 		}
@@ -791,6 +795,9 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			if ( this->index_selected_group>=0 ) {
 				const Group* g = *(this->groups.Get(this->index_selected_group));
 				DoCommandP(0, g->index, 0, CMD_START_STOP_TBTR);
+
+				this->vscroll_templates->ScrollTowards(this->index_selected_template);
+				this->vscroll_groups->ScrollTowards(this->index_selected_group);
 			}
 			break;
 		}
@@ -810,6 +817,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			/* add the engine */
 			DoCommandP(0, tid, eid, CMD_TEMPLATE_ADD_ENGINE, CcTemplateEngineAdded);
 			this->index_selected_template = FindNewestTemplateInGui();
+			this->vscroll_templates->ScrollTowards(this->index_selected_template);
 			break;
 		}
 		case TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE_ENGINE: {
@@ -819,6 +827,8 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 				tid = (*this->templates.Get(index_selected_template))->index;
 			else
 				return;
+
+			this->vscroll_templates->ScrollTowards(this->index_selected_template);
 
 			/* delete the last engine */
 			DoCommandP(0, tid, 0, CMD_TEMPLATE_DELETE_ENGINE, CcTemplateEngineDeleted);
