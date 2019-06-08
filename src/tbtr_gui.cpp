@@ -714,29 +714,6 @@ void TbtrGui::HandleClickGroupList(Point pt, int widget, uint16 index_new)
 void TbtrGui::OnClick(Point pt, int widget, int click_count)
 {
 	switch (widget) {
-		case TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE: {
-			this->SetWidgetDirty(TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE);
-			this->ToggleWidgetLoweredState(TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE);
-
-			if (this->IsWidgetLowered(TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE)) {
-				static const CursorID clone_icon =	SPR_CURSOR_CLONE_TRAIN;
-				SetObjectToPlaceWnd(clone_icon, PAL_NONE, HT_VEHICLE, this);
-			} else {
-				ResetObjectToPlace();
-			}
-			break;
-		}
-		case TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE: {
-			if ( this->index_selected_template >= 0 ) {
-				TemplateID tid = (*this->templates.Get(this->index_selected_template))->index;
-				DoCommandP(0, tid, 0, CMD_DELETE_TEMPLATE, CcTemplateDeleted);
-				this->BuildTemplateList();
-				this->index_selected_template = -1;
-				this->CalculateTemplatesHScroll();
-				this->vscroll_templates->ScrollTowards(this->index_selected_template);
-			}
-			break;
-		}
 		case TRW_WIDGET_MATRIX_ENGINES: {
 			uint16 index_new = this->vscroll_engines->GetScrolledRowFromWidget(pt.y, this, widget);
 			if ( index_new >= this->engines.Length() )
@@ -818,6 +795,29 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			DoCommandP(0, tid, eid, CMD_TEMPLATE_ADD_ENGINE, CcTemplateEngineAdded);
 			this->index_selected_template = FindNewestTemplateInGui();
 			this->vscroll_templates->ScrollTowards(this->index_selected_template);
+			break;
+		}
+		case TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE: {
+			this->SetWidgetDirty(TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE);
+			this->ToggleWidgetLoweredState(TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE);
+
+			if (this->IsWidgetLowered(TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE)) {
+				static const CursorID clone_icon =	SPR_CURSOR_CLONE_TRAIN;
+				SetObjectToPlaceWnd(clone_icon, PAL_NONE, HT_VEHICLE, this);
+			} else {
+				ResetObjectToPlace();
+			}
+			break;
+		}
+		case TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE: {
+			if ( this->index_selected_template >= 0 ) {
+				TemplateID tid = (*this->templates.Get(this->index_selected_template))->index;
+				DoCommandP(0, tid, 0, CMD_DELETE_TEMPLATE, CcTemplateDeleted);
+				this->BuildTemplateList();
+				this->index_selected_template = -1;
+				this->CalculateTemplatesHScroll();
+				this->vscroll_templates->ScrollTowards(this->index_selected_template);
+			}
 			break;
 		}
 		case TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE_ENGINE: {
