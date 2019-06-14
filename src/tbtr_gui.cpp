@@ -334,6 +334,7 @@ void TbtrGui::UpdateGUI(UpdateGuiMode mode)
 			/* last engine removed => unselect template */
 			if ( this->templates.Length() < num_templates )
 				this->index_selected_template = -1;
+				this->UpdateButtonState();
 			break;
 		case TEMPLATE_CLONED:
 			this->ToggleWidgetLoweredState(TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE);
@@ -341,7 +342,6 @@ void TbtrGui::UpdateGUI(UpdateGuiMode mode)
 			this->SetDirty();
 			break;
 		case TEMPLATE_DELETED:
-			this->index_selected_template = -1;
 			break;
 	}
 	this->CalculateTemplatesHScroll();
@@ -743,7 +743,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			break;
 		}
 		case TRW_WIDGET_MATRIX_TEMPLATES: {
-			uint16 index_new = this->vscroll_engines->GetScrolledRowFromWidget(pt.y, this, widget);
+			uint16 index_new = this->vscroll_templates->GetScrolledRowFromWidget(pt.y, this, widget);
 
 			if ( index_new >= this->templates.Length() )
 				this->index_selected_template = -1;
@@ -816,9 +816,10 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 				TemplateID tid = (*this->templates.Get(this->index_selected_template))->index;
 				DoCommandP(0, tid, 0, CMD_DELETE_TEMPLATE, CcTemplateDeleted);
 				this->BuildTemplateList();
-				this->index_selected_template = -1;
 				this->CalculateTemplatesHScroll();
 				this->vscroll_templates->ScrollTowards(this->index_selected_template);
+				this->index_selected_template = -1;
+				this->UpdateButtonState();
 			}
 			break;
 		}
