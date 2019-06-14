@@ -322,13 +322,17 @@ STR_TBTR_UI_LABEL_TEMPLATE_INFO                                 :{YELLOW}Templat
 STR_TBTR_UI_LABEL_TEMPLATES                                     :{YELLOW}Available Templates
 
 STR_TBTR_UI_BUTTON_ADD_ENGINE                                   :{BLACK}Add Engine
+STR_TBTR_UI_BUTTON_ADD_ENGINE_DA                                :{GRAY}Add Engine
 STR_TBTR_UI_BUTTON_CLONE_TEMPLATE                               :{BLACK}Clone
 STR_TBTR_UI_BUTTON_DELETE_TEMPLATE                              :{BLACK}Delete Template
+STR_TBTR_UI_BUTTON_DELETE_TEMPLATE_DA                           :{GRAY}Delete Template
 STR_TBTR_UI_BUTTON_DELETE_ENGINE                                :{BLACK}Delete last Engine
+STR_TBTR_UI_BUTTON_DELETE_ENGINE_DA                             :{GRAY}Delete last Engine
 STR_TBTR_UI_BUTTON_KEEP_REMAINDERS                              :{BLACK}Keep remainders
-STR_TBTR_UI_BUTTON_REPLACE_ALL                                  :{TINY_FONT}{GRAY}Replace All Templates
 STR_TBTR_UI_BUTTON_START_REPLACEMENT                            :{BLACK}Start replacing
+STR_TBTR_UI_BUTTON_START_REPLACEMENT_DA                         :{GRAY}Start replacing
 STR_TBTR_UI_BUTTON_STOP_REPLACEMENT                             :{BLACK}Stop replacing
+STR_TBTR_UI_BUTTON_STOP_REPLACEMENT_DA                          :{GRAY}Stop replacing
 STR_TBTR_UI_BUTTON_USE_DEPOT                                    :{BLACK}Use vehicles in depot
 STR_TBTR_UI_BUTTON_USE_REFIT                                    :{BLACK}Use Refit
 

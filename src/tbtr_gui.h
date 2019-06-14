@@ -63,6 +63,7 @@ private:
 	int FindNewestTemplateInGui() const;
 	void HandleClickGroupList(Point, int, uint16);
 
+	void UpdateButtonState();
 	void UpdateZoom();
 
 	Scrollbar* vscroll_engines;         ///< Scrollbar for the engines list

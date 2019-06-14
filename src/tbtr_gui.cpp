@@ -34,7 +34,7 @@ enum TemplateReplaceWindowWidgets {
 	TRW_WIDGET_TMPL_BUTTONS_ADD_ENGINE,
 	TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE,
 	TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE,
-	TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE_ENGINE,
+	TRW_WIDGET_TMPL_BUTTONS_DELETE_ENGINE,
 	TRW_WIDGET_TMPL_BUTTONS_EDIT_RIGHTPANEL,
 
 	TRW_WIDGET_TITLE_INFO_GROUP,
@@ -110,18 +110,18 @@ static const NWidgetPart _widgets[] = {
 		NWidget(NWID_VERTICAL),
 			/* Edit buttons */
 			NWidget(NWID_HORIZONTAL),
-				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_ADD_ENGINE), SetMinimalSize(100,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_ADD_ENGINE, STR_TBTR_UI_TOOLTIP_ADD_ENGINE),
-				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE_ENGINE), SetMinimalSize(75,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_DELETE_ENGINE, STR_TBTR_UI_TOOLTIP_DELETE_ENGINE),
+				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_ADD_ENGINE), SetMinimalSize(100,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_ADD_ENGINE_DA, STR_TBTR_UI_TOOLTIP_ADD_ENGINE),
+				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_DELETE_ENGINE), SetMinimalSize(75,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_DELETE_ENGINE_DA, STR_TBTR_UI_TOOLTIP_DELETE_ENGINE),
 				NWidget(WWT_PANEL, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_EDIT_RIGHTPANEL), SetMinimalSize(50,12), SetResize(1,0), EndContainer(),
 				NWidget(WWT_TEXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE), SetMinimalSize(75,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_CLONE_TEMPLATE, STR_TBTR_UI_TOOLTIP_CLONE_TEMPLATE),
-				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE), SetMinimalSize(75,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_DELETE_TEMPLATE, STR_TBTR_UI_TOOLTIP_DELETE_TEMPLATE),
+				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE), SetMinimalSize(75,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_DELETE_TEMPLATE_DA, STR_TBTR_UI_TOOLTIP_DELETE_TEMPLATE),
 			EndContainer(),
 		EndContainer(),
 		/* Start/Stop buttons */
 		NWidget(NWID_HORIZONTAL),
-			NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_START), SetMinimalSize(150, 12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_START_REPLACEMENT, STR_TBTR_UI_TOOLTIP_START_REPLACEMENT),
+			NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_START), SetMinimalSize(150, 12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_START_REPLACEMENT_DA, STR_TBTR_UI_TOOLTIP_START_REPLACEMENT),
 			NWidget(WWT_PANEL, COLOUR_GREY, TRW_WIDGET_TRAIN_FLUFF), SetMinimalSize(15, 12), SetResize(1,0), EndContainer(),
-			NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_STOP), SetMinimalSize(150, 12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_STOP_REPLACEMENT, STR_TBTR_UI_TOOLTIP_STOP_REPLACEMENT),
+			NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_STOP), SetMinimalSize(150, 12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_STOP_REPLACEMENT_DA, STR_TBTR_UI_TOOLTIP_STOP_REPLACEMENT),
 			NWidget(WWT_RESIZEBOX, COLOUR_GREY),
 		EndContainer(),
 
@@ -334,6 +334,7 @@ void TbtrGui::UpdateGUI(UpdateGuiMode mode)
 			/* last engine removed => unselect template */
 			if ( this->templates.Length() < num_templates )
 				this->index_selected_template = -1;
+				this->UpdateButtonState();
 			break;
 		case TEMPLATE_CLONED:
 			this->ToggleWidgetLoweredState(TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE);
@@ -341,7 +342,6 @@ void TbtrGui::UpdateGUI(UpdateGuiMode mode)
 			this->SetDirty();
 			break;
 		case TEMPLATE_DELETED:
-			this->index_selected_template = -1;
 			break;
 	}
 	this->CalculateTemplatesHScroll();
@@ -722,32 +722,31 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 				this->index_selected_engine = -1;
 			else
 				this->index_selected_engine = index_new;
+			this->UpdateButtonState();
 			break;
 		}
 		case TRW_WIDGET_MATRIX_GROUPS: {
 			uint16 index_new = this->vscroll_engines->GetScrolledRowFromWidget(pt.y, this, widget);
 			if ( index_new >= this->groups.Length() ) {
 				this->index_selected_group = -1;
-				break;
 			}
 
 			else if ( index_new == this->index_selected_group )
 				this->index_selected_group = -1;
 
-			else
+			else {
 				this->index_selected_group = index_new;
+				this->HandleClickGroupList(pt, widget, index_new);
+			}
 
-			this->HandleClickGroupList(pt, widget, index_new);
-
+			this->UpdateButtonState();
 			break;
 		}
 		case TRW_WIDGET_MATRIX_TEMPLATES: {
-			uint16 index_new = this->vscroll_engines->GetScrolledRowFromWidget(pt.y, this, widget);
+			uint16 index_new = this->vscroll_templates->GetScrolledRowFromWidget(pt.y, this, widget);
 
-			if ( index_new >= this->templates.Length() ) {
+			if ( index_new >= this->templates.Length() )
 				this->index_selected_template = -1;
-				break;
-			}
 
 			if ( index_new == this->index_selected_template )
 				this->index_selected_template = -1;
@@ -755,6 +754,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			else
 				this->index_selected_template = index_new;
 
+			this->UpdateButtonState();
 			break;
 		}
 		case TRW_WIDGET_START: {
@@ -766,6 +766,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 				this->vscroll_templates->ScrollTowards(this->index_selected_template);
 				this->vscroll_groups->ScrollTowards(this->index_selected_group);
 			}
+			this->UpdateButtonState();
 			break;
 		}
 		case TRW_WIDGET_STOP: {
@@ -776,6 +777,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 				this->vscroll_templates->ScrollTowards(this->index_selected_template);
 				this->vscroll_groups->ScrollTowards(this->index_selected_group);
 			}
+			this->UpdateButtonState();
 			break;
 		}
 		case TRW_WIDGET_TMPL_BUTTONS_ADD_ENGINE: {
@@ -814,13 +816,14 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 				TemplateID tid = (*this->templates.Get(this->index_selected_template))->index;
 				DoCommandP(0, tid, 0, CMD_DELETE_TEMPLATE, CcTemplateDeleted);
 				this->BuildTemplateList();
-				this->index_selected_template = -1;
 				this->CalculateTemplatesHScroll();
+				this->vscroll_templates->ScrollTowards(this->index_selected_template);
+				this->index_selected_template = -1;
+				this->UpdateButtonState();
 			}
-			this->UpdateButtonState();
 			break;
 		}
-		case TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE_ENGINE: {
+		case TRW_WIDGET_TMPL_BUTTONS_DELETE_ENGINE: {
 			/* get the currently selected template */
 			TemplateID tid = INVALID_TEMPLATE;
 			if ( index_selected_template >= 0 )
@@ -901,6 +904,45 @@ bool TbtrGui::OnVehicleSelect(const Vehicle* v)
 		return false;
 	DoCommandP(0, v->index, 0, CMD_CLONE_TEMPLATE_FROM_TRAIN, CcTemplateClonedFromTrain);
 	return true;
+}
+
+void TbtrGui::UpdateButtonState()
+{
+	NWidgetCore* delete_template = this->GetWidget<NWidgetCore>(TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE);
+	NWidgetCore* add_engine = this->GetWidget<NWidgetCore>(TRW_WIDGET_TMPL_BUTTONS_ADD_ENGINE);
+	NWidgetCore* delete_engine = this->GetWidget<NWidgetCore>(TRW_WIDGET_TMPL_BUTTONS_DELETE_ENGINE);
+	NWidgetCore* start_rpl = this->GetWidget<NWidgetCore>(TRW_WIDGET_START);
+	NWidgetCore* stop_rpl = this->GetWidget<NWidgetCore>(TRW_WIDGET_STOP);
+
+	/* template selected */
+	if ( this->index_selected_template != -1 ) {
+		delete_template->SetDataTip(STR_TBTR_UI_BUTTON_DELETE_TEMPLATE, STR_TBTR_UI_TOOLTIP_DELETE_TEMPLATE);
+		delete_engine->SetDataTip(STR_TBTR_UI_BUTTON_DELETE_ENGINE, STR_TBTR_UI_TOOLTIP_DELETE_ENGINE);
+	} else {
+		delete_template->SetDataTip(STR_TBTR_UI_BUTTON_DELETE_TEMPLATE_DA, STR_TBTR_UI_TOOLTIP_DELETE_TEMPLATE);
+		delete_engine->SetDataTip(STR_TBTR_UI_BUTTON_DELETE_ENGINE_DA, STR_TBTR_UI_TOOLTIP_DELETE_ENGINE);
+	}
+
+	/* group selected */
+	if ( this->index_selected_group != -1  && Group::Get(this->index_selected_group)->template_id != INVALID_TEMPLATE ) {
+		stop_rpl->SetDataTip(STR_TBTR_UI_BUTTON_STOP_REPLACEMENT, STR_TBTR_UI_TOOLTIP_DELETE_TEMPLATE);
+	} else {
+		stop_rpl->SetDataTip(STR_TBTR_UI_BUTTON_STOP_REPLACEMENT_DA, STR_TBTR_UI_TOOLTIP_DELETE_TEMPLATE);
+	}
+
+	/* template + group selected */
+	if ( this->index_selected_template != -1 && this->index_selected_group != -1 ) {
+		start_rpl->SetDataTip(STR_TBTR_UI_BUTTON_START_REPLACEMENT, STR_TBTR_UI_TOOLTIP_DELETE_TEMPLATE);
+	} else {
+		start_rpl->SetDataTip(STR_TBTR_UI_BUTTON_START_REPLACEMENT_DA, STR_TBTR_UI_TOOLTIP_DELETE_TEMPLATE);
+	}
+
+	/* engine selected */
+	if ( this->index_selected_engine != -1 ) {
+		add_engine->SetDataTip(STR_TBTR_UI_BUTTON_ADD_ENGINE, STR_TBTR_UI_TOOLTIP_ADD_ENGINE);
+	} else {
+		add_engine->SetDataTip(STR_TBTR_UI_BUTTON_ADD_ENGINE_DA, STR_TBTR_UI_TOOLTIP_ADD_ENGINE);
+	}
 }
 
 /**
