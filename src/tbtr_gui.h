@@ -61,7 +61,7 @@ private:
 	uint FindLongestTemplateDisplayWidth() const;
 	int FindTemplateIndexInGui(TemplateID) const;
 	int FindNewestTemplateInGui() const;
-	void HandleClickGroupList(Point, int, uint16);
+	bool HandleClickGroupList(Point, int, uint16);
 
 	void UpdateButtonState();
 	void UpdateZoom();

@@ -672,7 +672,7 @@ int TbtrGui::FindTemplateIndexInGui(TemplateID tid) const
  * @param widget:    the widget that was clicked
  * @param index_new: the index of the group in that cell
  */
-void TbtrGui::HandleClickGroupList(Point pt, int widget, uint16 index_new)
+bool TbtrGui::HandleClickGroupList(Point pt, int widget, uint16 index_new)
 {
 	/* height of the clicked point within the clicked cell */
 	uint16 click_y_incell = (pt.y - nested_array[widget]->pos_y) % (this->height_cell_groups);
@@ -693,18 +693,23 @@ void TbtrGui::HandleClickGroupList(Point pt, int widget, uint16 index_new)
 			this->index_selected_group = index_new;
 			GroupID gid = ((this->groups)[index_new])->index;
 			DoCommandP(0, gid, TBTR_OPT_REUSE_DEPOT_VEHICLES, CMD_TOGGLE_TEMPLATE_OPTION);
+			return true;
 		}
 		else if ( pt.x >= str_keeprem_left && pt.x <= str_keeprem_left + (int)str_keeprem_bb.width ) {
 			this->index_selected_group = index_new;
 			GroupID gid = ((this->groups)[index_new])->index;
 			DoCommandP(0, gid, TBTR_OPT_KEEP_REMAINDERS, CMD_TOGGLE_TEMPLATE_OPTION);
+			return true;
 		}
 		else if ( pt.x >= str_userefit_left && pt.x <= str_userefit_left + (int)str_userefit_bb.width ) {
 			this->index_selected_group = index_new;
 			GroupID gid = ((this->groups)[index_new])->index;
 			DoCommandP(0, gid, TBTR_OPT_REFIT_VEHICLE, CMD_TOGGLE_TEMPLATE_OPTION);
+			return true;
 		}
 	}
+
+	return false;
 }
 
 /*
@@ -726,16 +731,24 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 		}
 		case TRW_WIDGET_MATRIX_GROUPS: {
 			uint16 index_new = this->vscroll_engines->GetScrolledRowFromWidget(pt.y, this, widget);
+
+			/* clicked on an empty cell */
 			if ( index_new >= this->groups.Length() ) {
 				this->index_selected_group = -1;
 			}
-
-			else if ( index_new == this->index_selected_group )
-				this->index_selected_group = -1;
-
+			/* clicked on a cell containing a group */
 			else {
-				this->index_selected_group = index_new;
-				this->HandleClickGroupList(pt, widget, index_new);
+				/* if a template replacement option was clicked, always select the group in this cell
+				 * otherwise, toggle or switch the group selection */
+				if ( this->HandleClickGroupList(pt, widget, index_new) ) {
+					this->index_selected_group = index_new;
+				}
+				else if ( this->index_selected_group == index_new ) {
+					this->index_selected_group = -1;
+				}
+				else {
+					this->index_selected_group = index_new;
+				}
 			}
 
 			this->UpdateButtonState();
