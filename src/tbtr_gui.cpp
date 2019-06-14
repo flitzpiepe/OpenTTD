@@ -104,8 +104,7 @@ static const NWidgetPart _widgets[] = {
 				EndContainer(),
 				NWidget(WWT_PANEL, COLOUR_GREY, TRW_WIDGET_TMPL_INFO_PANEL), SetMinimalSize(MIN_WIDTH_RIGHT, 70), SetResize(1, 0), EndContainer(),
 			EndContainer(), // END Info box
-	EndContainer(), // END Matrices
-
+		EndContainer(), // END Matrices
 		/* Buttons Area */
 		NWidget(NWID_VERTICAL),
 			/* Edit buttons */
@@ -124,7 +123,6 @@ static const NWidgetPart _widgets[] = {
 			NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_STOP), SetMinimalSize(150, 12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_STOP_REPLACEMENT_DA, STR_TBTR_UI_TOOLTIP_STOP_REPLACEMENT),
 			NWidget(WWT_RESIZEBOX, COLOUR_GREY),
 		EndContainer(),
-
 	EndContainer(), // END Toplevel container
 };
 
@@ -332,9 +330,10 @@ void TbtrGui::UpdateGUI(UpdateGuiMode mode)
 			break;
 		case ENGINE_DELETED:
 			/* last engine removed => unselect template */
-			if ( this->templates.Length() < num_templates )
+			if ( this->templates.Length() < num_templates ) {
 				this->index_selected_template = -1;
 				this->UpdateButtonState();
+			}
 			break;
 		case TEMPLATE_CLONED:
 			this->ToggleWidgetLoweredState(TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE);
