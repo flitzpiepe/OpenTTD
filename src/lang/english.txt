@@ -323,7 +323,7 @@ STR_TBTR_UI_LABEL_TEMPLATES                                     :{YELLOW}Availab
 
 STR_TBTR_UI_BUTTON_ADD_ENGINE                                   :{BLACK}Add Engine
 STR_TBTR_UI_BUTTON_ADD_ENGINE_DA                                :{GRAY}Add Engine
-STR_TBTR_UI_BUTTON_CLONE_TEMPLATE                               :{BLACK}Clone
+STR_TBTR_UI_BUTTON_CLONE_TEMPLATE                               :{BLACK}Clone Template
 STR_TBTR_UI_BUTTON_DELETE_TEMPLATE                              :{BLACK}Delete Template
 STR_TBTR_UI_BUTTON_DELETE_TEMPLATE_DA                           :{GRAY}Delete Template
 STR_TBTR_UI_BUTTON_DELETE_ENGINE                                :{BLACK}Delete last Engine
