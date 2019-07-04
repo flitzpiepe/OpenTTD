@@ -66,7 +66,7 @@ static const NWidgetPart _widgets[] = {
 				/* Groups */
 				NWidget(NWID_VERTICAL),
 					NWidget(WWT_PANEL, COLOUR_GREY),
-						NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_GROUPS, 0x0), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
+						NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_GROUPS, STR_NULL), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
 					EndContainer(),
 					NWidget(NWID_HORIZONTAL),
 						NWidget(WWT_MATRIX, COLOUR_GREY, TRW_WIDGET_MATRIX_GROUPS), SetMinimalSize(MIN_WIDTH_LEFT, 0), SetFill(1, 1), SetDataTip(0x1, STR_TBTR_UI_TOOLTIP_GROUPS), SetResize(1, 1), SetScrollbar(TRW_WIDGET_SCROLLBAR_GROUPS),
@@ -87,7 +87,7 @@ static const NWidgetPart _widgets[] = {
 			/* Templates */
 			NWidget(NWID_VERTICAL),
 				NWidget(WWT_PANEL, COLOUR_GREY),
-					NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_TEMPLATES, STR_TBTR_UI_LABEL_TEMPLATES), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
+					NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_TEMPLATES, STR_NULL), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
 				EndContainer(),
 				NWidget(NWID_VERTICAL),
 					NWidget(NWID_HORIZONTAL),
@@ -100,7 +100,7 @@ static const NWidgetPart _widgets[] = {
 			/* Info box */
 			NWidget(NWID_VERTICAL),
 				NWidget(WWT_PANEL, COLOUR_GREY),
-					NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_TEMPLATE_INFO, 0x0), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
+					NWidget(WWT_LABEL, COLOUR_GREY), SetDataTip(STR_TBTR_UI_LABEL_TEMPLATE_INFO, STR_NULL), SetFill(1, 0), SetMinimalSize(0, 12), SetResize(1, 0),
 				EndContainer(),
 				NWidget(WWT_PANEL, COLOUR_GREY, TRW_WIDGET_TMPL_INFO_PANEL), SetMinimalSize(MIN_WIDTH_RIGHT, 70), SetResize(1, 0), EndContainer(),
 			EndContainer(), // END Info box
