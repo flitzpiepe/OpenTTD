@@ -999,5 +999,8 @@ void TbtrGui::UpdateWidgetSize(int widget, Dimension *size, const Dimension &pad
  */
 void ShowTbtrGui()
 {
+	Window* w = FindWindowByClass(WC_TBTR_GUI);
+	if ( w )
+		return;
 	new TbtrGui(&_tbtr_gui_desc);
 }
