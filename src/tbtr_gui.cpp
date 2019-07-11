@@ -480,9 +480,7 @@ void TbtrGui::DrawGroups(const Rect& r) const
 	int left = r.left + WD_MATRIX_LEFT;
 	int right = r.right - WD_MATRIX_RIGHT;
 	int y = r.top;
-	int y_hi = ScaleGUITrad(2);
-	int y_lo = ScaleGUITrad(14);
-	int y_med = ScaleGUITrad(7);
+	int y_med = y+this->pos_string_med;
 	int max = min(this->vscroll_groups->GetPosition() + this->vscroll_groups->GetCapacity(), this->groups.Length());
 	int step_size = this->height_cell_groups;
 
@@ -501,33 +499,33 @@ void TbtrGui::DrawGroups(const Rect& r) const
 		/* Draw the group name */
 		SetDParam(0, group_id);
 		StringID str = STR_GROUP_NAME;
-		DrawString(left+30, right, y+y_med, str, TC_BLACK);
+		DrawString(left+30, right, y+this->pos_string_hi, str, TC_BLACK);
 
 		/* Draw information about template configuration settings */
 		if ( group->reuse_depot_vehicles ) color = TC_LIGHT_BLUE;
 		else color = TC_GREY;
-		DrawString(left+pos_string_usedepot, right, y+y_med, STR_TBTR_CONFIG_USE_DEPOT, color, SA_LEFT);
+		DrawString(left+pos_string_usedepot, right, y+this->pos_string_lo, STR_TBTR_CONFIG_USE_DEPOT, color, SA_LEFT);
 		if ( group->keep_remaining_vehicles ) color = TC_LIGHT_BLUE;
 		else color = TC_GREY;
-		DrawString(left+pos_string_keepremainders, right, y+y_med, STR_TBTR_CONFIG_KEEP_REMAINDERS, color, SA_LEFT);
+		DrawString(left+pos_string_keepremainders, right, y+this->pos_string_lo, STR_TBTR_CONFIG_KEEP_REMAINDERS, color, SA_LEFT);
 		if ( group->refit_as_template ) color = TC_LIGHT_BLUE;
 		else color = TC_GREY;
-		DrawString(left+pos_string_userefit, right, y+y_med, STR_TBTR_CONFIG_USE_REFIT, color, SA_LEFT);
+		DrawString(left+pos_string_userefit, right, y+this->pos_string_lo, STR_TBTR_CONFIG_USE_REFIT, color, SA_LEFT);
 
 		/* Draw info about the template used by this group */
 		if ( tid == INVALID_TEMPLATE ) {
-			DrawString(left, right-16, y+y_med, STR_TBTR_INFO_GROUP_NO_TEMPLATE, TC_GREY|TC_NO_SHADE, SA_RIGHT);
+			DrawString(left, right-16, y_med, STR_TBTR_INFO_GROUP_NO_TEMPLATE, TC_GREY|TC_NO_SHADE, SA_RIGHT);
 		} else {
 			/* Draw the template used by the group */
 			SetDParam(0, FindTemplateIndexInGui(tid));
-			DrawString(left, right-16, y+y_hi, STR_TBTR_INFO_GROUP_USES_TEMPLATE, TC_BLACK, SA_RIGHT);
+			DrawString(left, right-16, y+this->pos_string_hi, STR_TBTR_INFO_GROUP_USES_TEMPLATE, TC_BLACK, SA_RIGHT);
 
 			/* Draw the number of trains that still need to be treated */
 			int num_trains = CountTrainsToReplace(group);
-			if ( !num_trains ) DrawString(left, right-16, y+y_lo, STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_0, TC_BLACK, SA_RIGHT);
+			if ( !num_trains ) DrawString(left, right-16, y+this->pos_string_lo, STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_0, TC_BLACK, SA_RIGHT);
 			else {
 				SetDParam(0, num_trains);
-				DrawString(left, right-16, y+y_lo, STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_N, TC_GREY, SA_RIGHT);
+				DrawString(left, right-16, y+this->pos_string_lo, STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_N, TC_GREY, SA_RIGHT);
 			}
 		}
 
@@ -591,7 +589,7 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 	int left = r.left;
 	int right = r.right;
 	int y = r.top;
-	int ypos_hi = y+ScaleGUITrad(2);
+	int ypos_hi = y+this->pos_string_hi;
 
 	uint max = min(vscroll_templates->GetPosition() + vscroll_templates->GetCapacity(), this->templates.Length());
 	TemplateVehicle* tv;
@@ -680,7 +678,6 @@ bool TbtrGui::HandleClickGroupList(Point pt, int widget, uint16 index_new)
 	int str_usedepot_left = nested_array[widget]->pos_x + pos_string_usedepot;
 	int str_keeprem_left = nested_array[widget]->pos_x + pos_string_keepremainders;
 	int str_userefit_left = nested_array[widget]->pos_x + pos_string_userefit;
-	int str_pos_hi = ScaleGUITrad(7);
 	Dimension str_usedepot_bb = GetStringBoundingBox(STR_TBTR_CONFIG_USE_DEPOT);
 	Dimension str_keeprem_bb = GetStringBoundingBox(STR_TBTR_CONFIG_KEEP_REMAINDERS);
 	Dimension str_userefit_bb = GetStringBoundingBox(STR_TBTR_CONFIG_USE_REFIT);
@@ -688,7 +685,7 @@ bool TbtrGui::HandleClickGroupList(Point pt, int widget, uint16 index_new)
 
 	/* clicked on one of the template config option strings select the template and toggle the config
 	* option */
-	if ( click_y_incell >= str_pos_hi && click_y_incell <= str_pos_hi + str_height ) {
+	if ( click_y_incell >= this->pos_string_lo && click_y_incell <= this->pos_string_lo + str_height ) {
 		if ( pt.x >= str_usedepot_left && pt.x <= str_usedepot_left + (int)str_usedepot_bb.width ) {
 			this->index_selected_group = index_new;
 			GroupID gid = ((this->groups)[index_new])->index;
@@ -873,6 +870,9 @@ void TbtrGui::OnPaint()
 	}
 
 	/* compute the initial values for some string positions in the UI */
+	this->pos_string_lo = ScaleGUITrad(14);
+	this->pos_string_med = ScaleGUITrad(7);
+	this->pos_string_hi = ScaleGUITrad(2);
 	this->pos_string_usedepot = 60 + ScaleGUITrad(50);
 	this->pos_string_keepremainders = 70 + ScaleGUITrad(110);
 	this->pos_string_userefit = 80 + ScaleGUITrad(170);

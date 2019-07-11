@@ -77,6 +77,9 @@ private:
 	uint16 pos_string_usedepot;         ///< horizontal position of the use-depot option
 	uint16 pos_string_keepremainders;   ///< horizontal position of the keep-remainders option
 	uint16 pos_string_userefit;         ///< horizontal position of the use-refit option
+	uint16 pos_string_lo;               ///< low vertical string position in a GUI cell
+	uint16 pos_string_med;              ///< medium vertical string position in a GUI cell
+	uint16 pos_string_hi;               ///< high vertical string position in a GUI cell
 
 	uint16 template_x_offset = 50;      ///< LHS spacing for templates in the GUI
 	int index_selected_engine = -1;     ///< index into the GUIEngineList "engines"
