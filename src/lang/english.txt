@@ -352,7 +352,7 @@ STR_TBTR_UI_TOOLTIP_USE_REFIT                                   :{BLACK}If set, 
 
 STR_TBTR_CONFIG_KEEP_REMAINDERS                                 :keep rem
 STR_TBTR_CONFIG_USE_DEPOT                                       :use depot
-STR_TBTR_CONFIG_USE_REFIT                                       :refit
+STR_TBTR_CONFIG_USE_REFIT                                       :use refit
 
 STR_TBTR_INFO_CARGO_SUMMARY                                     :{CARGO_LONG}
 STR_TBTR_INFO_CARGO_SUMMARY_MULTI                               :{CARGO_LONG} (x{NUM})
