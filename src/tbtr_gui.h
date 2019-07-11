@@ -74,6 +74,9 @@ private:
     uint16 height_cell_engines;         ///< the height of a line in the engines matrix
     uint16 height_cell_groups;          ///< the height of a line in the groups matrix
     uint16 height_cell_templates;       ///< the height of a line in the templates matrix
+	uint16 pos_string_usedepot;         ///< horizontal position of the use-depot option
+	uint16 pos_string_keepremainders;   ///< horizontal position of the keep-remainders option
+	uint16 pos_string_userefit;         ///< horizontal position of the use-refit option
 
 	uint16 template_x_offset = 50;      ///< LHS spacing for templates in the GUI
 	int index_selected_engine = -1;     ///< index into the GUIEngineList "engines"

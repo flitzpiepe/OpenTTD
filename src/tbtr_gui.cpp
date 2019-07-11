@@ -506,13 +506,13 @@ void TbtrGui::DrawGroups(const Rect& r) const
 		/* Draw information about template configuration settings */
 		if ( group->reuse_depot_vehicles ) color = TC_LIGHT_BLUE;
 		else color = TC_GREY;
-		DrawString(left+60+ScaleGUITrad(50), right, y+y_med, STR_TBTR_CONFIG_USE_DEPOT, color, SA_LEFT);
+		DrawString(left+pos_string_usedepot, right, y+y_med, STR_TBTR_CONFIG_USE_DEPOT, color, SA_LEFT);
 		if ( group->keep_remaining_vehicles ) color = TC_LIGHT_BLUE;
 		else color = TC_GREY;
-		DrawString(left+70+ScaleGUITrad(110), right, y+y_med, STR_TBTR_CONFIG_KEEP_REMAINDERS, color, SA_LEFT);
+		DrawString(left+pos_string_keepremainders, right, y+y_med, STR_TBTR_CONFIG_KEEP_REMAINDERS, color, SA_LEFT);
 		if ( group->refit_as_template ) color = TC_LIGHT_BLUE;
 		else color = TC_GREY;
-		DrawString(left+80+ScaleGUITrad(170), right, y+y_med, STR_TBTR_CONFIG_USE_REFIT, color, SA_LEFT);
+		DrawString(left+pos_string_userefit, right, y+y_med, STR_TBTR_CONFIG_USE_REFIT, color, SA_LEFT);
 
 		/* Draw info about the template used by this group */
 		if ( tid == INVALID_TEMPLATE ) {
@@ -677,9 +677,9 @@ bool TbtrGui::HandleClickGroupList(Point pt, int widget, uint16 index_new)
 	/* height of the clicked point within the clicked cell */
 	uint16 click_y_incell = (pt.y - nested_array[widget]->pos_y) % (this->height_cell_groups);
 
-	int str_usedepot_left = nested_array[widget]->pos_x + 60 + ScaleGUITrad(50);
-	int str_keeprem_left = nested_array[widget]->pos_x + 70 + ScaleGUITrad(110);
-	int str_userefit_left = nested_array[widget]->pos_x + 80 + ScaleGUITrad(170);
+	int str_usedepot_left = nested_array[widget]->pos_x + pos_string_usedepot;
+	int str_keeprem_left = nested_array[widget]->pos_x + pos_string_keepremainders;
+	int str_userefit_left = nested_array[widget]->pos_x + pos_string_userefit;
 	int str_pos_hi = ScaleGUITrad(7);
 	Dimension str_usedepot_bb = GetStringBoundingBox(STR_TBTR_CONFIG_USE_DEPOT);
 	Dimension str_keeprem_bb = GetStringBoundingBox(STR_TBTR_CONFIG_KEEP_REMAINDERS);
@@ -871,6 +871,12 @@ void TbtrGui::OnPaint()
 		this->gui_zoom = _gui_zoom;
 		this->UpdateZoom();
 	}
+
+	/* compute the initial values for some string positions in the UI */
+	this->pos_string_usedepot = 60 + ScaleGUITrad(50);
+	this->pos_string_keepremainders = 70 + ScaleGUITrad(110);
+	this->pos_string_userefit = 80 + ScaleGUITrad(170);
+
 	this->BuildTemplateEngineList();
 	this->BuildGroupList();
 	this->BuildTemplateList();
