@@ -9,8 +9,6 @@
 
 /** @file pool_type.hpp Defintion of Pool, structure used to access PoolItems, and PoolItem, base structure for Vehicle, Town, and other indexed items. */
 
-#include <stdio.h>
-
 #ifndef POOL_TYPE_HPP
 #define POOL_TYPE_HPP
 
@@ -112,9 +110,6 @@ struct Pool : PoolBase {
 	 */
 	inline Titem *Get(size_t index)
 	{
-		if (index >= this->first_unused)
-			printf ("hey!! %d is >= than %d\n", (int)index, (int)this->first_unused);
-		//printf ("index: %d, first_unused: %d\n", (int)index, (int)this->first_unused);
 		assert(index < this->first_unused);
 		return this->data[index];
 	}

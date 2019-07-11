@@ -14,8 +14,6 @@
 #include "tbtr_template_vehicle.h"
 #include "engine_gui.h"
 
-#include "tbtr_debug.h"
-
 TemplatePool _template_pool("Template");
 INSTANTIATE_POOL_METHODS(Template)
 
