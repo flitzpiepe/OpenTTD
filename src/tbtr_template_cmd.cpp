@@ -352,31 +352,33 @@ CommandCost CmdTemplateReplacement(TileIndex ti, DoCommandFlag flags, uint32 p1,
 		}
 		/* ... otherwise buy a new one */
 		else {
-			CommandCost ccBuild = DoCommand(tile, cur_tmpl->engine_type, 0, flags, CMD_BUILD_VEHICLE);
-			cc.AddCost(ccBuild);
-			new_vehicle = Train::Get(_new_vehicle_id);
-			/* remember this vehicle in case we want to restore the original train later */
-			if ( flags == DC_EXEC )
-				backup_new_vehicles.push_back(new_vehicle->index);
+			if ( flags == DC_EXEC ) {
+				CommandCost ccBuild = DoCommand(tile, cur_tmpl->engine_type, 0, flags, CMD_BUILD_VEHICLE);
+				cc.AddCost(ccBuild);
+				new_vehicle = Train::Get(_new_vehicle_id);
+				/* remember this vehicle in case we want to restore the original train later */
+				if ( flags == DC_EXEC )
+					backup_new_vehicles.push_back(new_vehicle->index);
 
-			/* form the new chain */
-			if ( new_chain == NULL ) {
-				new_chain = new_vehicle;
-				CommandCost ccMove = DoCommand(tile, new_chain->index, INVALID_VEHICLE, flags, CMD_MOVE_RAIL_VEHICLE);
-				/* a move to INVALID_VEHICLE will fail under flags==DC_NONE */
-				if ( flags == DC_EXEC )
-					cc.AddCost(ccMove);
-			}
-			/* or just append to it, if it already exists */
-			else {
-				CommandCost ccMove = DoCommand(tile, new_vehicle->index, new_chain->Last()->index, flags, CMD_MOVE_RAIL_VEHICLE);
-				if ( flags == DC_EXEC )
-					cc.AddCost(ccMove);
+				/* form the new chain */
+				if ( new_chain == NULL ) {
+					new_chain = new_vehicle;
+					CommandCost ccMove = DoCommand(tile, new_chain->index, INVALID_VEHICLE, flags, CMD_MOVE_RAIL_VEHICLE);
+					/* a move to INVALID_VEHICLE will fail under flags==DC_NONE */
+					if ( flags == DC_EXEC )
+						cc.AddCost(ccMove);
+				}
+				/* or just append to it, if it already exists */
+				else {
+					CommandCost ccMove = DoCommand(tile, new_vehicle->index, new_chain->Last()->index, flags, CMD_MOVE_RAIL_VEHICLE);
+					if ( flags == DC_EXEC )
+						cc.AddCost(ccMove);
+				}
 			}
 		}
 
 		/* maybe refit as template */
-		if ( refit_train ) {
+		if ( refit_train && new_vehicle ) {
 			CargoID cargo_type = cur_tmpl->cargo_type;
 			byte cargo_subtype = cur_tmpl->cargo_subtype;
 			CommandCost ccRefit = DoCommand(0, new_vehicle->index, cargo_type | (cargo_subtype<<8) | (1<<16), flags, GetCmdRefitVeh(new_vehicle));
