@@ -318,9 +318,6 @@
     <ClCompile Include="..\src\screenshot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\sdl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\settings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -660,6 +657,9 @@
     <ClInclude Include="..\src\gui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\guitimer_func.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\heightmap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -961,9 +961,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\screenshot.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\sdl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\sound\sdl_s.h">
@@ -2706,10 +2703,10 @@
     <ClInclude Include="..\src\blitter\8bpp_simple.hpp">
       <Filter>Blitters</Filter>
     </ClInclude>
-    <ClCompile Include="..\src\blitter\base.cpp">
-      <Filter>Blitters</Filter>
-    </ClCompile>
     <ClInclude Include="..\src\blitter\base.hpp">
+      <Filter>Blitters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\blitter\common.hpp">
       <Filter>Blitters</Filter>
     </ClInclude>
     <ClInclude Include="..\src\blitter\factory.hpp">

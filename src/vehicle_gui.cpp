@@ -682,7 +682,7 @@ struct RefitWindow : public Window {
 
 	/**
 	 * Gets the #StringID to use for displaying capacity.
-	 * @param Cargo and cargo subtype to check for capacity.
+	 * @param option Cargo and cargo subtype to check for capacity.
 	 * @return INVALID_STRING_ID if there is no capacity. StringID to use in any other case.
 	 * @post String parameters have been set.
 	 */
@@ -690,8 +690,8 @@ struct RefitWindow : public Window {
 	{
 		assert(_current_company == _local_company);
 		Vehicle *v = Vehicle::Get(this->window_number);
-		CommandCost cost = DoCommand(v->tile, this->selected_vehicle, option->cargo | (int)this->auto_refit << 6 | option->subtype << 8 |
-				this->num_vehicles << 16, DC_QUERY_COST, GetCmdRefitVeh(v->type));
+		CommandCost cost = DoCommand(v->tile, this->selected_vehicle, option->cargo | option->subtype << 8 | this->num_vehicles << 16 |
+				(int)this->auto_refit << 24, DC_QUERY_COST, GetCmdRefitVeh(v->type));
 
 		if (cost.Failed()) return INVALID_STRING_ID;
 
@@ -1677,9 +1677,8 @@ public:
 		this->SetDirty();
 	}
 
-	virtual void OnTick()
+	virtual void OnGameTick()
 	{
-		if (_pause_mode != PM_UNPAUSED) return;
 		if (this->vehicles.NeedResort()) {
 			StationID station = (this->vli.type == VL_STATION_LIST) ? this->vli.index : INVALID_STATION;
 
@@ -2505,6 +2504,8 @@ public:
 		this->GetWidget<NWidgetCore>(WID_VV_SHOW_ORDERS)->tool_tip      = STR_VEHICLE_VIEW_TRAIN_ORDERS_TOOLTIP + v->type;
 		this->GetWidget<NWidgetCore>(WID_VV_SHOW_DETAILS)->tool_tip     = STR_VEHICLE_VIEW_TRAIN_SHOW_DETAILS_TOOLTIP + v->type;
 		this->GetWidget<NWidgetCore>(WID_VV_CLONE)->tool_tip            = STR_VEHICLE_VIEW_CLONE_TRAIN_INFO + v->type;
+
+		this->UpdateButtonStatus();
 	}
 
 	~VehicleViewWindow()
@@ -2734,7 +2735,7 @@ public:
 		}
 	}
 
-	virtual void OnTick()
+	void UpdateButtonStatus()
 	{
 		const Vehicle *v = Vehicle::Get(this->window_number);
 		bool veh_stopped = v->IsStoppedInDepot();
@@ -2771,6 +2772,8 @@ public:
 			 * Nothing to do for this window. */
 			return;
 		}
+
+		this->UpdateButtonStatus();
 	}
 
 	virtual bool IsNewGRFInspectable() const

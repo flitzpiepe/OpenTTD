@@ -89,25 +89,25 @@ bool IsHangar(TileIndex t)
 }
 
 /**
- * Look for a station around the given tile area.
+ * Look for a station owned by the given company around the given tile area.
  * @param ta the area to search over
- * @param closest_station the closest station found so far
+ * @param closest_station the closest owned station found so far
+ * @param company the company whose stations to look for
  * @param st to 'return' the found station
  * @return Succeeded command (if zero or one station found) or failed command (for two or more stations found).
  */
 template <class T>
-CommandCost GetStationAround(TileArea ta, StationID closest_station, T **st)
+CommandCost GetStationAround(TileArea ta, StationID closest_station, CompanyID company, T **st)
 {
 	ta.tile -= TileDiffXY(1, 1);
 	ta.w    += 2;
 	ta.h    += 2;
 
-	/* check around to see if there's any stations there */
+	/* check around to see if there are any stations there owned by the company */
 	TILE_AREA_LOOP(tile_cur, ta) {
 		if (IsTileType(tile_cur, MP_STATION)) {
 			StationID t = GetStationIndex(tile_cur);
-			if (!T::IsValidID(t)) continue;
-
+			if (!T::IsValidID(t) || Station::Get(t)->owner != company) continue;
 			if (closest_station == INVALID_STATION) {
 				closest_station = t;
 			} else if (closest_station != t) {
@@ -662,7 +662,7 @@ static void UpdateStationSignCoord(BaseStation *st)
 
 /**
  * Common part of building various station parts and possibly attaching them to an existing one.
- * @param [in,out] st Station to attach to
+ * @param[in,out] st Station to attach to
  * @param flags Command flags
  * @param reuse Whether to try to reuse a deleted station (gray sign) if possible
  * @param area Area occupied by the new part
@@ -676,7 +676,7 @@ static CommandCost BuildStationPart(Station **st, DoCommandFlag flags, bool reus
 
 	if (*st != NULL) {
 		if ((*st)->owner != _current_company) {
-			return_cmd_error(STR_ERROR_TOO_CLOSE_TO_ANOTHER_STATION);
+			return_cmd_error(CMD_ERROR);
 		}
 
 		CommandCost ret = (*st)->rect.BeforeAddRect(area.tile, area.w, area.h, StationRect::ADD_TEST);
@@ -713,6 +713,43 @@ static void DeleteStationIfEmpty(BaseStation *st)
 	}
 	/* station remains but it probably lost some parts - station sign should stay in the station boundaries */
 	UpdateStationSignCoord(st);
+}
+
+/**
+ * After adding/removing tiles to station, update some station-related stuff.
+ * @param adding True if adding tiles, false if removing them.
+ * @param type StationType being modified.
+ */
+void Station::AfterStationTileSetChange(bool adding, StationType type)
+{
+	this->UpdateVirtCoord();
+	this->RecomputeIndustriesNear();
+	DirtyCompanyInfrastructureWindows(this->owner);
+	if (adding) InvalidateWindowData(WC_STATION_LIST, this->owner, 0);
+
+	switch (type) {
+		case STATION_RAIL:
+			SetWindowWidgetDirty(WC_STATION_VIEW, this->index, WID_SV_TRAINS);
+			break;
+		case STATION_AIRPORT:
+			break;
+		case STATION_TRUCK:
+		case STATION_BUS:
+			SetWindowWidgetDirty(WC_STATION_VIEW, this->index, WID_SV_ROADVEHS);
+			break;
+		case STATION_DOCK:
+			SetWindowWidgetDirty(WC_STATION_VIEW, this->index, WID_SV_SHIPS);
+			break;
+		default: NOT_REACHED();
+	}
+
+	if (adding) {
+		UpdateStationAcceptance(this, false);
+		InvalidateWindowData(WC_SELECT_STATION, 0, 0);
+	} else {
+		DeleteStationIfEmpty(this);
+	}
+
 }
 
 CommandCost ClearTile_Station(TileIndex tile, DoCommandFlag flags);
@@ -771,22 +808,22 @@ CommandCost CheckBuildableTile(TileIndex tile, uint invalid_dirs, int &allowed_z
 }
 
 /**
- * Tries to clear the given area.
- * @param tile_area Area to check.
+ * Checks if an airport can be built at the given location and clear the area.
+ * @param tile_iter Airport tile iterator.
  * @param flags Operation to perform.
  * @return The cost in case of success, or an error code if it failed.
  */
-CommandCost CheckFlatLand(TileArea tile_area, DoCommandFlag flags)
+static CommandCost CheckFlatLandAirport(AirportTileTableIterator tile_iter, DoCommandFlag flags)
 {
 	CommandCost cost(EXPENSES_CONSTRUCTION);
 	int allowed_z = -1;
 
-	TILE_AREA_LOOP(tile_cur, tile_area) {
-		CommandCost ret = CheckBuildableTile(tile_cur, 0, allowed_z, true);
+	for (; tile_iter != INVALID_TILE; ++tile_iter) {
+		CommandCost ret = CheckBuildableTile(tile_iter, 0, allowed_z, true);
 		if (ret.Failed()) return ret;
 		cost.AddCost(ret);
 
-		ret = DoCommand(tile_cur, 0, 0, flags, CMD_LANDSCAPE_CLEAR);
+		ret = DoCommand(tile_iter, 0, 0, flags, CMD_LANDSCAPE_CLEAR);
 		if (ret.Failed()) return ret;
 		cost.AddCost(ret);
 	}
@@ -958,9 +995,12 @@ static CommandCost CheckFlatLandRoadStop(TileArea tile_area, DoCommandFlag flags
 						if (ret.Failed()) return ret;
 					}
 					num_roadbits += CountBits(GetRoadBits(cur_tile, ROADTYPE_ROAD));
-				}
 
-				if (GetDisallowedRoadDirections(cur_tile) != DRD_NONE) return_cmd_error(STR_ERROR_DRIVE_THROUGH_ON_ONEWAY_ROAD);
+					if (GetDisallowedRoadDirections(cur_tile) != DRD_NONE) {
+						CommandCost ret = CheckOwnership(road_owner);
+						if (ret.Failed()) return ret;
+					}
+				}
 
 				/* There is a tram, check if we can build road+tram stop over it. */
 				if (HasBit(cur_rts, ROADTYPE_TRAM)) {
@@ -1105,8 +1145,8 @@ CommandCost FindJoiningBaseStation(StationID existing_station, StationID station
 	}
 
 	if (check_surrounding) {
-		/* Make sure there are no similar stations around us. */
-		CommandCost ret = GetStationAround(ta, existing_station, st);
+		/* Make sure there is no more than one other station around us that is owned by us. */
+		CommandCost ret = GetStationAround(ta, existing_station, _current_company, st);
 		if (ret.Failed()) return ret;
 	}
 
@@ -1399,13 +1439,7 @@ CommandCost CmdBuildRailStation(TileIndex tile_org, DoCommandFlag flags, uint32 
 		}
 
 		st->MarkTilesDirty(false);
-		st->UpdateVirtCoord();
-		UpdateStationAcceptance(st, false);
-		st->RecomputeIndustriesNear();
-		InvalidateWindowData(WC_SELECT_STATION, 0, 0);
-		InvalidateWindowData(WC_STATION_LIST, st->owner, 0);
-		SetWindowWidgetDirty(WC_STATION_VIEW, st->index, WID_SV_TRAINS);
-		DirtyCompanyInfrastructureWindows(st->owner);
+		st->AfterStationTileSetChange(true, STATION_RAIL);
 	}
 
 	return cost;
@@ -1767,16 +1801,16 @@ CommandCost CmdBuildRoadStop(TileIndex tile, DoCommandFlag flags, uint32 p1, uin
 	bool distant_join = (station_to_join != INVALID_STATION);
 
 	uint8 width = (uint8)GB(p1, 0, 8);
-	uint8 lenght = (uint8)GB(p1, 8, 8);
+	uint8 length = (uint8)GB(p1, 8, 8);
 
 	/* Check if the requested road stop is too big */
-	if (width > _settings_game.station.station_spread || lenght > _settings_game.station.station_spread) return_cmd_error(STR_ERROR_STATION_TOO_SPREAD_OUT);
+	if (width > _settings_game.station.station_spread || length > _settings_game.station.station_spread) return_cmd_error(STR_ERROR_STATION_TOO_SPREAD_OUT);
 	/* Check for incorrect width / length. */
-	if (width == 0 || lenght == 0) return CMD_ERROR;
+	if (width == 0 || length == 0) return CMD_ERROR;
 	/* Check if the first tile and the last tile are valid */
-	if (!IsValidTile(tile) || TileAddWrap(tile, width - 1, lenght - 1) == INVALID_TILE) return CMD_ERROR;
+	if (!IsValidTile(tile) || TileAddWrap(tile, width - 1, length - 1) == INVALID_TILE) return CMD_ERROR;
 
-	TileArea roadstop_area(tile, width, lenght);
+	TileArea roadstop_area(tile, width, length);
 
 	if (distant_join && (!_settings_game.station.distant_join_stations || !Station::IsValidID(station_to_join))) return CMD_ERROR;
 
@@ -1865,19 +1899,13 @@ CommandCost CmdBuildRoadStop(TileIndex tile, DoCommandFlag flags, uint32 p1, uin
 				MakeRoadStop(cur_tile, st->owner, st->index, rs_type, rts, ddir);
 			}
 			Company::Get(st->owner)->infrastructure.station++;
-			DirtyCompanyInfrastructureWindows(st->owner);
 
 			MarkTileDirtyByTile(cur_tile);
 		}
 	}
 
 	if (st != NULL) {
-		st->UpdateVirtCoord();
-		UpdateStationAcceptance(st, false);
-		st->RecomputeIndustriesNear();
-		InvalidateWindowData(WC_SELECT_STATION, 0, 0);
-		InvalidateWindowData(WC_STATION_LIST, st->owner, 0);
-		SetWindowWidgetDirty(WC_STATION_VIEW, st->index, WID_SV_ROADVEHS);
+		st->AfterStationTileSetChange(true, type ? STATION_TRUCK: STATION_BUS);
 	}
 	return cost;
 }
@@ -1972,7 +2000,6 @@ static CommandCost RemoveRoadStop(TileIndex tile, DoCommandFlag flags)
 			DoClearSquare(tile);
 		}
 
-		SetWindowWidgetDirty(WC_STATION_VIEW, st->index, WID_SV_ROADVEHS);
 		delete cur_stop;
 
 		/* Make sure no vehicle is going to the old roadstop */
@@ -1980,15 +2007,13 @@ static CommandCost RemoveRoadStop(TileIndex tile, DoCommandFlag flags)
 		FOR_ALL_ROADVEHICLES(v) {
 			if (v->First() == v && v->current_order.IsType(OT_GOTO_STATION) &&
 					v->dest_tile == tile) {
-				v->dest_tile = v->GetOrderStationLocation(st->index);
+				v->SetDestTile(v->GetOrderStationLocation(st->index));
 			}
 		}
 
 		st->rect.AfterRemoveTile(st, tile);
 
-		st->UpdateVirtCoord();
-		st->RecomputeIndustriesNear();
-		DeleteStationIfEmpty(st);
+		st->AfterStationTileSetChange(false, is_truck ? STATION_TRUCK: STATION_BUS);
 
 		/* Update the tile area of the truck/bus stop */
 		if (is_truck) {
@@ -2218,11 +2243,11 @@ CommandCost CmdBuildAirport(TileIndex tile, DoCommandFlag flags, uint32 p1, uint
 		return_cmd_error(STR_ERROR_STATION_TOO_SPREAD_OUT);
 	}
 
-	CommandCost cost = CheckFlatLand(airport_area, flags);
+	AirportTileTableIterator iter(as->table[layout], tile);
+	CommandCost cost = CheckFlatLandAirport(iter, flags);
 	if (cost.Failed()) return cost;
 
 	/* The noise level is the noise from the airport and reduce it to account for the distance to the town center. */
-	AirportTileTableIterator iter(as->table[layout], tile);
 	Town *nearest = AirportGetNearestTown(as, iter);
 	uint newnoise_level = GetAirportNoiseLevelForTown(as, iter, nearest->xy);
 
@@ -2300,13 +2325,8 @@ CommandCost CmdBuildAirport(TileIndex tile, DoCommandFlag flags, uint32 p1, uint
 		UpdateAirplanesOnNewStation(st);
 
 		Company::Get(st->owner)->infrastructure.airport++;
-		DirtyCompanyInfrastructureWindows(st->owner);
 
-		st->UpdateVirtCoord();
-		UpdateStationAcceptance(st, false);
-		st->RecomputeIndustriesNear();
-		InvalidateWindowData(WC_SELECT_STATION, 0, 0);
-		InvalidateWindowData(WC_STATION_LIST, st->owner, 0);
+		st->AfterStationTileSetChange(true, STATION_AIRPORT);
 		InvalidateWindowData(WC_STATION_VIEW, st->index, -1);
 
 		if (_settings_game.economy.station_noise_level) {
@@ -2390,11 +2410,9 @@ static CommandCost RemoveAirport(TileIndex tile, DoCommandFlag flags)
 		}
 
 		Company::Get(st->owner)->infrastructure.airport--;
-		DirtyCompanyInfrastructureWindows(st->owner);
 
-		st->UpdateVirtCoord();
-		st->RecomputeIndustriesNear();
-		DeleteStationIfEmpty(st);
+		st->AfterStationTileSetChange(false, STATION_AIRPORT);
+
 		DeleteNewGRFInspectWindow(GSF_AIRPORTS, st->index);
 	}
 
@@ -2538,16 +2556,10 @@ CommandCost CmdBuildDock(TileIndex tile, DoCommandFlag flags, uint32 p1, uint32 
 			Company::Get(st->owner)->infrastructure.water++;
 		}
 		Company::Get(st->owner)->infrastructure.station += 2;
-		DirtyCompanyInfrastructureWindows(st->owner);
 
 		MakeDock(tile, st->owner, st->index, direction, wc);
 
-		st->UpdateVirtCoord();
-		UpdateStationAcceptance(st, false);
-		st->RecomputeIndustriesNear();
-		InvalidateWindowData(WC_SELECT_STATION, 0, 0);
-		InvalidateWindowData(WC_STATION_LIST, st->owner, 0);
-		SetWindowWidgetDirty(WC_STATION_VIEW, st->index, WID_SV_SHIPS);
+		st->AfterStationTileSetChange(true, STATION_DOCK);
 	}
 
 	return CommandCost(EXPENSES_CONSTRUCTION, _price[PR_BUILD_STATION_DOCK]);
@@ -2586,12 +2598,8 @@ static CommandCost RemoveDock(TileIndex tile, DoCommandFlag flags)
 		st->facilities &= ~FACIL_DOCK;
 
 		Company::Get(st->owner)->infrastructure.station -= 2;
-		DirtyCompanyInfrastructureWindows(st->owner);
 
-		SetWindowWidgetDirty(WC_STATION_VIEW, st->index, WID_SV_SHIPS);
-		st->UpdateVirtCoord();
-		st->RecomputeIndustriesNear();
-		DeleteStationIfEmpty(st);
+		st->AfterStationTileSetChange(false, STATION_DOCK);
 
 		/* All ships that were going to our station, can't go to it anymore.
 		 * Just clear the order, then automatically the next appropriate order
@@ -2604,7 +2612,7 @@ static CommandCost RemoveDock(TileIndex tile, DoCommandFlag flags)
 			}
 
 			if (s->dest_tile == docking_location) {
-				s->dest_tile = 0;
+				s->SetDestTile(0);
 				s->current_order.Free();
 			}
 		}
@@ -2624,9 +2632,9 @@ const DrawTileSprites *GetStationTileLayout(StationType st, byte gfx)
  * Check whether a sprite is a track sprite, which can be replaced by a non-track ground sprite and a rail overlay.
  * If the ground sprite is suitable, \a ground is replaced with the new non-track ground sprite, and \a overlay_offset
  * is set to the overlay to draw.
- * @param          ti             Positional info for the tile to decide snowyness etc. May be NULL.
- * @param [in,out] ground         Groundsprite to draw.
- * @param [out]    overlay_offset Overlay to draw.
+ * @param         ti             Positional info for the tile to decide snowyness etc. May be NULL.
+ * @param[in,out] ground         Groundsprite to draw.
+ * @param[out]    overlay_offset Overlay to draw.
  * @return true if overlay can be drawn.
  */
 bool SplitGroundSpriteForOverlay(const TileInfo *ti, SpriteID *ground, RailTrackOffset *overlay_offset)
@@ -2634,21 +2642,29 @@ bool SplitGroundSpriteForOverlay(const TileInfo *ti, SpriteID *ground, RailTrack
 	bool snow_desert;
 	switch (*ground) {
 		case SPR_RAIL_TRACK_X:
+		case SPR_MONO_TRACK_X:
+		case SPR_MGLV_TRACK_X:
 			snow_desert = false;
 			*overlay_offset = RTO_X;
 			break;
 
 		case SPR_RAIL_TRACK_Y:
+		case SPR_MONO_TRACK_Y:
+		case SPR_MGLV_TRACK_Y:
 			snow_desert = false;
 			*overlay_offset = RTO_Y;
 			break;
 
 		case SPR_RAIL_TRACK_X_SNOW:
+		case SPR_MONO_TRACK_X_SNOW:
+		case SPR_MGLV_TRACK_X_SNOW:
 			snow_desert = true;
 			*overlay_offset = RTO_X;
 			break;
 
 		case SPR_RAIL_TRACK_Y_SNOW:
+		case SPR_MONO_TRACK_Y_SNOW:
+		case SPR_MGLV_TRACK_Y_SNOW:
 			snow_desert = true;
 			*overlay_offset = RTO_Y;
 			break;
@@ -3433,7 +3449,7 @@ void RerouteCargo(Station *st, CargoID c, StationID avoid, StationID avoid2)
 	/* Reroute cargo in station. */
 	ge.cargo.Reroute(UINT_MAX, &ge.cargo, avoid, avoid2, &ge);
 
-	/* Reroute cargo staged to be transfered. */
+	/* Reroute cargo staged to be transferred. */
 	for (std::list<Vehicle *>::iterator it(st->loading_vehicles.begin()); it != st->loading_vehicles.end(); ++it) {
 		for (Vehicle *v = *it; v != NULL; v = v->Next()) {
 			if (v->cargo_type != c) continue;
@@ -3443,7 +3459,7 @@ void RerouteCargo(Station *st, CargoID c, StationID avoid, StationID avoid2)
 }
 
 /**
- * Check all next hops of cargo packets in this station for existance of a
+ * Check all next hops of cargo packets in this station for existence of a
  * a valid link they may use to travel on. Reroute any cargo not having a valid
  * link and remove timed out links found like this from the linkgraph. We're
  * not all links here as that is expensive and useless. A link no one is using
@@ -3848,7 +3864,7 @@ uint MoveGoodsToStation(CargoID type, uint amount, SourceType source_type, Sourc
 		Station *st = *st_iter;
 
 		/* Is the station reserved exclusively for somebody else? */
-		if (st->town->exclusive_counter > 0 && st->town->exclusivity != st->owner) continue;
+		if (st->owner != OWNER_NONE && st->town->exclusive_counter > 0 && st->town->exclusivity != st->owner) continue;
 
 		if (st->goods[type].rating == 0) continue; // Lowest possible rating, better not to give cargo anymore
 
@@ -4230,7 +4246,7 @@ void FlowStat::Invalidate()
 }
 
 /**
- * Change share for specified station. By specifing INT_MIN as parameter you
+ * Change share for specified station. By specifying INT_MIN as parameter you
  * can erase a share. Newly added flows will be unrestricted.
  * @param st Next Hop to be removed.
  * @param flow Share to be added or removed.

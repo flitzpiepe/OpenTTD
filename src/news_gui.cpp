@@ -33,6 +33,7 @@
 #include "command_func.h"
 #include "company_base.h"
 #include "settings_internal.h"
+#include "guitimer_func.h"
 
 #include "widgets/news_widget.h"
 
@@ -44,8 +45,8 @@ const NewsItem *_statusbar_news_item = NULL;
 
 static uint MIN_NEWS_AMOUNT = 30;      ///< preferred minimum amount of news messages
 static uint _total_news = 0;           ///< current number of news items
-NewsItem *_oldest_news = NULL;         ///< head of news items queue
-static NewsItem *_latest_news = NULL;  ///< tail of news items queue
+static NewsItem *_oldest_news = NULL;  ///< head of news items queue
+NewsItem *_latest_news = NULL;         ///< tail of news items queue
 
 /**
  * Forced news item.
@@ -53,7 +54,7 @@ static NewsItem *_latest_news = NULL;  ///< tail of news items queue
  * If the message being shown was forced by the user, a pointer is stored
  * in _forced_news. Otherwise, \a _forced_news variable is NULL.
  */
-static const NewsItem *_forced_news = NULL;       ///< item the user has asked for
+static const NewsItem *_forced_news = NULL;
 
 /** Current news item (last item shown regularly). */
 static const NewsItem *_current_news = NULL;
@@ -260,16 +261,20 @@ struct NewsWindow : Window {
 	uint16 chat_height;   ///< Height of the chat window.
 	uint16 status_height; ///< Height of the status bar window
 	const NewsItem *ni;   ///< News item to display.
-	static uint duration; ///< Remaining time for showing current news message (may only be accessed while a news item is displayed).
+	static int duration;  ///< Remaining time for showing the current news message (may only be access while a news item is displayed).
+
+	GUITimer timer;
 
 	NewsWindow(WindowDesc *desc, const NewsItem *ni) : Window(desc), ni(ni)
 	{
-		NewsWindow::duration = 555;
+		NewsWindow::duration = 16650;
 		const Window *w = FindWindowByClass(WC_SEND_NETWORK_MSG);
 		this->chat_height = (w != NULL) ? w->height : 0;
 		this->status_height = FindWindowById(WC_STATUS_BAR, 0)->height;
 
 		this->flags |= WF_DISABLE_VP_SCROLL;
+
+		this->timer.SetInterval(15);
 
 		this->CreateNestedTree();
 
@@ -324,6 +329,11 @@ struct NewsWindow : Window {
 
 			case WID_N_MGR_FACE:
 				*size = maxdim(*size, GetSpriteSize(SPR_GRADIENT));
+				break;
+
+			case WID_N_MGR_NAME:
+				SetDParamStr(0, static_cast<const CompanyNewsInformation *>(this->ni->free_data)->president_name);
+				str = STR_JUST_RAW_STRING;
 				break;
 
 			case WID_N_MESSAGE:
@@ -485,16 +495,23 @@ struct NewsWindow : Window {
 		this->SetWindowTop(newtop);
 	}
 
-	virtual void OnTick()
+	virtual void OnRealtimeTick(uint delta_ms)
 	{
-		/* Scroll up newsmessages from the bottom in steps of 4 pixels */
-		int newtop = max(this->top - 4, _screen.height - this->height - this->status_height - this->chat_height);
-		this->SetWindowTop(newtop);
+		int count = this->timer.CountElapsed(delta_ms);
+		if (count > 0) {
+			/* Scroll up newsmessages from the bottom */
+			int newtop = max(this->top - 2 * count, _screen.height - this->height - this->status_height - this->chat_height);
+			this->SetWindowTop(newtop);
+		}
+
+		/* Decrement the news timer. We don't need to action an elapsed event here,
+		 * so no need to use TimerElapsed(). */
+		if (NewsWindow::duration > 0) NewsWindow::duration -= delta_ms;
 	}
 
 private:
 	/**
-	 * Moves the window so #newtop is new 'top' coordinate. Makes screen dirty where needed.
+	 * Moves the window to a new #top coordinate. Makes screen dirty where needed.
 	 * @param newtop new top coordinate
 	 */
 	void SetWindowTop(int newtop)
@@ -536,7 +553,7 @@ private:
 	}
 };
 
-/* static */ uint NewsWindow::duration = 0; // Instance creation.
+/* static */ int NewsWindow::duration = 0; // Instance creation.
 
 
 /** Open up an own newspaper window for the news item */
@@ -588,11 +605,8 @@ static bool ReadyForNextItem()
 	 * Check if the status bar message is still being displayed? */
 	if (IsNewsTickerShown()) return false;
 
-	/* Newspaper message, decrement duration counter */
-	if (NewsWindow::duration != 0) NewsWindow::duration--;
-
 	/* neither newsticker nor newspaper are running */
-	return (NewsWindow::duration == 0 || FindWindowById(WC_NEWS_WINDOW, 0) == NULL);
+	return (NewsWindow::duration <= 0 || FindWindowById(WC_NEWS_WINDOW, 0) == NULL);
 }
 
 /** Move to the next news item */
@@ -962,7 +976,6 @@ void ShowLastNewsMessage()
  * @param y position of the string
  * @param colour the colour the string will be shown in
  * @param *ni NewsItem being printed
- * @param maxw maximum width of string in pixels
  */
 static void DrawNewsString(uint left, uint right, int y, TextColour colour, const NewsItem *ni)
 {

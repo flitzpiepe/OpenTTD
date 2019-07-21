@@ -1052,6 +1052,8 @@ STR_GAME_OPTIONS_GUI_ZOOM_DROPDOWN_NORMAL                       :Normálne
 STR_GAME_OPTIONS_GUI_ZOOM_DROPDOWN_2X_ZOOM                      :Dvojnásobná veľkosť
 STR_GAME_OPTIONS_GUI_ZOOM_DROPDOWN_4X_ZOOM                      :Štvornásobná veľkosť
 
+
+
 STR_GAME_OPTIONS_BASE_GRF                                       :{BLACK}Základná sada grafiky
 STR_GAME_OPTIONS_BASE_GRF_TOOLTIP                               :{BLACK}Zvoľte sadu grafiky, ktorá má byť použitá
 STR_GAME_OPTIONS_BASE_GRF_STATUS                                :{RED}{NUM} chýbajúci/poškodený súbor{P "" "y" "ov"}
@@ -1318,6 +1320,7 @@ STR_CONFIG_SETTING_STOP_ON_COMPETITOR_ROAD_HELPTEXT             :Povoliť budova
 STR_CONFIG_SETTING_DYNAMIC_ENGINES_EXISTING_VEHICLES            :{WHITE}Zmena nastavenia nie je možná, pokiaľ sa tu nachádzajú vozidlá
 STR_CONFIG_SETTING_INFRASTRUCTURE_MAINTENANCE                   :Správa infraštruktúry: {STRING}
 STR_CONFIG_SETTING_INFRASTRUCTURE_MAINTENANCE_HELPTEXT          :Ak je zapnuté, infraštruktúra generuje výdavky na údržbu. Poplatky rastú proporcionálne s veľkosťou spoločnosti, čo ovplyvňuje viac veľké spoločnosti ako malé.
+
 
 STR_CONFIG_SETTING_NEVER_EXPIRE_AIRPORTS                        :Letiská nikdy neexiprujú: {STRING}
 STR_CONFIG_SETTING_NEVER_EXPIRE_AIRPORTS_HELPTEXT               :Povoluje zachovať vsetky typy letísk navzdy.
@@ -1867,7 +1870,6 @@ STR_CHEAT_CHANGE_DATE_QUERY_CAPT                                :{WHITE}Zmeniť 
 STR_CHEAT_SETUP_PROD                                            :{LTBLUE}Povoliť zmenu objemu výroby: {ORANGE}{STRING}
 
 # Livery window
-STR_LIVERY_CAPTION                                              :{WHITE}Nová farebná schéma
 
 STR_LIVERY_GENERAL_TOOLTIP                                      :{BLACK}Zobraziť všeobecné farebné schémy
 STR_LIVERY_TRAIN_TOOLTIP                                        :{BLACK}Zobraziť farebné schémy pre vlaky
@@ -2129,9 +2131,9 @@ STR_NETWORK_NEED_GAME_PASSWORD_CAPTION                          :{WHITE}Server j
 STR_NETWORK_NEED_COMPANY_PASSWORD_CAPTION                       :{WHITE}Spoločnosť je chránená. Zadaj heslo
 
 # Network company list added strings
-STR_NETWORK_COMPANY_LIST_CLIENT_LIST                            :{WHITE}Zoznam klientov
-STR_NETWORK_COMPANY_LIST_SPECTATE                               :{WHITE}Pozorovať
-STR_NETWORK_COMPANY_LIST_NEW_COMPANY                            :{WHITE}Nová spoločnosť
+STR_NETWORK_COMPANY_LIST_CLIENT_LIST                            :Zoznam klientov
+STR_NETWORK_COMPANY_LIST_SPECTATE                               :Pozorovať
+STR_NETWORK_COMPANY_LIST_NEW_COMPANY                            :Nová spoločnosť
 
 # Network client list
 STR_NETWORK_CLIENTLIST_KICK                                     :Vyhodit
@@ -2146,7 +2148,6 @@ STR_NETWORK_CLIENT                                              :Klient
 STR_NETWORK_SPECTATORS                                          :Pozorovatelia
 
 STR_NETWORK_GIVE_MONEY_CAPTION                                  :{WHITE}Vložte čiastku ktorú chcete dať
-STR_NETWORK_TOOLBAR_LIST_SPECTATOR                              :{BLACK}Pozorovateľ
 
 # Network set password
 STR_COMPANY_PASSWORD_CANCEL                                     :{BLACK}Neukladať zadané heslo
@@ -2748,7 +2749,7 @@ STR_LAI_OBJECT_DESCRIPTION_COMPANY_OWNED_LAND                   :Spoločnosťou 
 STR_ABOUT_OPENTTD                                               :{WHITE}OpenTTD
 STR_ABOUT_ORIGINAL_COPYRIGHT                                    :{BLACK}Pôvodný copyright: {COPYRIGHT} 1995 Chris Sawyer, všetky práva vyhradené
 STR_ABOUT_VERSION                                               :{BLACK}OpenTTD verzia {REV}
-STR_ABOUT_COPYRIGHT_OPENTTD                                     :{BLACK}OpenTTD {COPYRIGHT} 2002-2018 team OpenTTD
+STR_ABOUT_COPYRIGHT_OPENTTD                                     :{BLACK}OpenTTD {COPYRIGHT} 2002-2019 team OpenTTD
 
 # Framerate display window
 ############ Leave those lines in this order!!
@@ -3352,17 +3353,7 @@ STR_INDUSTRY_VIEW_LOCATION_TOOLTIP                              :{BLACK}Vycentro
 STR_INDUSTRY_VIEW_PRODUCTION_LEVEL                              :{BLACK}Úroveň produkcie: {YELLOW}{COMMA}%
 STR_INDUSTRY_VIEW_INDUSTRY_ANNOUNCED_CLOSURE                    :{YELLOW}Priemysel oznámil blížiace sa uzatvorenie!
 
-############ range for requires starts
-STR_INDUSTRY_VIEW_REQUIRES_CARGO                                :{BLACK}Potrebuje: {YELLOW}{STRING}{STRING}
-STR_INDUSTRY_VIEW_REQUIRES_CARGO_CARGO                          :{BLACK}Potrebuje: {YELLOW}{STRING}{STRING}, {STRING}{STRING}
-STR_INDUSTRY_VIEW_REQUIRES_CARGO_CARGO_CARGO                    :{BLACK}Potrebuje: {YELLOW}{STRING}{STRING}, {STRING}{STRING}, {STRING}{STRING}
-############ range for requires ends
 
-
-############ range for produces starts
-STR_INDUSTRY_VIEW_PRODUCES_CARGO                                :{BLACK}Produkuje: {YELLOW}{STRING}{STRING}
-STR_INDUSTRY_VIEW_PRODUCES_CARGO_CARGO                          :{BLACK}Produkuje: {YELLOW}{STRING}{STRING}, {STRING}{STRING}
-############ range for produces ends
 
 STR_CONFIG_GAME_PRODUCTION                                      :{WHITE}Zmeniť produkciu (násobky 8, až do 2040)
 STR_CONFIG_GAME_PRODUCTION_LEVEL                                :{WHITE}Zmeniť úroveň produkcie (percentuálne, až do 800%)
@@ -4271,7 +4262,6 @@ STR_ERROR_TOO_MANY_STATIONS_LOADING                             :{WHITE}Príliš
 STR_ERROR_TOO_MANY_STATION_SPECS                                :{WHITE}Veľa častí vlakovej stanice
 STR_ERROR_TOO_MANY_BUS_STOPS                                    :{WHITE}Príliš veľa autobusových zastávok
 STR_ERROR_TOO_MANY_TRUCK_STOPS                                  :{WHITE}Príliš veľa zastávok nákladných automobilov
-STR_ERROR_TOO_CLOSE_TO_ANOTHER_STATION                          :{WHITE}Príliš blízko inej stanice/vykládky
 STR_ERROR_TOO_CLOSE_TO_ANOTHER_DOCK                             :{WHITE}Príliš blízko iného prístavu
 STR_ERROR_TOO_CLOSE_TO_ANOTHER_AIRPORT                          :{WHITE}Príliš blízko iného letiska
 STR_ERROR_CAN_T_RENAME_STATION                                  :{WHITE}Stanica sa nedá premenovať...

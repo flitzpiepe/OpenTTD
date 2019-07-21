@@ -15,7 +15,7 @@
 #include "gfx_type.h"
 #include "viewport_type.h"
 #include "window_type.h"
-#include "tile_type.h"
+#include "tile_map.h"
 #include "station_type.h"
 
 static const int TILE_HEIGHT_STEP = 50; ///< One Z unit tile height difference is displayed as 50m.
@@ -34,6 +34,7 @@ void MarkAllViewportsDirty(int left, int top, int right, int bottom);
 bool DoZoomInOutWindow(ZoomStateChange how, Window *w);
 void ZoomInOrOutToCursorWindow(bool in, Window * w);
 Point GetTileZoomCenterWindow(bool in, Window * w);
+void FixTitleGameZoom();
 void HandleZoomMessage(Window *w, const ViewPort *vp, byte widget_zoom_in, byte widget_zoom_out);
 
 /**
@@ -78,9 +79,18 @@ void UpdateAllVirtCoords();
 
 extern Point _tile_fract_coords;
 
-void MarkTileDirtyByTile(TileIndex tile, int bridge_level_offset = 0);
+void MarkTileDirtyByTile(TileIndex tile, int bridge_level_offset, int tile_height_override);
 
-void MarkTileDirtyByTileOutsideMap(int x, int y);
+/**
+ * Mark a tile given by its index dirty for repaint.
+ * @param tile The tile to mark dirty.
+ * @param bridge_level_offset Height of bridge on tile to also mark dirty. (Height level relative to north corner.)
+ * @ingroup dirty
+ */
+static inline void MarkTileDirtyByTile(TileIndex tile, int bridge_level_offset = 0)
+{
+	MarkTileDirtyByTile(tile, bridge_level_offset, TileHeight(tile));
+}
 
 Point GetViewportStationMiddle(const ViewPort *vp, const Station *st);
 

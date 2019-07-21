@@ -46,6 +46,7 @@ typedef SmallVector<Train *, 16> TrainList;
 RailtypeInfo _railtypes[RAILTYPE_END];
 RailType _sorted_railtypes[RAILTYPE_END];
 uint8 _sorted_railtypes_size;
+RailTypes _railtypes_hidden_mask;
 
 /** Enum holding the signal offset in the sprite sheet according to the side it is representing. */
 enum SignalOffsets {
@@ -78,6 +79,8 @@ void ResetRailTypes()
 		RailTypeLabelList(), 0, 0, RAILTYPES_NONE, RAILTYPES_NONE, 0,
 		{}, {} };
 	for (; i < lengthof(_railtypes);          i++) _railtypes[i] = empty_railtype;
+
+	_railtypes_hidden_mask = RAILTYPES_NONE;
 }
 
 void ResolveRailTypeGUISprites(RailtypeInfo *rti)
@@ -140,11 +143,12 @@ void InitRailTypes()
 	for (RailType rt = RAILTYPE_BEGIN; rt != RAILTYPE_END; rt++) {
 		RailtypeInfo *rti = &_railtypes[rt];
 		ResolveRailTypeGUISprites(rti);
+		if (HasBit(rti->flags, RTF_HIDDEN)) SetBit(_railtypes_hidden_mask, rt);
 	}
 
 	_sorted_railtypes_size = 0;
 	for (RailType rt = RAILTYPE_BEGIN; rt != RAILTYPE_END; rt++) {
-		if (_railtypes[rt].label != 0) {
+		if (_railtypes[rt].label != 0 && !HasBit(_railtypes_hidden_mask, rt)) {
 			_sorted_railtypes[_sorted_railtypes_size++] = rt;
 		}
 	}
@@ -1561,6 +1565,7 @@ CommandCost CmdConvertRail(TileIndex tile, DoCommandFlag flags, uint32 p1, uint3
 
 	CommandCost cost(EXPENSES_CONSTRUCTION);
 	CommandCost error = CommandCost(STR_ERROR_NO_SUITABLE_RAILROAD_TRACK); // by default, there is no track to convert.
+	bool found_convertible_track = false; // whether we actually did convert some track (see bug #7633)
 
 	TileIterator *iter = diagonal ? (TileIterator *)new DiagonalTileIterator(area_start, area_end) : new OrthogonalTileIterator(area_start, area_end);
 	for (; (tile = *iter) != INVALID_TILE; ++(*iter)) {
@@ -1656,6 +1661,7 @@ CommandCost CmdConvertRail(TileIndex tile, DoCommandFlag flags, uint32 p1, uint3
 							InvalidateWindowData(WC_VEHICLE_DEPOT, tile);
 							InvalidateWindowData(WC_BUILD_VEHICLE, tile);
 						}
+						found_convertible_track = true;
 						cost.AddCost(RailConvertCost(type, totype));
 						break;
 
@@ -1667,6 +1673,7 @@ CommandCost CmdConvertRail(TileIndex tile, DoCommandFlag flags, uint32 p1, uint3
 								YapfNotifyTrackLayoutChange(tile, RemoveFirstTrack(&tracks));
 							}
 						}
+						found_convertible_track = true;
 						cost.AddCost(RailConvertCost(type, totype) * CountBits(GetTrackBits(tile)));
 						break;
 				}
@@ -1729,6 +1736,7 @@ CommandCost CmdConvertRail(TileIndex tile, DoCommandFlag flags, uint32 p1, uint3
 					}
 				}
 
+				found_convertible_track = true;
 				cost.AddCost((GetTunnelBridgeLength(tile, endtile) + 2) * RailConvertCost(type, totype));
 				break;
 			}
@@ -1739,6 +1747,7 @@ CommandCost CmdConvertRail(TileIndex tile, DoCommandFlag flags, uint32 p1, uint3
 					YapfNotifyTrackLayoutChange(tile, track);
 				}
 
+				found_convertible_track = true;
 				cost.AddCost(RailConvertCost(type, totype));
 				break;
 		}
@@ -1756,7 +1765,7 @@ CommandCost CmdConvertRail(TileIndex tile, DoCommandFlag flags, uint32 p1, uint3
 	}
 
 	delete iter;
-	return (cost.GetCost() == 0) ? error : cost;
+	return found_convertible_track ? cost : error;
 }
 
 static CommandCost RemoveTrainDepot(TileIndex tile, DoCommandFlag flags)
@@ -2897,11 +2906,9 @@ int TicksToLeaveDepot(const Train *v)
 		case DIAGDIR_NE: return  ((int)(v->x_pos & 0x0F) - ((_fractcoords_enter[dir] & 0x0F) - (length + 1)));
 		case DIAGDIR_SE: return -((int)(v->y_pos & 0x0F) - ((_fractcoords_enter[dir] >> 4)   + (length + 1)));
 		case DIAGDIR_SW: return -((int)(v->x_pos & 0x0F) - ((_fractcoords_enter[dir] & 0x0F) + (length + 1)));
-		default:
 		case DIAGDIR_NW: return  ((int)(v->y_pos & 0x0F) - ((_fractcoords_enter[dir] >> 4)   - (length + 1)));
+		default: NOT_REACHED();
 	}
-
-	return 0; // make compilers happy
 }
 
 /**
@@ -2910,48 +2917,48 @@ int TicksToLeaveDepot(const Train *v)
  */
 static VehicleEnterTileStatus VehicleEnter_Track(Vehicle *u, TileIndex tile, int x, int y)
 {
-	/* this routine applies only to trains in depot tiles */
+	/* This routine applies only to trains in depot tiles. */
 	if (u->type != VEH_TRAIN || !IsRailDepotTile(tile)) return VETSB_CONTINUE;
 
-	Train *v = Train::From(u);
-
-	/* depot direction */
+	/* Depot direction. */
 	DiagDirection dir = GetRailDepotDirection(tile);
-
-	/* Calculate the point where the following wagon should be activated. */
-	int length = v->CalcNextVehicleOffset();
-
-	byte fract_coord_leave =
-		((_fractcoords_enter[dir] & 0x0F) + // x
-			(length + 1) * _deltacoord_leaveoffset[dir]) +
-		(((_fractcoords_enter[dir] >> 4) +  // y
-			((length + 1) * _deltacoord_leaveoffset[dir + 4])) << 4);
 
 	byte fract_coord = (x & 0xF) + ((y & 0xF) << 4);
 
-	if (_fractcoords_behind[dir] == fract_coord) {
-		/* make sure a train is not entering the tile from behind */
-		return VETSB_CANNOT_ENTER;
-	} else if (_fractcoords_enter[dir] == fract_coord) {
-		if (DiagDirToDir(ReverseDiagDir(dir)) == v->direction) {
-			/* enter the depot */
-			v->track = TRACK_BIT_DEPOT,
-			v->vehstatus |= VS_HIDDEN; // hide it
-			v->direction = ReverseDir(v->direction);
-			if (v->Next() == NULL) VehicleEnterDepot(v->First());
-			v->tile = tile;
+	/* Make sure a train is not entering the tile from behind. */
+	if (_fractcoords_behind[dir] == fract_coord) return VETSB_CANNOT_ENTER;
 
-			InvalidateWindowData(WC_VEHICLE_DEPOT, v->tile);
-			return VETSB_ENTERED_WORMHOLE;
-		}
-	} else if (fract_coord_leave == fract_coord) {
-		if (DiagDirToDir(dir) == v->direction) {
-			/* leave the depot? */
+	Train *v = Train::From(u);
+
+	/* Leaving depot? */
+	if (v->direction == DiagDirToDir(dir)) {
+		/* Calculate the point where the following wagon should be activated. */
+		int length = v->CalcNextVehicleOffset();
+
+		byte fract_coord_leave =
+			((_fractcoords_enter[dir] & 0x0F) + // x
+				(length + 1) * _deltacoord_leaveoffset[dir]) +
+			(((_fractcoords_enter[dir] >> 4) +  // y
+				((length + 1) * _deltacoord_leaveoffset[dir + 4])) << 4);
+
+		if (fract_coord_leave == fract_coord) {
+			/* Leave the depot. */
 			if ((v = v->Next()) != NULL) {
 				v->vehstatus &= ~VS_HIDDEN;
 				v->track = (DiagDirToAxis(dir) == AXIS_X ? TRACK_BIT_X : TRACK_BIT_Y);
 			}
 		}
+	} else if (_fractcoords_enter[dir] == fract_coord) {
+		/* Entering depot. */
+		assert(DiagDirToDir(ReverseDiagDir(dir)) == v->direction);
+		v->track = TRACK_BIT_DEPOT,
+		v->vehstatus |= VS_HIDDEN;
+		v->direction = ReverseDir(v->direction);
+		if (v->Next() == NULL) VehicleEnterDepot(v->First());
+		v->tile = tile;
+
+		InvalidateWindowData(WC_VEHICLE_DEPOT, v->tile);
+		return VETSB_ENTERED_WORMHOLE;
 	}
 
 	return VETSB_CONTINUE;

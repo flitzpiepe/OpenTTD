@@ -99,7 +99,7 @@ struct GUISettings {
 	bool   smooth_scroll;                    ///< smooth scroll viewports
 	bool   measure_tooltip;                  ///< show a permanent tooltip when dragging tools
 	byte   liveries;                         ///< options for displaying company liveries, 0=none, 1=self, 2=all
-	bool   prefer_teamchat;                  ///< choose the chat message target with <ENTER>, true=all clients, false=your team
+	bool   prefer_teamchat;                  ///< choose the chat message target with \<ENTER\>, true=all clients, false=your team
 	uint8  advanced_vehicle_list;            ///< use the "advanced" vehicle list
 	uint8  loading_indicators;               ///< show loading indicators
 	uint8  default_rail_type;                ///< the default rail type for the rail GUI
@@ -146,6 +146,7 @@ struct GUISettings {
 	byte   missing_strings_threshold;        ///< the number of missing strings before showing the warning
 	uint8  graph_line_thickness;             ///< the thickness of the lines in the various graph guis
 	uint8  osk_activation;                   ///< Mouse gesture to trigger the OSK.
+	byte   starting_colour;                  ///< default color scheme for the company to start a new game with
 
 	uint16 console_backlog_timeout;          ///< the minimum amount of time items should be in the console backlog before they will be removed in ~3 seconds granularity.
 	uint16 console_backlog_length;           ///< the minimum amount of items in the console backlog before items will be removed.

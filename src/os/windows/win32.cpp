@@ -17,6 +17,7 @@
 #include <windows.h>
 #include <fcntl.h>
 #include <regstr.h>
+#define NO_SHOBJIDL_SORTDIRECTION // Avoid multiple definition of SORT_ASCENDING
 #include <shlobj.h> /* SHGetFolderPath */
 #include <shellapi.h>
 #include "win32.h"
@@ -30,10 +31,7 @@
 #include <sys/stat.h>
 #include "../../language.h"
 
-/* Due to TCHAR, strncat and strncpy have to remain (for a while). */
 #include "../../safeguards.h"
-#undef strncat
-#undef strncpy
 
 static bool _has_console;
 static bool _cursor_disable = true;
@@ -80,7 +78,7 @@ bool LoadLibraryList(Function proc[], const char *dll)
 void ShowOSErrorBox(const char *buf, bool system)
 {
 	MyShowCursor(true);
-	MessageBox(GetActiveWindow(), OTTD2FS(buf), _T("Error!"), MB_ICONSTOP);
+	MessageBox(GetActiveWindow(), OTTD2FS(buf), _T("Error!"), MB_ICONSTOP | MB_TASKMODAL);
 }
 
 void OSOpenBrowser(const char *url)
@@ -300,7 +298,7 @@ void CreateConsole()
 	if (_has_console) return;
 	_has_console = true;
 
-	AllocConsole();
+	if (!AllocConsole()) return;
 
 	hand = GetStdHandle(STD_OUTPUT_HANDLE);
 	GetConsoleScreenBufferInfo(hand, &coninfo);
@@ -625,11 +623,11 @@ char *convert_from_fs(const TCHAR *name, char *utf8_buf, size_t buflen)
  * Convert from OpenTTD's encoding to that of the environment in
  * UNICODE. OpenTTD encoding is UTF8, local is wide
  * @param name pointer to a valid string that will be converted
- * @param utf16_buf pointer to a valid wide-char buffer that will receive the
+ * @param system_buf pointer to a valid wide-char buffer that will receive the
  * converted string
  * @param buflen length in wide characters of the receiving buffer
  * @param console_cp convert to the console encoding instead of the normal system encoding.
- * @return pointer to utf16_buf. If conversion fails the string is of zero-length
+ * @return pointer to system_buf. If conversion fails the string is of zero-length
  */
 TCHAR *convert_to_fs(const char *name, TCHAR *system_buf, size_t buflen, bool console_cp)
 {

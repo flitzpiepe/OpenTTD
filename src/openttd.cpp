@@ -62,6 +62,7 @@
 #include "town.h"
 #include "subsidy_func.h"
 #include "gfx_layout.h"
+#include "viewport_func.h"
 #include "viewport_sprite_sorter.h"
 #include "framerate_type.h"
 
@@ -76,7 +77,7 @@ void IncreaseDate();
 void DoPaletteAnimations();
 void MusicLoop();
 void ResetMusic();
-void CallWindowTickEvent();
+void CallWindowGameTickEvent();
 bool HandleBootstrap();
 
 extern Company *DoStartupNewCompany(bool is_ai, CompanyID company = INVALID_COMPANY);
@@ -117,7 +118,9 @@ void CDECL error(const char *s, ...)
 	vseprintf(buf, lastof(buf), s, va);
 	va_end(va);
 
-	ShowOSErrorBox(buf, true);
+	if (VideoDriver::GetInstance() == NULL || VideoDriver::GetInstance()->HasGUI()) {
+		ShowOSErrorBox(buf, true);
+	}
 
 	/* Set the error message for the crash log and then invoke it. */
 	CrashLog::SetErrorMessage(buf);
@@ -168,7 +171,7 @@ static void ShowHelp()
 		"  -P password         = Password to join company\n"
 		"  -D [ip][:port]      = Start dedicated server\n"
 		"  -l ip[:port]        = Redirect DEBUG()\n"
-#if !defined(__MORPHOS__) && !defined(__AMIGA__) && !defined(WIN32)
+#if !defined(__MORPHOS__) && !defined(__AMIGA__) && !defined(_WIN32)
 		"  -f                  = Fork into the background (dedicated only)\n"
 #endif
 #endif /* ENABLE_NETWORK */
@@ -212,7 +215,7 @@ static void ShowHelp()
 
 	/* ShowInfo put output to stderr, but version information should go
 	 * to stdout; this is the only exception */
-#if !defined(WIN32) && !defined(WIN64)
+#if !defined(_WIN32)
 	printf("%s\n", buf);
 #else
 	ShowInfo(buf);
@@ -221,7 +224,7 @@ static void ShowHelp()
 
 static void WriteSavegameInfo(const char *name)
 {
-	extern uint16 _sl_version;
+	extern SaveLoadVersion _sl_version;
 	uint32 last_ottd_rev = 0;
 	byte ever_modified = 0;
 	bool removed_newgrfs = false;
@@ -250,7 +253,7 @@ static void WriteSavegameInfo(const char *name)
 
 	/* ShowInfo put output to stderr, but version information should go
 	 * to stdout; this is the only exception */
-#if !defined(WIN32) && !defined(WIN64)
+#if !defined(_WIN32)
 	printf("%s\n", buf);
 #else
 	ShowInfo(buf);
@@ -278,7 +281,7 @@ static void ParseResolution(Dimension *res, const char *s)
 
 
 /**
- * Unitializes drivers, frees allocated memory, cleans pools, ...
+ * Uninitializes drivers, frees allocated memory, cleans pools, ...
  * Generally, prepares the game for shutting down
  */
 static void ShutdownGame()
@@ -337,6 +340,7 @@ static void LoadIntroGame(bool load_newgrfs = true)
 		SetLocalCompany(COMPANY_FIRST);
 	}
 
+	FixTitleGameZoom();
 	_pause_mode = PM_UNPAUSED;
 	_cursor.fix_at = false;
 
@@ -365,6 +369,9 @@ void MakeNewgameSettingsLive()
 		_settings_game.ai_config[c] = NULL;
 		if (_settings_newgame.ai_config[c] != NULL) {
 			_settings_game.ai_config[c] = new AIConfig(_settings_newgame.ai_config[c]);
+			if (!AIConfig::GetConfig(c, AIConfig::SSS_FORCE_GAME)->HasScript()) {
+				AIConfig::GetConfig(c, AIConfig::SSS_FORCE_GAME)->Change(NULL);
+			}
 		}
 	}
 	_settings_game.game_config = NULL;
@@ -385,7 +392,7 @@ void OpenBrowser(const char *url)
 /** Callback structure of statements to be executed after the NewGRF scan. */
 struct AfterNewGRFScan : NewGRFScanCallback {
 	Year startyear;                    ///< The start year.
-	uint generation_seed;              ///< Seed for the new game.
+	uint32 generation_seed;            ///< Seed for the new game.
 	char *dedicated_host;              ///< Hostname for the dedicated server.
 	uint16 dedicated_port;             ///< Port for the dedicated server.
 	char *network_conn;                ///< Information about the server to connect to, or NULL.
@@ -405,6 +412,9 @@ struct AfterNewGRFScan : NewGRFScanCallback {
 			join_server_password(NULL), join_company_password(NULL),
 			save_config_ptr(save_config_ptr), save_config(true)
 	{
+		/* Visual C++ 2015 fails compiling this line (AfterNewGRFScan::generation_seed undefined symbol)
+		 * if it's placed outside a member function, directly in the struct body. */
+		assert_compile(sizeof(generation_seed) == sizeof(_settings_game.game_creation.generation_seed));
 	}
 
 	virtual void OnNewGRFsScanned()
@@ -508,7 +518,7 @@ static const OptionData _options[] = {
 	 GETOPT_SHORT_VALUE('l'),
 	 GETOPT_SHORT_VALUE('p'),
 	 GETOPT_SHORT_VALUE('P'),
-#if !defined(__MORPHOS__) && !defined(__AMIGA__) && !defined(WIN32)
+#if !defined(__MORPHOS__) && !defined(__AMIGA__) && !defined(_WIN32)
 	 GETOPT_SHORT_NOVAL('f'),
 #endif
 #endif /* ENABLE_NETWORK */
@@ -608,7 +618,7 @@ int openttd_main(int argc, char *argv[])
 		case 'r': ParseResolution(&resolution, mgo.opt); break;
 		case 't': scanner->startyear = atoi(mgo.opt); break;
 		case 'd': {
-#if defined(WIN32)
+#if defined(_WIN32)
 				CreateConsole();
 #endif
 				if (mgo.opt != NULL) SetDebugString(mgo.opt);
@@ -666,7 +676,7 @@ int openttd_main(int argc, char *argv[])
 
 			goto exit_noshutdown;
 		}
-		case 'G': scanner->generation_seed = atoi(mgo.opt); break;
+		case 'G': scanner->generation_seed = strtoul(mgo.opt, NULL, 10); break;
 		case 'c': free(_config_file); _config_file = stredup(mgo.opt); break;
 		case 'x': scanner->save_config = false; break;
 		case 'h':
@@ -936,6 +946,14 @@ static void MakeNewGameDone()
 	Company *c = Company::Get(COMPANY_FIRST);
 	c->settings = _settings_client.company;
 
+	/* Overwrite color from settings if needed
+	 * COLOUR_END corresponds to Random colour */
+	if (_settings_client.gui.starting_colour != COLOUR_END) {
+		c->colour = _settings_client.gui.starting_colour;
+		ResetCompanyLivery(c);
+		_company_colours[c->index] = (Colours)c->colour;
+	}
+
 	IConsoleCmdExec("exec scripts/game_start.scr 0");
 
 	SetLocalCompany(COMPANY_FIRST);
@@ -986,9 +1004,9 @@ static void MakeNewEditorWorld()
  * Load the specified savegame but on error do different things.
  * If loading fails due to corrupt savegame, bad version, etc. go back to
  * a previous correct state. In the menu for example load the intro game again.
- * @param mode mode of loading, either SL_LOAD or SL_OLD_LOAD
- * @param newgm switch to this mode of loading fails due to some unknown error
  * @param filename file to be loaded
+ * @param fop mode of loading, always SLO_LOAD
+ * @param newgm switch to this mode of loading fails due to some unknown error
  * @param subdir default directory to look for filename, set to 0 if not needed
  * @param lf Load filter to use, if NULL: use filename + subdir.
  */
@@ -1349,7 +1367,6 @@ void StateGameLoop()
 #ifndef DEBUG_DUMP_COMMANDS
 		Game::GameLoop();
 #endif
-		CallWindowTickEvent();
 		return;
 	}
 
@@ -1367,7 +1384,7 @@ void StateGameLoop()
 		BasePersistentStorageArray::SwitchMode(PSM_LEAVE_GAMELOOP);
 		UpdateLandscapingLimits();
 
-		CallWindowTickEvent();
+		CallWindowGameTickEvent();
 		NewsLoop();
 	} else {
 		if (_debug_desync_level > 2 && _date_fract == 0 && (_date & 0x1F) == 0) {
@@ -1392,12 +1409,15 @@ void StateGameLoop()
 		BasePersistentStorageArray::SwitchMode(PSM_LEAVE_GAMELOOP);
 
 #ifndef DEBUG_DUMP_COMMANDS
-		AI::GameLoop();
-		Game::GameLoop();
+		{
+			PerformanceMeasurer framerate(PFE_ALLSCRIPTS);
+			AI::GameLoop();
+			Game::GameLoop();
+		}
 #endif
 		UpdateLandscapingLimits();
 
-		CallWindowTickEvent();
+		CallWindowGameTickEvent();
 		NewsLoop();
 		cur_company.Restore();
 	}
@@ -1460,10 +1480,6 @@ void GameLoop()
 	IncreaseSpriteLRU();
 	InteractiveRandom();
 
-	extern int _caret_timer;
-	_caret_timer += 3;
-	CursorTick();
-
 #ifdef ENABLE_NETWORK
 	/* Check for UDP stuff */
 	if (_network_available) NetworkBackgroundLoop();
@@ -1480,20 +1496,11 @@ void GameLoop()
 		/* Singleplayer */
 		StateGameLoop();
 	}
-
-	/* Check chat messages roughly once a second. */
-	static uint check_message = 0;
-	if (++check_message > 1000 / MILLISECONDS_PER_TICK) {
-		check_message = 0;
-		NetworkChatMessageLoop();
-	}
 #else
 	StateGameLoop();
 #endif /* ENABLE_NETWORK */
 
 	if (!_pause_mode && HasBit(_display_opt, DO_FULL_ANIMATION)) DoPaletteAnimations();
-
-	if (!_pause_mode || _game_mode == GM_EDITOR || _settings_game.construction.command_pause_level > CMDPL_NO_CONSTRUCTION) MoveAllTextEffects();
 
 	InputLoop();
 

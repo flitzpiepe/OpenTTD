@@ -71,9 +71,6 @@ rev.cpp
 road.cpp
 roadstop.cpp
 screenshot.cpp
-#if SDL
-	sdl.cpp
-#end
 settings.cpp
 signal.cpp
 signs.cpp
@@ -212,6 +209,7 @@ group.h
 group_gui.h
 group_type.h
 gui.h
+guitimer_func.h
 heightmap.h
 highscore.h
 hotkeys.h
@@ -313,7 +311,6 @@ roadstop_base.h
 roadveh.h
 safeguards.h
 screenshot.h
-sdl.h
 sound/sdl_s.h
 video/sdl_v.h
 settings_func.h
@@ -411,11 +408,13 @@ music/bemidi.h
 music/cocoa_m.h
 music/extmidi.h
 music/libtimidity.h
+music/fluidsynth.h
 music/os2_m.h
 music/qtmidi.h
 os/macosx/macos.h
 os/macosx/osx_stdafx.h
 os/macosx/splash.h
+os/macosx/string_osx.h
 sound/cocoa_s.h
 video/cocoa/cocoa_keys.h
 video/cocoa/cocoa_v.h
@@ -951,8 +950,8 @@ blitter/8bpp_optimized.hpp
 blitter/8bpp_simple.cpp
 blitter/8bpp_simple.hpp
 #end
-blitter/base.cpp
 blitter/base.hpp
+blitter/common.hpp
 blitter/factory.hpp
 blitter/null.cpp
 blitter/null.hpp
@@ -1133,6 +1132,9 @@ music/midifile.cpp
 #if LIBTIMIDITY
 	music/libtimidity.cpp
 #end
+#if FLUIDSYNTH
+	music/fluidsynth.cpp
+#end
 #end
 
 # Sound
@@ -1169,6 +1171,7 @@ sound/null_s.cpp
 		music/cocoa_m.cpp
 		sound/cocoa_s.cpp
 		os/macosx/splash.cpp
+		os/macosx/string_osx.cpp
 	#end
 #end
 

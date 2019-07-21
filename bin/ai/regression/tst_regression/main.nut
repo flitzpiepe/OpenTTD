@@ -253,7 +253,11 @@ function Regression::Bridge()
 		if (AIBridge.IsValidBridge(i)) j++;
 		print("  Bridge " + i);
 		print("    IsValidBridge():    " + AIBridge.IsValidBridge(i));
-		print("    GetName():          " + AIBridge.GetName(i));
+		print("    GetName():");
+		print("     VT_RAIL:           " + AIBridge.GetName(i, AIVehicle.VT_RAIL));
+		print("     VT_ROAD:           " + AIBridge.GetName(i, AIVehicle.VT_ROAD));
+		print("     VT_WATER:          " + AIBridge.GetName(i, AIVehicle.VT_WATER));
+		print("     VT_AIR:            " + AIBridge.GetName(i, AIVehicle.VT_AIR));
 		print("    GetMaxSpeed():      " + AIBridge.GetMaxSpeed(i));
 		print("    GetPrice():         " + AIBridge.GetPrice(i, 5));
 		print("    GetMaxLength():     " + AIBridge.GetMaxLength(i));
@@ -570,7 +574,7 @@ function Regression::Group()
 	local vehicle = AIVehicle.BuildVehicle(10000, 116);
 	print("  AIVehicle.BuildVehicle(): " + vehicle);
 	print("  GetNumEngines():          " + AIGroup.GetNumEngines(AIGroup.GROUP_ALL, 116));
-	local group = AIGroup.CreateGroup(AIVehicle.VT_ROAD);
+	local group = AIGroup.CreateGroup(AIVehicle.VT_ROAD, AIGroup.GROUP_INVALID);
 	print("  CreateGroup():            " + group);
 	print("  MoveVehicle():            " + AIGroup.MoveVehicle(group, vehicle));
 	print("  GetNumEngines():          " + AIGroup.GetNumEngines(group, 116));

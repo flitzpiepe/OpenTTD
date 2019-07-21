@@ -57,8 +57,8 @@ set_default() {
 	enable_translator="0"
 	enable_unicode="1"
 	enable_console="1";
-	enable_assert="1"
-	enable_strip="0"
+	enable_assert="0"
+	enable_strip="1"
 	enable_universal="0"
 	enable_osx_g5="0"
 	enable_cocoa_quartz="1"
@@ -83,6 +83,7 @@ set_default() {
 	with_midi=""
 	with_midi_arg=""
 	with_libtimidity="1"
+	with_fluidsynth="1"
 	with_freetype="1"
 	with_fontconfig="1"
 	with_icu_layout="1"
@@ -160,6 +161,7 @@ set_default() {
 		with_midi
 		with_midi_arg
 		with_libtimidity
+		with_fluidsynth
 		with_freetype
 		with_fontconfig
 		with_icu_layout
@@ -371,6 +373,10 @@ detect_params() {
 			--with-libtimidity)           with_libtimidity="2";;
 			--without-libtimidity)        with_libtimidity="0";;
 			--with-libtimidity=*)         with_libtimidity="$optarg";;
+
+			--with-fluidsynth)            with_fluidsynth="2";;
+			--without-fluidsynth)         with_fluidsynth="0";;
+			--with-fluidsynth=*)          with_fluidsynth="$optarg";;
 
 			--with-freetype)              with_freetype="2";;
 			--without-freetype)           with_freetype="0";;
@@ -814,7 +820,7 @@ check_params() {
 	pre_detect_with_zlib=$with_zlib
 	detect_zlib
 
-	if [ "$with_zlib" = "0" ] || [ -z "$zlib-config" ]; then
+	if [ "$with_zlib" = "0" ] || [ -z "$zlib_config" ]; then
 		log 1 "WARNING: zlib was not detected or disabled"
 		log 1 "WARNING: OpenTTD doesn't require zlib, but it does mean that many features"
 		log 1 "WARNING: (like loading most old savegames/scenarios, loading heightmaps,"
@@ -890,6 +896,7 @@ check_params() {
 	detect_icu_layout
 	detect_icu_sort
 	detect_libtimidity
+	detect_fluidsynth
 
 	if [ "$with_direct_music" != "0" ]; then
 		if [ "$os" != "MINGW" ] && [ "$os" != "CYGWIN" ]; then
@@ -1311,8 +1318,6 @@ make_compiler_cflags() {
 		if [ $cc_version -ge 110 ]; then
 			# remark #2259: non-pointer conversion from ... to ... may lose significant bits
 			flags="$flags -wd2259"
-			# Use c++0x mode so static_assert() is available
-			cxxflags="$cxxflags -std=c++0x"
 		fi
 
 		if [ "$enable_lto" != "0" ]; then
@@ -1325,7 +1330,8 @@ make_compiler_cflags() {
 		fi
 	elif echo "$version_line" | grep -q "clang"; then
 		# Enable some things only for certain clang versions
-		cc_version="`$1 -v 2>&1 | head -n 1 | sed s@[^0-9]@@g | cut -c 1-2`"
+		# Need to try really hard to get the version line, because OSX clang likes to hide its true version
+		cc_version="`$1 -v 2>&1 | grep -i version | head -n 1 | sed s@[^0-9]@@g | cut -c 1-2`"
 
 		# aliasing rules are not held in openttd code
 		flags="$flags -fno-strict-aliasing"
@@ -1371,11 +1377,6 @@ make_compiler_cflags() {
 		if [ "$enable_assert" -eq "0" ]; then
 			# do not warn about unused variables when building without asserts
 			flags="$flags -Wno-unused-variable"
-		fi
-
-		if [ "$cc_version" -ge "33" ]; then
-			# clang completed C++11 support in version 3.3
-			flags="$flags -std=c++11"
 		fi
 
 		# rdynamic is used to get useful stack traces from crash reports.
@@ -1436,12 +1437,6 @@ make_compiler_cflags() {
 			flags="$flags -Wnon-virtual-dtor"
 		fi
 
-		if [ $cc_version -ge 403 ] && [ $cc_version -lt 600 ]; then
-			# Use gnu++0x mode so static_assert() is available.
-			# Don't use c++0x, it breaks mingw (with gcc 4.4.0).
-			cxxflags="$cxxflags -std=gnu++0x"
-		fi
-
 		if [ $cc_version -eq 405 ]; then
 			# Prevent optimisation supposing enums are in a range specified by the standard
 			# For details, see http://gcc.gnu.org/PR43680
@@ -1463,7 +1458,7 @@ make_compiler_cflags() {
 		if [ $cc_version -ge 600 ]; then
 			# -flifetime-dse=2 (default since GCC 6) doesn't play
 			# well with our custom pool item allocator
-			cxxflags="$cxxflags -flifetime-dse=1 -std=gnu++14"
+			cxxflags="$cxxflags -flifetime-dse=1"
 		fi
 
 		if [ "$enable_lto" != "0" ]; then
@@ -1514,7 +1509,7 @@ make_cflags_and_ldflags() {
 	CXXFLAGS_ENV="$CXXFLAGS"
 	CXXFLAGS=""
 	# Libs to compile. In fact this is just LDFLAGS
-	LIBS="-lstdc++"
+	LIBS=""
 	# LDFLAGS used for HOST
 	LDFLAGS_ENV="$LDFLAGS"
 	LDFLAGS=""
@@ -1526,6 +1521,8 @@ make_cflags_and_ldflags() {
 
 	CFLAGS="$CFLAGS -D$os"
 	CFLAGS_BUILD="$CFLAGS_BUILD -D$os"
+	CXXFLAGS="$CXXFLAGS -std=c++11"
+	CXXFLAGS_BUILD="$CXXFLAGS_BUILD -std=c++11"
 
 	if [ "$enable_debug" = "0" ]; then
 		# No debug, add default stuff
@@ -1684,12 +1681,10 @@ make_cflags_and_ldflags() {
 		CFLAGS="$CFLAGS -DWITH_SDL"
 		# SDL must not add _GNU_SOURCE as it breaks many platforms
 		CFLAGS="$CFLAGS `$sdl_config --cflags | sed 's@-D_GNU_SOURCE[^ ]*@@'`"
-		if [ "$os" != "MINGW" ] && [ "$os" != "CYGWIN" ]; then
-			if [ "$enable_static" != "0" ]; then
-				LIBS="$LIBS `$sdl_config --static-libs`"
-			else
-				LIBS="$LIBS `$sdl_config --libs`"
-			fi
+		if [ "$enable_static" != "0" ]; then
+			LIBS="$LIBS `$sdl_config --static --libs`"
+		else
+			LIBS="$LIBS `$sdl_config --libs`"
 		fi
 	fi
 
@@ -1839,6 +1834,11 @@ make_cflags_and_ldflags() {
 		fi
 	fi
 
+	if [ -n "$fluidsynth" ]; then
+		LIBS="$LIBS -lfluidsynth"
+		CFLAGS="$CFLAGS -DFLUIDSYNTH"
+	fi
+
 	if [ "$with_iconv" != "0" ]; then
 		CFLAGS="$CFLAGS -DWITH_ICONV"
 		if [ "$link_to_iconv" = "yes" ]; then
@@ -1957,7 +1957,7 @@ make_cflags_and_ldflags() {
 		cflags_makedep="`echo | $cxx_host $CXXFLAGS -E -x c++ -dM - | sed 's@.define @-D@g;s@ .*@ @g;s@(.*)@@g' | tr -d '\r\n'`"
 
 		# Please escape ALL " within ` because e.g. "" terminates the string in some sh implementations
-		cflags_makedep="$cflags_makedep `echo \"$CFLAGS\" \"$CXXFLAGS\" | sed 's@ /@ -@g;s@-I[ ]*[^ ]*@@g'`"
+		cflags_makedep="$cflags_makedep `echo \"$CFLAGS\" \"$CXXFLAGS\" | sed 's@ /@ -@g;s@-I[ ]*[^ ]*@@g;s@[ ]*-[^D][^ ]*@@g'`"
 	else
 		makedepend=""
 	fi
@@ -2775,6 +2775,10 @@ detect_libtimidity() {
 	detect_pkg_config "$with_libtimidity" "libtimidity" "libtimidity_config" "0.1" "1"
 }
 
+detect_fluidsynth() {
+	detect_library "$with_fluidsynth" "fluidsynth" "" "" "fluidsynth.h"
+}
+
 detect_pkg_config() {
 	# $1 - config-param ($with_lzma value)
 	# $2 - package name ('liblzma')
@@ -2875,10 +2879,22 @@ detect_fontconfig() {
 }
 
 detect_icu_layout() {
+	if [ "$with_cocoa" != "0" ] && [ "$with_icu_layout" = "1" ]; then
+		log 1 "checking icu-lx... OSX, skipping"
+		icu_layout_config=""
+		return 0
+	fi
+
 	detect_pkg_config "$with_icu_layout" "icu-lx" "icu_layout_config" "4.8" "1"
 }
 
 detect_icu_sort() {
+	if [ "$with_cocoa" != "0" ] && [ "$with_icu_sort" = "1" ]; then
+		log 1 "checking icu-i18n... OSX, skipping"
+		icu_sort_config=""
+		return 0
+	fi
+
 	detect_pkg_config "$with_icu_sort" "icu-i18n" "icu_sort_config" "4.8" "1"
 }
 
@@ -2900,10 +2916,16 @@ detect_iconv() {
 	# Try to find iconv.h, seems to only thing to detect iconv with
 
 	if [ "$with_iconv" = "1" ] || [ "$with_iconv" = "" ] || [ "$with_iconv" = "2" ]; then
-		iconv=`ls -1 /usr/include 2>/dev/null | grep "iconv.h"`
-		if [ -z "$iconv" ]; then
-			iconv=`ls -1 /usr/local/include 2>/dev/null | grep "iconv.h"`
-		fi
+		# Iterate over search paths
+		iconv=""
+		search_paths=`LC_ALL=C $cxx_host $OSX_SYSROOT $CFLAGS -E - -v </dev/null 2>&1 | \
+		              $awk '/#include <...> search starts here:/{flag=1;next}/End of search list./{flag=0}flag'`
+		for path in $search_paths; do
+			iconv=`ls -1 $path 2>/dev/null | grep "iconv.h"`
+			if [ -n "$iconv" ]; then
+				break
+			fi
+		done
 	else
 		# Make sure it exists
 		iconv=`ls $with_iconv/include/iconv.h 2>/dev/null`
@@ -3543,6 +3565,7 @@ showhelp() {
 	echo "                                 midi-player"
 	echo "  --with-libtimidity[=\"pkg-config libtimidity\"]"
 	echo "                                 enables libtimidity support"
+	echo "  --with-fluidsynth              enables fluidsynth support"
 	echo "  --with-allegro[=\"pkg-config allegro\"]"
 	echo "                                 enables Allegro video driver support"
 	echo "  --with-cocoa                   enables COCOA video driver (OSX ONLY)"

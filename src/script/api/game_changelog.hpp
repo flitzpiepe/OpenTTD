@@ -17,8 +17,8 @@
  *
  * \b 1.9.0
  *
- * 1.9.0 is not yet released. The following changes are not set in stone yet.
  * API additions:
+ * \li GSAirport::GetMonthlyMaintenanceCost
  * \li GSClient
  * \li GSClientList
  * \li GSClientList_Company
@@ -26,6 +26,9 @@
  * \li GSViewport::ScrollCompanyClientsTo
  * \li GSViewport::ScrollClientTo
  * \li GSGoal::QuestionClient
+ *
+ * Other changes:
+ * \li GSBridge::GetName takes one extra parameter to refer the vehicle type
  *
  * \b 1.8.0
  *

@@ -58,6 +58,7 @@ static void GfxMainBlitter(const Sprite *sprite, int x, int y, BlitterMode mode,
 static ReusableBuffer<uint8> _cursor_backup;
 
 ZoomLevelByte _gui_zoom; ///< GUI Zoom level
+ZoomLevelByte _font_zoom; ///< Font Zoom level
 
 /**
  * The rect for repaint.
@@ -703,8 +704,8 @@ Dimension GetStringBoundingBox(const char *str, FontSize start_fontsize)
 }
 
 /**
- * Get bounding box of a string. Uses parameters set by #DParam if needed.
- * Has the same restrictions as #GetStringBoundingBox(const char *str).
+ * Get bounding box of a string. Uses parameters set by #SetDParam if needed.
+ * Has the same restrictions as #GetStringBoundingBox(const char *str, FontSize start_fontsize).
  * @param strid String to examine.
  * @return Width and height of the bounding box for the string in pixels.
  */
@@ -761,7 +762,7 @@ void DrawCharCentered(WChar c, int x, int y, TextColour colour)
 /**
  * Get the size of a sprite.
  * @param sprid Sprite to examine.
- * @param [out] offset Optionally returns the sprite position offset.
+ * @param[out] offset Optionally returns the sprite position offset.
  * @return Sprite size in pixels.
  * @note The size assumes (0, 0) as top-left coordinate and ignores any part of the sprite drawn at the left or above that position.
  */
@@ -1130,13 +1131,14 @@ TextColour GetContrastColour(uint8 background, uint8 threshold)
  */
 void LoadStringWidthTable(bool monospace)
 {
+	ClearFontCache();
+
 	for (FontSize fs = monospace ? FS_MONO : FS_BEGIN; fs < (monospace ? FS_END : FS_MONO); fs++) {
 		for (uint i = 0; i != 224; i++) {
 			_stringwidth_table[fs][i] = GetGlyphWidth(fs, i + 32);
 		}
 	}
 
-	ClearFontCache();
 	ReInitAllWindows();
 }
 
@@ -1170,8 +1172,8 @@ byte GetDigitWidth(FontSize size)
 
 /**
  * Determine the broadest digits for guessing the maximum width of a n-digit number.
- * @param [out] front Broadest digit, which is not 0. (Use this digit as first digit for numbers with more than one digit.)
- * @param [out] next Broadest digit, including 0. (Use this digit for all digits, except the first one; or for numbers with only one digit.)
+ * @param[out] front Broadest digit, which is not 0. (Use this digit as first digit for numbers with more than one digit.)
+ * @param[out] next Broadest digit, including 0. (Use this digit for all digits, except the first one; or for numbers with only one digit.)
  * @param size  Font of the digit
  */
 void GetBroadestDigit(uint *front, uint *next, FontSize size)
@@ -1317,7 +1319,11 @@ void DrawDirtyBlocks()
 		/* Wait a while and update _realtime_tick so we are given the rights */
 		if (!IsFirstModalProgressLoop()) CSleep(MODAL_PROGRESS_REDRAW_TIMEOUT);
 		_realtime_tick += MODAL_PROGRESS_REDRAW_TIMEOUT;
+
+		/* Modal progress thread may need blitter access while we are waiting for it. */
+		VideoDriver::GetInstance()->ReleaseBlitterLock();
 		_modal_progress_paint_mutex->BeginCritical();
+		VideoDriver::GetInstance()->AcquireBlitterLock();
 		_modal_progress_work_mutex->BeginCritical();
 
 		/* When we ended with the modal progress, do not draw the blocks.
@@ -1635,8 +1641,8 @@ void SetAnimatedMouseCursor(const AnimCursor *table)
  * Update cursor position on mouse movement.
  * @param x New X position.
  * @param y New Y position.
- * @param queued True, if the OS queues mouse warps after pending mouse movement events.
- *               False, if the warp applies instantaneous.
+ * @param queued_warp True, if the OS queues mouse warps after pending mouse movement events.
+ *                    False, if the warp applies instantaneous.
  * @return true, if the OS cursor position should be warped back to this->pos.
  */
 bool CursorVars::UpdateCursorPosition(int x, int y, bool queued_warp)

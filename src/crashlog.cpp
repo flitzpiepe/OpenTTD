@@ -62,7 +62,6 @@
 #include <lzo/lzo1x.h>
 #endif
 #ifdef WITH_SDL
-#	include "sdl.h"
 #	include <SDL.h>
 #endif /* WITH_SDL */
 #ifdef WITH_ZLIB
@@ -195,7 +194,7 @@ char *CrashLog::LogConfiguration(char *buffer, const char *last) const
 			FontCache::Get(FS_MONO)->GetFontName()
 	);
 
-	buffer += seprintf(buffer, last, "AI Configuration (local: %i):\n", (int)_local_company);
+	buffer += seprintf(buffer, last, "AI Configuration (local: %i) (current: %i):\n", (int)_local_company, (int)_current_company);
 	const Company *c;
 	FOR_ALL_COMPANIES(c) {
 		if (c->ai_info == NULL) {
@@ -268,14 +267,8 @@ char *CrashLog::LogLibraries(char *buffer, const char *last) const
 #endif /* WITH_PNG */
 
 #ifdef WITH_SDL
-#ifdef DYNAMICALLY_LOADED_SDL
-	if (SDL_CALL SDL_Linked_Version != NULL) {
-#else
-	{
-#endif
-		const SDL_version *v = SDL_CALL SDL_Linked_Version();
-		buffer += seprintf(buffer, last, " SDL:        %d.%d.%d\n", v->major, v->minor, v->patch);
-	}
+	const SDL_version *v = SDL_Linked_Version();
+	buffer += seprintf(buffer, last, " SDL:        %d.%d.%d\n", v->major, v->minor, v->patch);
 #endif /* WITH_SDL */
 
 #ifdef WITH_ZLIB
@@ -310,7 +303,7 @@ char *CrashLog::LogGamelog(char *buffer, const char *last) const
 }
 
 /**
- * Writes any recent news messages to the buffer.
+ * Writes up to 32 recent news messages to the buffer, with the most recent first.
  * @param buffer The begin where to write at.
  * @param last   The last position in the buffer to write to.
  * @return the position of the \c '\0' character after the buffer.
@@ -319,7 +312,8 @@ char *CrashLog::LogRecentNews(char *buffer, const char *last) const
 {
 	buffer += seprintf(buffer, last, "Recent news messages:\n");
 
-	for (NewsItem *news = _oldest_news; news != NULL; news = news->next) {
+	int i = 0;
+	for (NewsItem *news = _latest_news; i < 32 && news != NULL; news = news->prev, i++) {
 		YearMonthDay ymd;
 		ConvertDateToYMD(news->date, &ymd);
 		buffer += seprintf(buffer, last, "(%i-%02i-%02i) StringID: %u, Type: %u, Ref1: %u, %u, Ref2: %u, %u\n",

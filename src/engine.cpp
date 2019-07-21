@@ -431,9 +431,9 @@ uint Engine::GetDisplayMaxTractiveEffort() const
 	/* Only trains and road vehicles have 'tractive effort'. */
 	switch (this->type) {
 		case VEH_TRAIN:
-			return (10 * this->GetDisplayWeight() * GetEngineProperty(this->index, PROP_TRAIN_TRACTIVE_EFFORT, this->u.rail.tractive_effort)) / 256;
+			return (GROUND_ACCELERATION * this->GetDisplayWeight() * GetEngineProperty(this->index, PROP_TRAIN_TRACTIVE_EFFORT, this->u.rail.tractive_effort)) / 256 / 1000;
 		case VEH_ROAD:
-			return (10 * this->GetDisplayWeight() * GetEngineProperty(this->index, PROP_ROADVEH_TRACTIVE_EFFORT, this->u.road.tractive_effort)) / 256;
+			return (GROUND_ACCELERATION * this->GetDisplayWeight() * GetEngineProperty(this->index, PROP_ROADVEH_TRACTIVE_EFFORT, this->u.road.tractive_effort)) / 256 / 1000;
 
 		default: NOT_REACHED();
 	}
@@ -573,7 +573,7 @@ static bool IsWagon(EngineID index)
 }
 
 /**
- * Update #reliability of engine \a e, (if needed) update the engine GUIs.
+ * Update #Engine::reliability and (if needed) update the engine GUIs.
  * @param e %Engine to update.
  */
 static void CalcEngineReliability(Engine *e)
@@ -652,7 +652,14 @@ void StartupOneEngine(Engine *e, Date aging_date)
 	/* Don't randomise the start-date in the first two years after gamestart to ensure availability
 	 * of engines in early starting games.
 	 * Note: TTDP uses fixed 1922 */
+	SavedRandomSeeds saved_seeds;
+	SaveRandomSeeds(&saved_seeds);
+	SetRandomSeed(_settings_game.game_creation.generation_seed ^
+	              ei->base_intro ^
+	              e->type ^
+	              e->GetGRFID());
 	uint32 r = Random();
+
 	e->intro_date = ei->base_intro <= ConvertYMDToDate(_settings_game.game_creation.starting_year + 2, 0, 1) ? ei->base_intro : (Date)GB(r, 0, 9) + ei->base_intro;
 	if (e->intro_date <= _date) {
 		e->age = (aging_date - e->intro_date) >> 5;
@@ -672,6 +679,7 @@ void StartupOneEngine(Engine *e, Date aging_date)
 
 	e->reliability_spd_dec = ei->decay_speed << 2;
 
+	RestoreRandomSeeds(saved_seeds);
 	CalcEngineReliability(e);
 
 	/* prevent certain engines from ever appearing. */

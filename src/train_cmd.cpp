@@ -581,7 +581,7 @@ void GetTrainSpriteSize(EngineID engine, uint &width, uint &height, int &xoffs, 
  * @param tile     tile of the depot where rail-vehicle is built.
  * @param flags    type of operation.
  * @param e        the engine to build.
- * @param ret[out] the vehicle that has been built.
+ * @param[out] ret the vehicle that has been built.
  * @return the cost of this operation or an error.
  */
 static CommandCost CmdBuildRailWagon(TileIndex tile, DoCommandFlag flags, const Engine *e, Vehicle **ret)
@@ -713,7 +713,7 @@ static void AddRearEngineToMultiheadedTrain(Train *v)
  * @param flags    type of operation.
  * @param e        the engine to build.
  * @param data     bit 0 prevents any free cars from being added to the train.
- * @param ret[out] the vehicle that has been built.
+ * @param[out] ret the vehicle that has been built.
  * @return the cost of this operation or an error.
  */
 CommandCost CmdBuildRailVehicle(TileIndex tile, DoCommandFlag flags, const Engine *e, uint16 data, Vehicle **ret)
@@ -874,7 +874,7 @@ static void RemoveFromConsist(Train *part, bool chain = false)
 static void InsertInConsist(Train *dst, Train *chain)
 {
 	/* We do not want to add something in the middle of an articulated part. */
-	assert(dst->Next() == NULL || !dst->Next()->IsArticulatedPart());
+	assert(dst != NULL && (dst->Next() == NULL || !dst->Next()->IsArticulatedPart()));
 
 	chain->Last()->SetNext(dst->Next());
 	dst->SetNext(chain);
@@ -935,8 +935,8 @@ static void NormaliseSubtypes(Train *chain)
  * @note All vehicles are/were 'heads' of their chains.
  * @param original_dst The original destination chain.
  * @param dst          The destination chain after constructing the train.
- * @param original_dst The original source chain.
- * @param dst          The source chain after constructing the train.
+ * @param original_src The original source chain.
+ * @param src          The source chain after constructing the train.
  * @return possible error of this command.
  */
 static CommandCost CheckNewTrain(Train *original_dst, Train *dst, Train *original_src, Train *src)
@@ -1054,8 +1054,8 @@ static CommandCost CheckTrainAttachment(Train *t)
  * @note All vehicles are/were 'heads' of their chains.
  * @param original_dst The original destination chain.
  * @param dst          The destination chain after constructing the train.
- * @param original_dst The original source chain.
- * @param dst          The source chain after constructing the train.
+ * @param original_src The original source chain.
+ * @param src          The source chain after constructing the train.
  * @param check_limit  Whether to check the vehicle limit.
  * @return possible error of this command.
  */
@@ -1511,8 +1511,8 @@ static void MarkTrainAsStuck(Train *v)
  * Swap the two up/down flags in two ways:
  * - Swap values of \a swap_flag1 and \a swap_flag2, and
  * - If going up previously (#GVF_GOINGUP_BIT set), the #GVF_GOINGDOWN_BIT is set, and vice versa.
- * @param swap_flag1 [inout] First train flag.
- * @param swap_flag2 [inout] Second train flag.
+ * @param[in,out] swap_flag1 First train flag.
+ * @param[in,out] swap_flag2 Second train flag.
  */
 static void SwapTrainFlags(uint16 *swap_flag1, uint16 *swap_flag2)
 {
@@ -2014,9 +2014,9 @@ static FindDepotData FindClosestTrainDepot(Train *v, int max_distance)
 
 /**
  * Locate the closest depot for this consist, and return the information to the caller.
- * @param location [out]    If not \c NULL and a depot is found, store its location in the given address.
- * @param destination [out] If not \c NULL and a depot is found, store its index in the given address.
- * @param reverse [out]     If not \c NULL and a depot is found, store reversal information in the given address.
+ * @param[out] location    If not \c NULL and a depot is found, store its location in the given address.
+ * @param[out] destination If not \c NULL and a depot is found, store its index in the given address.
+ * @param[out] reverse     If not \c NULL and a depot is found, store reversal information in the given address.
  * @return A depot has been found.
  */
 bool Train::FindClosestDepot(TileIndex *location, DestinationID *destination, bool *reverse)
@@ -2149,12 +2149,10 @@ static bool CheckTrainStayInDepot(Train *v)
 		seg_state = _settings_game.pf.reserve_paths ? SIGSEG_PBS : UpdateSignalsOnSegment(v->tile, INVALID_DIAGDIR, v->owner);
 	}
 
-	/* We are leaving a depot, but have to go to the exact same one; re-enter */
+	/* We are leaving a depot, but have to go to the exact same one; re-enter. */
 	if (v->current_order.IsType(OT_GOTO_DEPOT) && v->tile == v->dest_tile) {
-		/* We need to have a reservation for this to work. */
-		if (HasDepotReservation(v->tile)) return true;
-		SetDepotReservation(v->tile, true);
-		VehicleEnterDepot(v);
+		/* Service when depot has no reservation. */
+		if (!HasDepotReservation(v->tile)) VehicleEnterDepot(v);
 		return true;
 	}
 
@@ -2307,15 +2305,15 @@ static const byte _initial_tile_subcoord[6][4][3] = {
  * @param tile The tile the train is about to enter
  * @param enterdir Diagonal direction the train is coming from
  * @param tracks Usable tracks on the new tile
- * @param path_found [out] Whether a path has been found or not.
+ * @param[out] path_found Whether a path has been found or not.
  * @param do_track_reservation Path reservation is requested
- * @param dest [out] State and destination of the requested path
+ * @param[out] dest State and destination of the requested path
  * @return The best track the train should follow
  */
 static Track DoTrainPathfind(const Train *v, TileIndex tile, DiagDirection enterdir, TrackBits tracks, bool &path_found, bool do_track_reservation, PBSTileInfo *dest)
 {
 	switch (_settings_game.pf.pathfinder_for_trains) {
-		case VPF_NPF: return NPFTrainChooseTrack(v, tile, enterdir, tracks, path_found, do_track_reservation, dest);
+		case VPF_NPF: return NPFTrainChooseTrack(v, path_found, do_track_reservation, dest);
 		case VPF_YAPF: return YapfTrainChooseTrack(v, tile, enterdir, tracks, path_found, do_track_reservation, dest);
 
 		default: NOT_REACHED();
@@ -2419,11 +2417,11 @@ static PBSTileInfo ExtendTrainReservation(const Train *v, TrackBits *new_tracks,
  * @param override_railtype Whether all physically compatible railtypes should be followed.
  * @return True if a path to a safe stopping tile could be reserved.
  */
-static bool TryReserveSafeTrack(const Train *v, TileIndex tile, Trackdir td, bool override_tailtype)
+static bool TryReserveSafeTrack(const Train *v, TileIndex tile, Trackdir td, bool override_railtype)
 {
 	switch (_settings_game.pf.pathfinder_for_trains) {
-		case VPF_NPF: return NPFTrainFindNearestSafeTile(v, tile, td, override_tailtype);
-		case VPF_YAPF: return YapfTrainFindNearestSafeTile(v, tile, td, override_tailtype);
+		case VPF_NPF: return NPFTrainFindNearestSafeTile(v, tile, td, override_railtype);
+		case VPF_YAPF: return YapfTrainFindNearestSafeTile(v, tile, td, override_railtype);
 
 		default: NOT_REACHED();
 	}
@@ -3187,13 +3185,13 @@ bool TrainController(Train *v, Vehicle *nomove, bool reverse)
 						if (!HasSignalOnTrackdir(gp.new_tile, ReverseTrackdir(i))) {
 							v->cur_speed = 0;
 							v->subspeed = 0;
-							v->progress = 255 - 100;
-							if (!_settings_game.pf.reverse_at_signals || ++v->wait_counter < _settings_game.pf.wait_oneway_signal * 20) return false;
+							v->progress = 255; // make sure that every bit of acceleration will hit the signal again, so speed stays 0.
+							if (!_settings_game.pf.reverse_at_signals || ++v->wait_counter < _settings_game.pf.wait_oneway_signal * DAY_TICKS * 2) return false;
 						} else if (HasSignalOnTrackdir(gp.new_tile, i)) {
 							v->cur_speed = 0;
 							v->subspeed = 0;
-							v->progress = 255 - 10;
-							if (!_settings_game.pf.reverse_at_signals || ++v->wait_counter < _settings_game.pf.wait_twoway_signal * 73) {
+							v->progress = 255; // make sure that every bit of acceleration will hit the signal again, so speed stays 0.
+							if (!_settings_game.pf.reverse_at_signals || ++v->wait_counter < _settings_game.pf.wait_twoway_signal * DAY_TICKS * 2) {
 								DiagDirection exitdir = TrackdirToExitdir(i);
 								TileIndex o_tile = TileAddByDiagDir(gp.new_tile, exitdir);
 

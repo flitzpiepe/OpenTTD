@@ -190,6 +190,8 @@ STR_COLOUR_ORANGE                                               :주황
 STR_COLOUR_BROWN                                                :갈색
 STR_COLOUR_GREY                                                 :회색
 STR_COLOUR_WHITE                                                :흰색
+STR_COLOUR_RANDOM                                               :무작위
+STR_COLOUR_DEFAULT                                              :기본
 
 # Units used in OpenTTD
 STR_UNITS_VELOCITY_IMPERIAL                                     :{COMMA}{NBSP}mph
@@ -465,6 +467,7 @@ STR_TOOLBAR_SOUND_MUSIC                                         :효과음/배�
 ############ range for message menu starts
 STR_NEWS_MENU_LAST_MESSAGE_NEWS_REPORT                          :최근 메시지/뉴스 기록
 STR_NEWS_MENU_MESSAGE_HISTORY_MENU                              :과거 메시지 목록
+STR_NEWS_MENU_DELETE_ALL_MESSAGES                               :모든 뉴스 메시지 삭제
 ############ range ends here
 
 ############ range for about menu starts
@@ -816,6 +819,7 @@ STR_NEWS_MERGER_TAKEOVER_TITLE                                  :{BIG_FONT}{BLAC
 STR_PRESIDENT_NAME_MANAGER                                      :{BLACK}{PRESIDENT_NAME}{}(사장)
 
 STR_NEWS_NEW_TOWN                                               :{BLACK}{BIG_FONT}{STRING}은(는) 새로운 도시 {TOWN}을(를) 건설했습니다!
+STR_NEWS_NEW_TOWN_UNSPONSORED                                   :{BLACK}{BIG_FONT}{TOWN} - 새 도시가 생겼습니다!
 
 STR_NEWS_INDUSTRY_CONSTRUCTION                                  :{BIG_FONT}{BLACK}{1:TOWN} 근처에 새로운 {0:STRING}{G 0 "이" "가"} 건설되고 있습니다!
 STR_NEWS_INDUSTRY_PLANTED                                       :{BIG_FONT}{BLACK}새 {STRING}{G 0 "이" "가"} {TOWN} 근처에서 자라나고 있습니다!
@@ -928,6 +932,8 @@ STR_GAME_OPTIONS_CURRENCY_ZAR                                   :남아프리카
 STR_GAME_OPTIONS_CURRENCY_CUSTOM                                :사용자 설정...
 STR_GAME_OPTIONS_CURRENCY_GEL                                   :그루지야 라리 (GEL)
 STR_GAME_OPTIONS_CURRENCY_IRR                                   :이란 리알 (IRR)
+STR_GAME_OPTIONS_CURRENCY_RUB                                   :신 러시아 루블 (RUB)
+STR_GAME_OPTIONS_CURRENCY_MXN                                   :멕시코 페소 (MXN)
 ############ end of currency region
 
 STR_GAME_OPTIONS_ROAD_VEHICLES_FRAME                            :{BLACK}차량 통행 방식
@@ -984,11 +990,18 @@ STR_GAME_OPTIONS_RESOLUTION_TOOLTIP                             :{BLACK}사용�
 STR_GAME_OPTIONS_RESOLUTION_OTHER                               :기타
 
 STR_GAME_OPTIONS_GUI_ZOOM_FRAME                                 :{BLACK}인터페이스 크기
-STR_GAME_OPTIONS_GUI_ZOOM_DROPDOWN_TOOLTIP                      :{BLACK}인터페이스의 크기를 선택하십시오.
+STR_GAME_OPTIONS_GUI_ZOOM_DROPDOWN_TOOLTIP                      :{BLACK}인터페이스의 크기를 선택합니다.
 
-STR_GAME_OPTIONS_GUI_ZOOM_DROPDOWN_NORMAL                       :보통
+STR_GAME_OPTIONS_GUI_ZOOM_DROPDOWN_NORMAL                       :기본 크기
 STR_GAME_OPTIONS_GUI_ZOOM_DROPDOWN_2X_ZOOM                      :2배 크기
 STR_GAME_OPTIONS_GUI_ZOOM_DROPDOWN_4X_ZOOM                      :4배 크기
+
+STR_GAME_OPTIONS_FONT_ZOOM                                      :{BLACK}글씨 크기
+STR_GAME_OPTIONS_FONT_ZOOM_DROPDOWN_TOOLTIP                     :{BLACK}인터페이스에서 사용할 글씨 크기를 선택합니다.
+
+STR_GAME_OPTIONS_FONT_ZOOM_DROPDOWN_NORMAL                      :기본 크기
+STR_GAME_OPTIONS_FONT_ZOOM_DROPDOWN_2X_ZOOM                     :2배 크기
+STR_GAME_OPTIONS_FONT_ZOOM_DROPDOWN_4X_ZOOM                     :4배 크기
 
 STR_GAME_OPTIONS_BASE_GRF                                       :{BLACK}기본 그래픽 세트
 STR_GAME_OPTIONS_BASE_GRF_TOOLTIP                               :{BLACK}사용하실 기본 그래픽을 선택하세요.
@@ -1005,7 +1018,7 @@ STR_GAME_OPTIONS_BASE_MUSIC_STATUS                              :{RED}{NUM}개�
 STR_GAME_OPTIONS_BASE_MUSIC_DESCRIPTION_TOOLTIP                 :{BLACK}기본 배경 음악 세트에 대한 추가 정보를 봅니다.
 
 STR_ERROR_RESOLUTION_LIST_FAILED                                :{WHITE}지원되는 해상도 목록을 불러오는데 실패하였습니다.
-STR_ERROR_FULLSCREEN_FAILED                                     :{WHITE}풀스크린 모드 실패
+STR_ERROR_FULLSCREEN_FAILED                                     :{WHITE}전체화면 모드 실패
 
 # Custom currency window
 
@@ -1163,7 +1176,7 @@ STR_CONFIG_SETTING_TRAIN_REVERSING_HELPTEXT                     :이 설정을 �
 STR_CONFIG_SETTING_DISASTERS                                    :재앙: {STRING}
 STR_CONFIG_SETTING_DISASTERS_HELPTEXT                           :일정 구역이나 차량, 기반시설을 간혹 파괴할 수도 있는 재앙을 켜거나 끕니다.
 STR_CONFIG_SETTING_CITY_APPROVAL                                :지역 개발에 대한 도시의 태도: {STRING}
-STR_CONFIG_SETTING_CITY_APPROVAL_HELPTEXT                       :회사가 유발하는 소음과 환경 파괴가 회사에 대한 도시의 평가치와 향후 해당 지역에서의 건설 행동에 얼마나 영향을 미칠지 선택하십시오.
+STR_CONFIG_SETTING_CITY_APPROVAL_HELPTEXT                       :회사가 유발하는 소음과 환경 파괴가 회사에 대한 도시의 평가치와 향후 해당 지역에서 건설하는 행동에 얼마나 영향을 미칠지 선택하십시오.
 
 STR_CONFIG_SETTING_MAX_HEIGHTLEVEL                              :최대 지형 높이: {STRING}
 STR_CONFIG_SETTING_MAX_HEIGHTLEVEL_HELPTEXT                     :지도에 생성되는 산이 가질 수 있는 최대 높이를 설정합니다.
@@ -1257,6 +1270,9 @@ STR_CONFIG_SETTING_DYNAMIC_ENGINES_EXISTING_VEHICLES            :{WHITE}이미 �
 STR_CONFIG_SETTING_INFRASTRUCTURE_MAINTENANCE                   :기반시설 유지비: {STRING}
 STR_CONFIG_SETTING_INFRASTRUCTURE_MAINTENANCE_HELPTEXT          :이 설정을 켜면, 기반시설 유지비가 발생합니다. 유지비는 교통망의 규모에 비례하며 대형 회사는 소형 회사보다 많은 유지비가 들어갑니다.
 
+STR_CONFIG_SETTING_COMPANY_STARTING_COLOUR                      :시작시 회사 색상: {STRING}
+STR_CONFIG_SETTING_COMPANY_STARTING_COLOUR_HELPTEXT             :새 회사에서 사용할 색상을 선택하세요.
+
 STR_CONFIG_SETTING_NEVER_EXPIRE_AIRPORTS                        :옛날 공항을 사라지지 않고 계속 만들 수 있게 함: {STRING}
 STR_CONFIG_SETTING_NEVER_EXPIRE_AIRPORTS_HELPTEXT               :이 설정을 켜면, 소형 공항을 포함한 모든 공항 종류를 도입 이후에 계속 사용할 수 있게 됩니다.
 
@@ -1267,7 +1283,7 @@ STR_CONFIG_SETTING_ORDER_REVIEW_HELPTEXT                        :이 설정을 �
 STR_CONFIG_SETTING_ORDER_REVIEW_OFF                             :검사하지 않음
 STR_CONFIG_SETTING_ORDER_REVIEW_EXDEPOT                         :정지한 차량을 제외하고 검사
 STR_CONFIG_SETTING_ORDER_REVIEW_ON                              :모든 차량을 검사
-STR_CONFIG_SETTING_WARN_INCOME_LESS                             :차량의 수입이 적자일때 경고하기: {STRING}
+STR_CONFIG_SETTING_WARN_INCOME_LESS                             :차량의 수입이 적자일 때 경고하기: {STRING}
 STR_CONFIG_SETTING_WARN_INCOME_LESS_HELPTEXT                    :이 설정을 켜면, 지난 해에 수익이 없는 차량이 있으면 뉴스 메시지로 알려줍니다.
 STR_CONFIG_SETTING_NEVER_EXPIRE_VEHICLES                        :옛날 차량을 사라지지 않고 계속 만들 수 있게 함: {STRING}
 STR_CONFIG_SETTING_NEVER_EXPIRE_VEHICLES_HELPTEXT               :이 설정을 켜면, 오래된 차량 모델을 포함하여 모든 차량 모델을 도입 이후에 계속 사용할 수 있게 됩니다.
@@ -1814,7 +1830,7 @@ STR_CHEAT_CHANGE_DATE_QUERY_CAPT                                :{WHITE}현재�
 STR_CHEAT_SETUP_PROD                                            :{LTBLUE}1차 산업시설 생산량 조절 허용: {ORANGE}{STRING}
 
 # Livery window
-STR_LIVERY_CAPTION                                              :{WHITE}새 색상
+STR_LIVERY_CAPTION                                              :{WHITE}{COMPANY} - 색상
 
 STR_LIVERY_GENERAL_TOOLTIP                                      :{BLACK}기본 색상 선택
 STR_LIVERY_TRAIN_TOOLTIP                                        :{BLACK}열차 색상 선택
@@ -2074,11 +2090,12 @@ STR_NETWORK_CONNECTION_DISCONNECT                               :{BLACK}접속 �
 
 STR_NETWORK_NEED_GAME_PASSWORD_CAPTION                          :{WHITE}서버 암호가 걸려있습니다. 암호를 입력하세요.
 STR_NETWORK_NEED_COMPANY_PASSWORD_CAPTION                       :{WHITE}회사 암호가 걸려있습니다. 암호를 입력하세요.
+STR_NETWORK_COMPANY_LIST_CLIENT_LIST_CAPTION                    :{WHITE}접속자 목록
 
 # Network company list added strings
-STR_NETWORK_COMPANY_LIST_CLIENT_LIST                            :{WHITE}접속자 목록
-STR_NETWORK_COMPANY_LIST_SPECTATE                               :{WHITE}관전
-STR_NETWORK_COMPANY_LIST_NEW_COMPANY                            :{WHITE}새 회사
+STR_NETWORK_COMPANY_LIST_CLIENT_LIST                            :접속자 목록
+STR_NETWORK_COMPANY_LIST_SPECTATE                               :관전
+STR_NETWORK_COMPANY_LIST_NEW_COMPANY                            :새 회사
 
 # Network client list
 STR_NETWORK_CLIENTLIST_KICK                                     :추방
@@ -2093,7 +2110,6 @@ STR_NETWORK_CLIENT                                              :접속자
 STR_NETWORK_SPECTATORS                                          :관전자
 
 STR_NETWORK_GIVE_MONEY_CAPTION                                  :{WHITE}송금하고 싶은 양을 입력하세요.
-STR_NETWORK_TOOLBAR_LIST_SPECTATOR                              :{BLACK}관전자
 
 # Network set password
 STR_COMPANY_PASSWORD_CANCEL                                     :{BLACK}입력한 비밀번호는 저장하지 않기
@@ -2697,41 +2713,44 @@ STR_LAI_OBJECT_DESCRIPTION_COMPANY_OWNED_LAND                   :회사 소유�
 STR_ABOUT_OPENTTD                                               :{WHITE}OpenTTD에 대해서
 STR_ABOUT_ORIGINAL_COPYRIGHT                                    :{BLACK}Original copyright {COPYRIGHT} 1995 Chris Sawyer, All rights reserved
 STR_ABOUT_VERSION                                               :{BLACK}OpenTTD 버전 {REV}
-STR_ABOUT_COPYRIGHT_OPENTTD                                     :{BLACK}OpenTTD {COPYRIGHT} 2002-2018 OpenTTD 개발팀
+STR_ABOUT_COPYRIGHT_OPENTTD                                     :{BLACK}OpenTTD {COPYRIGHT} 2002-2019 OpenTTD 개발팀
 
 # Framerate display window
 STR_FRAMERATE_CAPTION                                           :{WHITE}프레임레이트
 STR_FRAMERATE_CAPTION_SMALL                                     :{STRING}{WHITE} ({DECIMAL}x)
-STR_FRAMERATE_RATE_GAMELOOP                                     :{WHITE}시뮬레이션 비율: {STRING}
+STR_FRAMERATE_RATE_GAMELOOP                                     :{BLACK}시뮬레이션 비율: {STRING}
 STR_FRAMERATE_RATE_GAMELOOP_TOOLTIP                             :{BLACK}1초에 시뮬레이션하는 게임 틱 수입니다.
-STR_FRAMERATE_RATE_BLITTER                                      :{WHITE}그래픽 프레임레이트: {STRING}
+STR_FRAMERATE_RATE_BLITTER                                      :{BLACK}그래픽 프레임레이트: {STRING}
 STR_FRAMERATE_RATE_BLITTER_TOOLTIP                              :{BLACK}1초에 표현하는 비디오 프레임 수입니다.
-STR_FRAMERATE_SPEED_FACTOR                                      :{WHITE}현재 게임 속력 계수: {DECIMAL}x
+STR_FRAMERATE_SPEED_FACTOR                                      :{BLACK}현재 게임 속력 계수: {DECIMAL}x
 STR_FRAMERATE_SPEED_FACTOR_TOOLTIP                              :{BLACK}현재 게임이 일반적인 시뮬레이션 비율 속도에 비해 얼마나 빠르게 구동되고 있는지를 보여줍니다.
 STR_FRAMERATE_CURRENT                                           :{WHITE}현재
 STR_FRAMERATE_AVERAGE                                           :{WHITE}평균
-STR_FRAMERATE_DATA_POINTS                                       :{WHITE}{COMMA}개의 값을 기반으로 측정한 데이터
-STR_FRAMERATE_MS_GOOD                                           :{LTBLUE}{DECIMAL}{WHITE} ms
-STR_FRAMERATE_MS_WARN                                           :{YELLOW}{DECIMAL}{WHITE} ms
-STR_FRAMERATE_MS_BAD                                            :{RED}{DECIMAL}{WHITE} ms
-STR_FRAMERATE_FPS_GOOD                                          :{LTBLUE}{DECIMAL}{WHITE} 프레임/초
-STR_FRAMERATE_FPS_WARN                                          :{YELLOW}{DECIMAL}{WHITE} 프레임/초
-STR_FRAMERATE_FPS_BAD                                           :{RED}{DECIMAL}{WHITE} 프레임/초
+STR_FRAMERATE_DATA_POINTS                                       :{BLACK}{COMMA}개의 값을 기반으로 측정한 데이터
+STR_FRAMERATE_MS_GOOD                                           :{LTBLUE}{DECIMAL}{BLACK} ms
+STR_FRAMERATE_MS_WARN                                           :{YELLOW}{DECIMAL} ms
+STR_FRAMERATE_MS_BAD                                            :{RED}{DECIMAL} ms
+STR_FRAMERATE_FPS_GOOD                                          :{LTBLUE}{DECIMAL} 프레임/초
+STR_FRAMERATE_FPS_WARN                                          :{YELLOW}{DECIMAL} 프레임/초
+STR_FRAMERATE_FPS_BAD                                           :{RED}{DECIMAL} 프레임/초
 STR_FRAMERATE_GRAPH_MILLISECONDS                                :{TINY_FONT}{COMMA} ms
 STR_FRAMERATE_GRAPH_SECONDS                                     :{TINY_FONT}{COMMA}초
 ############ Leave those lines in this order!!
-STR_FRAMERATE_GAMELOOP                                          :{WHITE}총 게임 루프:
-STR_FRAMERATE_GL_ECONOMY                                        :{WHITE}  화물 처리:
-STR_FRAMERATE_GL_TRAINS                                         :{WHITE}  열차 틱:
-STR_FRAMERATE_GL_ROADVEHS                                       :{WHITE}  자동차 틱:
-STR_FRAMERATE_GL_SHIPS                                          :{WHITE}  선박 틱:
-STR_FRAMERATE_GL_AIRCRAFT                                       :{WHITE}  항공기 틱:
-STR_FRAMERATE_GL_LANDSCAPE                                      :{WHITE}  세계 틱:
-STR_FRAMERATE_GL_LINKGRAPH                                      :{WHITE}  연결 그래프 지연:
-STR_FRAMERATE_DRAWING                                           :{WHITE}그래픽 렌더링:
-STR_FRAMERATE_DRAWING_VIEWPORTS                                 :{WHITE}  세계 화면:
-STR_FRAMERATE_VIDEO                                             :{WHITE}비디오 출력:
-STR_FRAMERATE_SOUND                                             :{WHITE}사운드 합성:
+STR_FRAMERATE_GAMELOOP                                          :{BLACK}총 게임 루프:
+STR_FRAMERATE_GL_ECONOMY                                        :{BLACK}  화물 처리:
+STR_FRAMERATE_GL_TRAINS                                         :{BLACK}  열차 틱:
+STR_FRAMERATE_GL_ROADVEHS                                       :{BLACK}  자동차 틱:
+STR_FRAMERATE_GL_SHIPS                                          :{BLACK}  선박 틱:
+STR_FRAMERATE_GL_AIRCRAFT                                       :{BLACK}  항공기 틱:
+STR_FRAMERATE_GL_LANDSCAPE                                      :{BLACK}  세계 틱:
+STR_FRAMERATE_GL_LINKGRAPH                                      :{BLACK}  연결 그래프 지연:
+STR_FRAMERATE_DRAWING                                           :{BLACK}그래픽 렌더링:
+STR_FRAMERATE_DRAWING_VIEWPORTS                                 :{BLACK}  세계 화면:
+STR_FRAMERATE_VIDEO                                             :{BLACK}비디오 출력:
+STR_FRAMERATE_SOUND                                             :{BLACK}사운드 합성:
+STR_FRAMERATE_ALLSCRIPTS                                        :{BLACK}  총 게임 스크립트/AI:
+STR_FRAMERATE_GAMESCRIPT                                        :{BLACK}   게임 스크립트:
+STR_FRAMERATE_AI                                                :{BLACK}  인공지능 {NUM} {STRING}
 ############ End of leave-in-this-order
 ############ Leave those lines in this order!!
 STR_FRAMETIME_CAPTION_GAMELOOP                                  :게임 루프
@@ -2746,6 +2765,9 @@ STR_FRAMETIME_CAPTION_DRAWING                                   :그래픽 렌�
 STR_FRAMETIME_CAPTION_DRAWING_VIEWPORTS                         :세계 화면 렌더링
 STR_FRAMETIME_CAPTION_VIDEO                                     :비디오 출력
 STR_FRAMETIME_CAPTION_SOUND                                     :사운드 합성
+STR_FRAMETIME_CAPTION_ALLSCRIPTS                                :게임 스크립트/인공지능의 전체 스크립트 양입니다.
+STR_FRAMETIME_CAPTION_GAMESCRIPT                                :게임 스크립트
+STR_FRAMETIME_CAPTION_AI                                        :인공지능 {NUM} {STRING}
 ############ End of leave-in-this-order
 
 
@@ -2771,6 +2793,9 @@ STR_SAVELOAD_DETAIL_CAPTION                                     :{BLACK}게임 �
 STR_SAVELOAD_DETAIL_NOT_AVAILABLE                               :{BLACK}사용 가능한 정보 없음.
 STR_SAVELOAD_DETAIL_COMPANY_INDEX                               :{SILVER}{COMMA}: {WHITE}{STRING}
 STR_SAVELOAD_DETAIL_GRFSTATUS                                   :{SILVER}NewGRF: {WHITE}{STRING}
+STR_SAVELOAD_FILTER_TITLE                                       :{BLACK}검색할 문자열:
+STR_SAVELOAD_OVERWRITE_TITLE                                    :{WHITE}파일 덮어쓰기
+STR_SAVELOAD_OVERWRITE_WARNING                                  :{YELLOW}정말로 이미 존재하는 파일에 덮어씌우시겠습니까?
 
 STR_SAVELOAD_OSKTITLE                                           :{BLACK}게임을 저장할 파일명을 입력하세요
 
@@ -2888,7 +2913,12 @@ STR_NEWGRF_SETTINGS_VERSION                                     :{BLACK}버전: 
 STR_NEWGRF_SETTINGS_MIN_VERSION                                 :{BLACK}최소 이용 가능한 버전: {SILVER}{NUM}
 STR_NEWGRF_SETTINGS_MD5SUM                                      :{BLACK}MD5합: {SILVER}{STRING}
 STR_NEWGRF_SETTINGS_PALETTE                                     :{BLACK}색상표: {SILVER}{STRING}
+STR_NEWGRF_SETTINGS_PALETTE_DEFAULT                             :도스
+STR_NEWGRF_SETTINGS_PALETTE_DEFAULT_32BPP                       :도스 / 32 bpp
+STR_NEWGRF_SETTINGS_PALETTE_LEGACY                              :Windows
+STR_NEWGRF_SETTINGS_PALETTE_LEGACY_32BPP                        :Windows / 32 bpp
 STR_NEWGRF_SETTINGS_PARAMETER                                   :{BLACK}매개 변숫값: {SILVER}{STRING}
+STR_NEWGRF_SETTINGS_PARAMETER_NONE                              :없음
 
 STR_NEWGRF_SETTINGS_NO_INFO                                     :{BLACK}관련 정보 없음
 STR_NEWGRF_SETTINGS_NOT_FOUND                                   :{RED}일치하는 파일을 찾을 수 없습니다
@@ -2969,6 +2999,8 @@ STR_NEWGRF_ERROR_READ_BOUNDS                                    :유사 스프�
 STR_NEWGRF_ERROR_GRM_FAILED                                     :요청한 GRF 자원을 사용할 수 없음 (스프라이트 {3:NUM})
 STR_NEWGRF_ERROR_FORCEFULLY_DISABLED                            :{1:STRING}(은)는 {STRING} 때문에 사용할 수 없습니다
 STR_NEWGRF_ERROR_INVALID_SPRITE_LAYOUT                          :유효하지 않은/알 수 없는 스프라이트 구조 유형 (스프라이트 {3:NUM})
+STR_NEWGRF_ERROR_LIST_PROPERTY_TOO_LONG                         :속성값 목록에 너무 많은 요소가 있음 (스프라이트 {3:NUM}, 속성 {4:HEX})
+STR_NEWGRF_ERROR_INDPROD_CALLBACK                               :유효하지 않은 산업 생산 콜백 (스프라이트 {3:NUM}, "{2:STRING}")
 
 # NewGRF related 'general' warnings
 STR_NEWGRF_POPUP_CAUTION_CAPTION                                :{WHITE}경고!
@@ -3000,6 +3032,7 @@ STR_NEWGRF_BUGGY                                                :{WHITE}NewGRF '
 STR_NEWGRF_BUGGY_ARTICULATED_CARGO                              :{WHITE}{1:ENGINE}(을)를 만들기 이전과 이후의 화물/개조 정보가 현재의 구매 목록과 다릅니다. 이 경우 자동 교체시 열차 개조에 실패할 수도 있습니다.
 STR_NEWGRF_BUGGY_ENDLESS_PRODUCTION_CALLBACK                    :{WHITE}'{1:STRING}' 때문에 결과물 콜백 과정에서 무한 루프가 발생하고 있습니다.
 STR_NEWGRF_BUGGY_UNKNOWN_CALLBACK_RESULT                        :{WHITE}콜백 함수({1:HEX})가 알 수 없거나 잘못된 결과 값({2:HEX})을 반환했습니다.
+STR_NEWGRF_BUGGY_INVALID_CARGO_PRODUCTION_CALLBACK              :{WHITE}'{1:STRING}' - 생산 콜백 함수의 {2:HEX}에서 잘못된 화물 종류를 반환했습니다.
 
 # 'User removed essential NewGRFs'-placeholders for stuff without specs
 STR_NEWGRF_INVALID_CARGO                                        :<알 수 없는 화물>
@@ -3094,6 +3127,7 @@ STR_LOCAL_AUTHORITY_ACTION_TOOLTIP_BRIBE                        :{YELLOW}성취�
 # Goal window
 STR_GOALS_CAPTION                                               :{WHITE}{COMPANY} 목표
 STR_GOALS_SPECTATOR_CAPTION                                     :{WHITE}전체 목표
+STR_GOALS_SPECTATOR                                             :전체 목표
 STR_GOALS_GLOBAL_TITLE                                          :{BLACK}전체 목표:
 STR_GOALS_TEXT                                                  :{ORANGE}{STRING}
 STR_GOALS_NONE                                                  :{ORANGE}- 없음 -
@@ -3142,6 +3176,7 @@ STR_SUBSIDIES_TOOLTIP_CLICK_ON_SERVICE_TO_CENTER                :{BLACK}산업�
 # Story book window
 STR_STORY_BOOK_CAPTION                                          :{WHITE}{COMPANY}의 스토리 북
 STR_STORY_BOOK_SPECTATOR_CAPTION                                :{WHITE}전체 스토리 북
+STR_STORY_BOOK_SPECTATOR                                        :전체 스토리 북
 STR_STORY_BOOK_TITLE                                            :{YELLOW}{STRING}
 STR_STORY_BOOK_GENERIC_PAGE_ITEM                                :{NUM}쪽
 STR_STORY_BOOK_SEL_PAGE_TOOLTIP                                 :{BLACK}드롭 다운 목록에서 이동하고자 하는 쪽수를 선택하세요.
@@ -3346,20 +3381,13 @@ STR_INDUSTRY_VIEW_LOCATION_TOOLTIP                              :{BLACK}이 산�
 STR_INDUSTRY_VIEW_PRODUCTION_LEVEL                              :{BLACK}생산 수준: {YELLOW}{COMMA}%
 STR_INDUSTRY_VIEW_INDUSTRY_ANNOUNCED_CLOSURE                    :{YELLOW}산업시설이 곧 폐쇄됩니다!
 
-############ range for requires starts
-STR_INDUSTRY_VIEW_REQUIRES_CARGO                                :{BLACK}필요함: {YELLOW}{STRING}{STRING}
-STR_INDUSTRY_VIEW_REQUIRES_CARGO_CARGO                          :{BLACK}필요함: {YELLOW}{STRING}{STRING}, {STRING}{STRING}
-STR_INDUSTRY_VIEW_REQUIRES_CARGO_CARGO_CARGO                    :{BLACK}필요함: {YELLOW}{STRING}{STRING}, {STRING}{STRING}, {STRING}{STRING}
-############ range for requires ends
+STR_INDUSTRY_VIEW_REQUIRES_N_CARGO                              :{BLACK}받는 화물: {YELLOW}{STRING}{STRING}
+STR_INDUSTRY_VIEW_PRODUCES_N_CARGO                              :{BLACK}생산 화물: {YELLOW}{STRING}{STRING}
+STR_INDUSTRY_VIEW_CARGO_LIST_EXTENSION                          :, {STRING}{STRING}
 
 STR_INDUSTRY_VIEW_REQUIRES                                      :{BLACK}받는 화물:
 STR_INDUSTRY_VIEW_ACCEPT_CARGO                                  :{YELLOW}{STRING}{BLACK}{3:STRING}
 STR_INDUSTRY_VIEW_ACCEPT_CARGO_AMOUNT                           :{YELLOW}{STRING}{BLACK}: {CARGO_SHORT} 대기중{STRING}
-
-############ range for produces starts
-STR_INDUSTRY_VIEW_PRODUCES_CARGO                                :{BLACK}생산: {YELLOW}{STRING}{STRING}
-STR_INDUSTRY_VIEW_PRODUCES_CARGO_CARGO                          :{BLACK}생산: {YELLOW}{STRING}{STRING}, {STRING}{STRING}
-############ range for produces ends
 
 STR_CONFIG_GAME_PRODUCTION                                      :{WHITE}생산량 변경 (8의 배수, 최대 2040)
 STR_CONFIG_GAME_PRODUCTION_LEVEL                                :{WHITE}생산 등급 변경 (퍼센트, 800%까지)
@@ -3413,6 +3441,7 @@ STR_GROUPS_CLICK_ON_GROUP_FOR_TOOLTIP                           :{BLACK}그룹 -
 STR_GROUP_CREATE_TOOLTIP                                        :{BLACK}그룹 만들기
 STR_GROUP_DELETE_TOOLTIP                                        :{BLACK}선택한 그룹 삭제
 STR_GROUP_RENAME_TOOLTIP                                        :{BLACK}선택한 그룹 이름 바꾸기
+STR_GROUP_LIVERY_TOOLTIP                                        :{BLACK}선택한 그룹의 차량 색상을 변경합니다.
 STR_GROUP_REPLACE_PROTECTION_TOOLTIP                            :{BLACK}클릭하여 전체 자동 교체로부터 이 그룹을 보호합니다.
 
 STR_QUERY_GROUP_DELETE_CAPTION                                  :{WHITE}그룹 삭제
@@ -3442,8 +3471,8 @@ STR_BUY_VEHICLE_AIRCRAFT_CAPTION                                :새 항공기
 STR_PURCHASE_INFO_COST_WEIGHT                                   :{BLACK}가격: {GOLD}{CURRENCY_LONG}{BLACK} 중량: {GOLD}{WEIGHT_SHORT}
 STR_PURCHASE_INFO_SPEED_POWER                                   :{BLACK}속력: {GOLD}{VELOCITY}{BLACK} 힘: {GOLD}{POWER}
 STR_PURCHASE_INFO_SPEED                                         :{BLACK}속력: {GOLD}{VELOCITY}
-STR_PURCHASE_INFO_SPEED_OCEAN                                   :{BLACK}바다에서의 속력: {GOLD}{VELOCITY}
-STR_PURCHASE_INFO_SPEED_CANAL                                   :{BLACK}운하/강에서의 속력: {GOLD}{VELOCITY}
+STR_PURCHASE_INFO_SPEED_OCEAN                                   :{BLACK}바다에서 속력: {GOLD}{VELOCITY}
+STR_PURCHASE_INFO_SPEED_CANAL                                   :{BLACK}운하/강에서 속력: {GOLD}{VELOCITY}
 STR_PURCHASE_INFO_RUNNINGCOST                                   :{BLACK}유지비: {GOLD}{CURRENCY_LONG}/년
 STR_PURCHASE_INFO_CAPACITY                                      :{BLACK}수송량: {GOLD}{CARGO_LONG} {STRING}
 STR_PURCHASE_INFO_REFITTABLE                                    :(개조 가능)
@@ -3456,6 +3485,7 @@ STR_PURCHASE_INFO_AIRCRAFT_CAPACITY                             :{BLACK}수용�
 STR_PURCHASE_INFO_PWAGPOWER_PWAGWEIGHT                          :{BLACK}전원 화물차: {GOLD}+{POWER}{BLACK} 중량: {GOLD}+{WEIGHT_SHORT}
 STR_PURCHASE_INFO_REFITTABLE_TO                                 :{BLACK}개조가능 화물: {GOLD}{STRING}
 STR_PURCHASE_INFO_ALL_TYPES                                     :모든 화물
+STR_PURCHASE_INFO_NONE                                          :없음
 STR_PURCHASE_INFO_ALL_BUT                                       :{CARGO_LIST} 이외의 모든 화물
 STR_PURCHASE_INFO_MAX_TE                                        :{BLACK}최고 견인력: {GOLD}{FORCE}
 STR_PURCHASE_INFO_AIRCRAFT_RANGE                                :{BLACK}항속거리: {GOLD}{COMMA} 칸
@@ -3471,7 +3501,7 @@ STR_BUY_VEHICLE_ROAD_VEHICLE_BUY_VEHICLE_BUTTON                 :{BLACK}차량 �
 STR_BUY_VEHICLE_SHIP_BUY_VEHICLE_BUTTON                         :{BLACK}선박 구입
 STR_BUY_VEHICLE_AIRCRAFT_BUY_VEHICLE_BUTTON                     :{BLACK}항공기 구입
 
-STR_BUY_VEHICLE_TRAIN_BUY_VEHICLE_TOOLTIP                       :{BLACK}선택된 차량을 구입합니다. SHIFT+클릭으로 예상 구입 가격을 볼 수 있습니다.
+STR_BUY_VEHICLE_TRAIN_BUY_VEHICLE_TOOLTIP                       :{BLACK}선택된 차량을 구입합니다. SHIFT+클릭으로 예상 구입 비용을 볼 수 있습니다.
 STR_BUY_VEHICLE_ROAD_VEHICLE_BUY_VEHICLE_TOOLTIP                :{BLACK}선택한 차량을 구입합니다. Shift+클릭하면 예상 구입 비용을 볼 수 있습니다.
 STR_BUY_VEHICLE_SHIP_BUY_VEHICLE_TOOLTIP                        :{BLACK}선택한 선박을 구입합니다. SHIFT+클릭으로 예상 구입 비용을 볼 수 있습니다.
 STR_BUY_VEHICLE_AIRCRAFT_BUY_VEHICLE_TOOLTIP                    :{BLACK}선택한 항공기를 구입합니다. SHIFT+클릭으로 예상 구입 비용을 볼 수 있습니다.
@@ -3816,21 +3846,21 @@ STR_ORDER_GO_TO                                                 :완행
 STR_ORDER_GO_NON_STOP_TO                                        :직행
 STR_ORDER_GO_VIA                                                :완행 경유
 STR_ORDER_GO_NON_STOP_VIA                                       :직행 경유
-STR_ORDER_TOOLTIP_NON_STOP                                      :{BLACK}선택한 목적지에서의 정차 방식을 변경합니다
+STR_ORDER_TOOLTIP_NON_STOP                                      :{BLACK}선택한 목적지에서 화물을 정차할 방식을 변경합니다
 
 STR_ORDER_TOGGLE_FULL_LOAD                                      :{BLACK}아무 화물이나 가득 싣기
 STR_ORDER_DROP_LOAD_IF_POSSIBLE                                 :가능한 것만 적재
 STR_ORDER_DROP_FULL_LOAD_ALL                                    :모든 화물을 가득 실음
 STR_ORDER_DROP_FULL_LOAD_ANY                                    :아무 화물이나 가득 싣기
 STR_ORDER_DROP_NO_LOADING                                       :싣지 않기
-STR_ORDER_TOOLTIP_FULL_LOAD                                     :{BLACK}선택한 목적지에서의 화물 적재 방식을 변경합니다
+STR_ORDER_TOOLTIP_FULL_LOAD                                     :{BLACK}선택한 목적지에서 화물을 적재할 방식을 변경합니다
 
 STR_ORDER_TOGGLE_UNLOAD                                         :{BLACK}모든 화물 하차
 STR_ORDER_DROP_UNLOAD_IF_ACCEPTED                               :화물을 받는경우 하차
 STR_ORDER_DROP_UNLOAD                                           :모든 화물 하차
 STR_ORDER_DROP_TRANSFER                                         :환승
 STR_ORDER_DROP_NO_UNLOADING                                     :화물을 하차시키지 않음
-STR_ORDER_TOOLTIP_UNLOAD                                        :{BLACK}선택한 목적지에서의 화물 하차 방식을 변경합니다
+STR_ORDER_TOOLTIP_UNLOAD                                        :{BLACK}선택한 목적지에서 화물을 하차할 방식을 변경합니다
 
 STR_ORDER_REFIT                                                 :{BLACK}개조
 STR_ORDER_REFIT_TOOLTIP                                         :{BLACK}이 경로에서 열차를 어떤 화물을 받을 수 있게 개조할 것인지 선택하십시오. CTRL+클릭하면 개조 설정을 해제합니다.
@@ -3855,6 +3885,7 @@ STR_ORDER_CONDITIONAL_AGE                                       :연령 (년)
 STR_ORDER_CONDITIONAL_REQUIRES_SERVICE                          :정비 필요성
 STR_ORDER_CONDITIONAL_UNCONDITIONALLY                           :항상
 STR_ORDER_CONDITIONAL_REMAINING_LIFETIME                        :남은 수명 (년)
+STR_ORDER_CONDITIONAL_MAX_RELIABILITY                           :최대 신뢰도
 
 STR_ORDER_CONDITIONAL_COMPARATOR_TOOLTIP                        :{BLACK}왼쪽의 비교조건과 오른쪽의 입력값을 비교할 연산자를 선택합니다.
 STR_ORDER_CONDITIONAL_COMPARATOR_EQUALS                         :=
@@ -4280,7 +4311,6 @@ STR_ERROR_TOO_MANY_STATIONS_LOADING                             :{WHITE}역이 �
 STR_ERROR_TOO_MANY_STATION_SPECS                                :{WHITE}철도역 조각이 너무 많습니다
 STR_ERROR_TOO_MANY_BUS_STOPS                                    :{WHITE}버스 정류장이 너무 많습니다
 STR_ERROR_TOO_MANY_TRUCK_STOPS                                  :{WHITE}트럭 적하장이 너무 많습니다
-STR_ERROR_TOO_CLOSE_TO_ANOTHER_STATION                          :{WHITE}다른 역과 너무 가깝습니다!
 STR_ERROR_TOO_CLOSE_TO_ANOTHER_DOCK                             :{WHITE}다른 항구와 너무 가깝습니다!
 STR_ERROR_TOO_CLOSE_TO_ANOTHER_AIRPORT                          :{WHITE}다른 공항과 너무 가깝습니다!
 STR_ERROR_CAN_T_RENAME_STATION                                  :{WHITE}역 이름을 바꿀 수 없습니다...
@@ -4288,7 +4318,6 @@ STR_ERROR_DRIVE_THROUGH_ON_TOWN_ROAD                            :{WHITE}... 여�
 STR_ERROR_DRIVE_THROUGH_DIRECTION                               :{WHITE}... 도로의 방향과 일치하지 않습니다.
 STR_ERROR_DRIVE_THROUGH_CORNER                                  :{WHITE}... 도로 통과 정류장은 곡선도로에 건설할 수 없습니다.
 STR_ERROR_DRIVE_THROUGH_JUNCTION                                :{WHITE}... 도로 통과 정류장은 교차로에 건설할 수 없습니다.
-STR_ERROR_DRIVE_THROUGH_ON_ONEWAY_ROAD                          :{WHITE}... 도로가 일방통행이거나 막혔습니다
 
 # Station destruction related errors
 STR_ERROR_CAN_T_REMOVE_PART_OF_STATION                          :{WHITE}역의 일부를 제거할 수 없습니다...

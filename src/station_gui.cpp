@@ -621,9 +621,8 @@ public:
 		}
 	}
 
-	virtual void OnTick()
+	virtual void OnGameTick()
 	{
-		if (_pause_mode != PM_UNPAUSED) return;
 		if (this->stations.NeedResort()) {
 			DEBUG(misc, 3, "Periodic rebuild station list company %d", this->window_number);
 			this->SetDirty();
@@ -658,7 +657,7 @@ const CargoTypes CompanyStationsWindow::cargo_filter_max = ALL_CARGOTYPES;
 CargoTypes CompanyStationsWindow::cargo_filter = ALL_CARGOTYPES;
 const Station *CompanyStationsWindow::last_station = NULL;
 
-/* Availible station sorting functions */
+/* Available station sorting functions */
 GUIStationList::SortFunction * const CompanyStationsWindow::sorter_funcs[] = {
 	&StationNameSorter,
 	&StationTypeSorter,
@@ -802,7 +801,6 @@ static const NWidgetPart _nested_station_view_widgets[] = {
  * @param left  left most coordinate to draw on
  * @param right right most coordinate to draw on
  * @param y y coordinate
- * @param width the width of the view
  */
 static void DrawCargoIcons(CargoID i, uint waiting, int left, int right, int y)
 {
@@ -2313,7 +2311,7 @@ struct SelectStationWindow : Window {
 		DeleteWindowById(WC_SELECT_STATION, 0);
 	}
 
-	virtual void OnTick()
+	virtual void OnRealtimeTick(uint delta_ms)
 	{
 		if (_thd.dirty & 2) {
 			_thd.dirty &= ~2;

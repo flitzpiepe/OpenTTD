@@ -100,6 +100,7 @@ AirportSpec AirportSpec::specs[NUM_AIRPORTS]; ///< Airport specifications.
 	assert(type < lengthof(AirportSpec::specs));
 	const AirportSpec *as = &AirportSpec::specs[type];
 	if (type >= NEW_AIRPORT_OFFSET && !as->enabled) {
+		if (_airport_mngr.GetGRFID(type) == 0) return as;
 		byte subst_id = _airport_mngr.GetSubstituteID(type);
 		if (subst_id == AT_INVALID) return as;
 		as = &AirportSpec::specs[subst_id];
@@ -216,7 +217,6 @@ void AirportOverrideManager::SetEntitySpec(AirportSpec *as)
 
 /**
  * Store a value into the object's persistent storage.
- * @param object Object that we want to query.
  * @param pos Position in the persistent storage to use.
  * @param value Value to store.
  */

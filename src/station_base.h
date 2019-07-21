@@ -483,6 +483,8 @@ public:
 
 	void UpdateVirtCoord();
 
+	void AfterStationTileSetChange(bool adding, StationType type);
+
 	/* virtual */ uint GetPlatformLength(TileIndex tile, DiagDirection dir) const;
 	/* virtual */ uint GetPlatformLength(TileIndex tile) const;
 	void RecomputeIndustriesNear();
@@ -516,7 +518,7 @@ private:
 public:
 	/**
 	 * Construct the iterator.
-	 * @param ta Area, i.e. begin point and width/height of to-be-iterated area.
+	 * @param st Station the airport is part of.
 	 */
 	AirportTileIterator(const Station *st) : OrthogonalTileIterator(st->airport), st(st)
 	{
