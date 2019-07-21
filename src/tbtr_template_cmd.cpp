@@ -343,12 +343,12 @@ CommandCost CmdTemplateReplacement(TileIndex ti, DoCommandFlag flags, uint32 p1,
 				if ( flags == DC_EXEC )
 					cc.AddCost(ccMove);
 				new_chain = new_vehicle;
-			 }
-			 else {
+			}
+			else {
 				CommandCost ccMove = DoCommand(tile, new_vehicle->index, new_chain->Last()->index, flags, CMD_MOVE_RAIL_VEHICLE);
 				if ( flags == DC_EXEC )
 					cc.AddCost(ccMove);
-			 }
+			}
 		}
 		/* ... otherwise buy a new one */
 		else {

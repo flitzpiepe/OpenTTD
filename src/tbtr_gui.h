@@ -7,7 +7,7 @@
  * See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with OpenTTD. If not, see <http://www.gnu.org/licenses/>.
  */
 
- /** @file tbtr_template_gui_main.h Main window for Template-based train replacement patch. */
+/** @file tbtr_template_gui_main.h Main window for Template-based train replacement patch. */
 
 #ifndef TBTR_GUI_H
 #define TBTR_GUI_H
@@ -71,9 +71,9 @@ private:
 	Scrollbar* hscroll_templates;       ///< Horizontal scrollbar for the template list
 	Scrollbar* vscroll_templates;       ///< Vertical scrollbar for the template list
 
-    uint16 height_cell_engines;         ///< the height of a line in the engines matrix
-    uint16 height_cell_groups;          ///< the height of a line in the groups matrix
-    uint16 height_cell_templates;       ///< the height of a line in the templates matrix
+	uint16 height_cell_engines;         ///< the height of a line in the engines matrix
+	uint16 height_cell_groups;          ///< the height of a line in the groups matrix
+	uint16 height_cell_templates;       ///< the height of a line in the templates matrix
 	uint16 pos_string_usedepot;         ///< horizontal position of the use-depot option
 	uint16 pos_string_keepremainders;   ///< horizontal position of the keep-remainders option
 	uint16 pos_string_userefit;         ///< horizontal position of the use-refit option
