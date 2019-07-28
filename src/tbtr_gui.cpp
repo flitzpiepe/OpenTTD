@@ -783,7 +783,8 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 				const Group* g = *(this->groups.Get(this->index_selected_group));
 				DoCommandP(0, g->index, 0, CMD_START_STOP_TBTR);
 
-				this->vscroll_templates->ScrollTowards(this->index_selected_template);
+				if ( this->index_selected_template != -1 )
+					this->vscroll_templates->ScrollTowards(this->index_selected_template);
 				this->vscroll_groups->ScrollTowards(this->index_selected_group);
 			}
 			this->UpdateButtonState();
