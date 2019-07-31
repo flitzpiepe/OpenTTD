@@ -806,7 +806,8 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			/* add the engine */
 			DoCommandP(0, tid, eid, CMD_TEMPLATE_ADD_ENGINE, CcTemplateEngineAdded);
 			this->index_selected_template = FindNewestTemplateInGui();
-			this->vscroll_templates->ScrollTowards(this->index_selected_template);
+			if ( this->index_selected_template >= 0 )
+				this->vscroll_templates->ScrollTowards(this->index_selected_template);
 			break;
 		}
 		case TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE: {
