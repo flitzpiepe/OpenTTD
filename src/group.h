@@ -20,7 +20,7 @@
 #include "livery.h"
 
 typedef uint16 TemplateID;
-#define INVALID_TEMPLATE 0xFF
+#define INVALID_TEMPLATE 0xFFFF
 
 typedef Pool<Group, GroupID, 16, 64000> GroupPool;
 extern GroupPool _group_pool; ///< Pool of groups.

@@ -25,7 +25,8 @@
 #include "vehicle_func.h"
 
 typedef uint16 TemplateID;
-#define INVALID_TEMPLATE 0xFF
+
+#define INVALID_TEMPLATE 0xFFFF
 
 class TemplateVehicle;
 
