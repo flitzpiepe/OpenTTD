@@ -480,7 +480,6 @@ void TbtrGui::DrawGroups(const Rect& r) const
 	int left = r.left + WD_MATRIX_LEFT;
 	int right = r.right - WD_MATRIX_RIGHT;
 	int y = r.top;
-	int y_med = y+this->pos_string_med;
 	int max = min(this->vscroll_groups->GetPosition() + this->vscroll_groups->GetCapacity(), this->groups.Length());
 	int step_size = this->height_cell_groups;
 
@@ -514,7 +513,7 @@ void TbtrGui::DrawGroups(const Rect& r) const
 
 		/* Draw info about the template used by this group */
 		if ( tid == INVALID_TEMPLATE ) {
-			DrawString(left, right-16, y_med, STR_TBTR_INFO_GROUP_NO_TEMPLATE, TC_GREY|TC_NO_SHADE, SA_RIGHT);
+			DrawString(left, right-16, y+this->pos_string_med, STR_TBTR_INFO_GROUP_NO_TEMPLATE, TC_GREY|TC_NO_SHADE, SA_RIGHT);
 		} else {
 			/* Draw the template used by the group */
 			SetDParam(0, FindTemplateIndexInGui(tid));
@@ -589,7 +588,6 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 	int left = r.left;
 	int right = r.right;
 	int y = r.top;
-	int ypos_hi = y+this->pos_string_hi;
 
 	uint max = min(vscroll_templates->GetPosition() + vscroll_templates->GetCapacity(), this->templates.Length());
 	TemplateVehicle* tv;
@@ -603,20 +601,20 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 
 		/* Draw a notification string for chains that are not runnable */
 		if ( tv->IsFreeWagonChain() ) {
-			DrawString(left, right-ScaleGUITrad(20), ypos_hi, STR_TBTR_WARN_FREE_WAGON, TC_RED, SA_RIGHT);
+			DrawString(left, right-ScaleGUITrad(20), y+this->pos_string_hi, STR_TBTR_WARN_FREE_WAGON, TC_RED, SA_RIGHT);
 		}
 
 		/* Draw the template's length in tile-units */
 		SetDParam(0, tv->GetRealLength());
 		SetDParam(1, 1);
-		DrawString(left, right-4, ypos_hi, STR_TINY_BLACK_DECIMAL, TC_BLACK, SA_RIGHT);
+		DrawString(left, right-4, y+this->pos_string_hi, STR_TINY_BLACK_DECIMAL, TC_BLACK, SA_RIGHT);
 
 		/* Draw the template */
-		tv->Draw(left+this->template_x_offset, right, ypos_hi+ScaleGUITrad(5), hscroll_templates->GetPosition());
+		tv->Draw(left+this->template_x_offset, right, y+this->pos_string_hi+ScaleGUITrad(5), hscroll_templates->GetPosition());
 
 		/* Index of current template vehicle in the list of all templates for its company */
 		SetDParam(0, i);
-		DrawString(left+5, left+25, ypos_hi, STR_BLACK_INT, TC_BLACK, SA_RIGHT);
+		DrawString(left+5, left+25, y+this->pos_string_hi, STR_BLACK_INT, TC_BLACK, SA_RIGHT);
 
 		/* Draw whether the current template is in use by any group */
 		int n_groups = tv->CountGroups();
@@ -624,11 +622,10 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 			uint _left = left + 150 + ScaleGUITrad(100);
 			SetDParam(0, n_groups);
 			StringID str_id = n_groups==1 ? STR_TBTR_INFO_TEMPLATE_IN_USE_1 : STR_TBTR_INFO_TEMPLATE_IN_USE;
-			DrawString(_left, right, ypos_hi, str_id, TC_GREEN, SA_LEFT);
+			DrawString(_left, right, y+this->pos_string_hi, str_id, TC_GREEN, SA_LEFT);
 		}
 
 		y += this->height_cell_templates;
-		ypos_hi += this->height_cell_templates;
 	}
 }
 
