@@ -16,6 +16,11 @@
 #include "engine_gui.h"
 #include "zoom_func.h"
 
+// TODO rm
+#include "newgrf_cargo.h"
+#include "newgrf_text.h"
+#include <iostream>
+
 enum TemplateReplaceWindowWidgets {
 	TRW_CAPTION,
 
@@ -794,6 +799,20 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 
 			/* selected engine */
 			EngineID eid = this->engines[this->index_selected_engine];
+
+			/* grfid for the selected engine */
+			//Engine ee(VEH_TRAIN, eid);
+			// TODO need the vehicle for the vehiclecallback -.-
+			// this will create a vehicleresolverobject which will resolve the callback
+			// TODO maybe some callbackid could be used with a CargoResolverObject
+			//uint16 cb = GetVehicleCallback(CBID_VEHICLE_CARGO_SUFFIX, 0, 0, v->engine_type, v);
+			const CargoSpec *cs;
+			FOR_ALL_CARGOSPECS(cs) {
+				uint16 cb = GetCargoCallback(CBID_VEHICLE_CARGO_SUFFIX, 0, 0, cs);
+				//uint32 grfid = GetGRFStringID(ee.GetGRFID(), 0xD000 + cb);
+				//std::cout << "grfid: " << grfid << std::endl;
+				int nop = 42;
+			}
 
 			/* selected template */
 			TemplateID tid = INVALID_TEMPLATE;
