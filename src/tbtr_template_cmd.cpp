@@ -615,7 +615,8 @@ CommandCost CmdCloneTemplateFromTrain(TileIndex ti, DoCommandFlag flags, uint32 
  *
  * @param tile:     unused
  * @param flags:    command flags
- * @param p1:       ID of the template to delete
+ * @param p1:       ID of the template to delete, if this is a TemplateVehicle chain, it is assumed that this
+ *					id is its head
  * @param p2:       unused
  * @param msg:      unused
  */
@@ -632,6 +633,14 @@ CommandCost CmdDeleteTemplate(TileIndex ti, DoCommandFlag flags, uint32 p1, uint
 			if ( g->template_id == tid )
 				g->template_id = INVALID_TEMPLATE;
 		}
+		/* delete the whole chain, this is not done in the dtor of TemplateVehicle */
+		TemplateVehicle* chain = tv->next;
+		while ( chain ) {
+			TemplateVehicle* tmp = chain->next;
+			delete chain;
+			chain = tmp;
+		}
+		/* delete the given TemplateVehicle */
 		delete tv;
 	}
 
