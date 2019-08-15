@@ -570,6 +570,9 @@ void TbtrGui::DrawTemplateInfo(const Rect &r) const
 	for ( ; tv; tv=tv->Next() )
 		cargo_caps[tv->cargo_type] += tv->cargo_cap;
 	for (CargoID i = 0; i < NUM_CARGO; ++i) {
+		// TODO
+		//	- print all available cargos
+		/*
 		if ( cargo_caps[i] > 0 ) {
 			count_rows++;
 			SetDParam(0, i);
@@ -582,6 +585,7 @@ void TbtrGui::DrawTemplateInfo(const Rect &r) const
 				left += left_offset;
 			}
 		}
+		*/
 	}
 }
 
