@@ -567,25 +567,40 @@ void TbtrGui::DrawTemplateInfo(const Rect &r) const
 	short count_rows = 0;
 	short max_rows = 2;
 	CargoArray cargo_caps;
-	for ( ; tv; tv=tv->Next() )
-		cargo_caps[tv->cargo_type] += tv->cargo_cap;
+	for ( const TemplateVehicle* tmp=tv ; tmp ; tmp=tmp->Next() )
+		cargo_caps[tmp->cargo_type] += tmp->cargo_cap;
 	for (CargoID i = 0; i < NUM_CARGO; ++i) {
-		// TODO
-		//	- print all available cargos
-		/*
-		if ( cargo_caps[i] > 0 ) {
-			count_rows++;
-			SetDParam(0, i);
-			SetDParam(1, cargo_caps[i]);
-			SetDParam(2, _settings_game.vehicle.freight_trains);
-			DrawString(left, r.right, y, FreightWagonMult(i) > 1 ? STR_TBTR_INFO_CARGO_SUMMARY_MULTI : STR_TBTR_INFO_CARGO_SUMMARY, TC_WHITE, SA_LEFT);
-			y += this->height_cell_templates;
-			if ( count_rows % max_rows == 0 ) {
-				y = top;
-				left += left_offset;
-			}
+
+		// filter cargos by valid bitnum, i.e. ignore all invalid cargos
+		const CargoSpec* cs = CargoSpec::Get(i);
+		if ( !cs || cs->bitnum == INVALID_CARGO )
+			continue;
+
+		Engine* e = Engine::Get(tv->engine_type);
+
+		TextColour tc = HasBit(e->info.refit_mask, i) ? TC_WHITE : TC_GREY;
+		count_rows++;
+		//SetDParam(0, cs->name);
+		DrawString(left, r.right, y, cs->name, tc, SA_LEFT);
+
+		y += this->height_cell_templates;
+		if ( count_rows % max_rows == 0 ) {
+			y = top;
+			left += left_offset;
 		}
-		*/
+
+		//if ( false && true || cargo_caps[i] > 0 ) {
+		//	count_rows++;
+		//	SetDParam(0, i);
+		//	SetDParam(1, cargo_caps[i]);
+		//	SetDParam(2, _settings_game.vehicle.freight_trains);
+		//	DrawString(left, r.right, y, FreightWagonMult(i) > 1 ? STR_TBTR_INFO_CARGO_SUMMARY_MULTI : STR_TBTR_INFO_CARGO_SUMMARY, TC_WHITE, SA_LEFT);
+		//	y += this->height_cell_templates;
+		//	if ( count_rows % max_rows == 0 ) {
+		//		y = top;
+		//		left += left_offset;
+		//	}
+		//}
 	}
 }
 
