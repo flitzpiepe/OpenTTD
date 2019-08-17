@@ -57,6 +57,16 @@ TemplateRefitWindow::TemplateRefitWindow(WindowDesc* wdesc) : Window(wdesc)
 	FinishInitNested(VEH_TRAIN);
 }
 
+void TemplateRefitWindow::UpdateWidgetSize(int widget, Dimension* size, const Dimension &padding, Dimension* fill, Dimension* resize)
+{
+	switch (widget) {
+		case TRFW_MATRIX_REFITS:
+			resize->height = 20;
+			size->height = 40;
+			break;
+	}
+}
+
 /*
  * Show the template refit window
  */
