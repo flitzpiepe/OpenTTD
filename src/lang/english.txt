@@ -368,6 +368,9 @@ STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_0                         :No trains to re
 STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_N                         :{GREEN}Trains to replace: {ORANGE}{NUM}
 STR_TBTR_WARN_FREE_WAGON                                        :{RED}Free Chain: not runnable!
 
+# TBTR Template Refit Window
+STR_TEMPLATE_REFIT_TITLE                                        :{WHITE}Template Refit
+
 # Tooltips for the main toolbar
 STR_TOOLBAR_TOOLTIP_PAUSE_GAME                                  :{BLACK}Pause game
 STR_TOOLBAR_TOOLTIP_FORWARD                                     :{BLACK}Fast forward the game

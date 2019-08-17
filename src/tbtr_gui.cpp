@@ -20,6 +20,7 @@
 #include "newgrf_cargo.h"
 #include "newgrf_text.h"
 #include <iostream>
+#include "tbtr_template_refit_window.h"
 
 enum TemplateReplaceWindowWidgets {
 	TRW_CAPTION,
@@ -901,6 +902,7 @@ void TbtrGui::OnInvalidateData(int data = 0, bool gui_scope = true)
  */
 void TbtrGui::OnPaint()
 {
+	ShowTemplateRefitWindow();
 	if ( _gui_zoom != this->gui_zoom ) {
 		this->gui_zoom = _gui_zoom;
 		this->UpdateZoom();
