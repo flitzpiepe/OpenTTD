@@ -68,6 +68,15 @@ void TemplateRefitWindow::UpdateWidgetSize(int widget, Dimension* size, const Di
 }
 
 /*
+ * Update GUI components on resize
+ */
+void TemplateRefitWindow::OnResize()
+{
+	NWidgetCore* nwi = this->GetWidget<NWidgetCore>(TRFW_MATRIX_REFITS);
+	nwi->widget_data = (this->num_cargo_types << MAT_ROW_START) + (1 << MAT_COL_START);
+}
+
+/*
  * Show the template refit window
  */
 void ShowTemplateRefitWindow()

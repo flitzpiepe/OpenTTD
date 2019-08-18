@@ -16,7 +16,10 @@ class TemplateRefitWindow : public Window {
 public:
 	TemplateRefitWindow(WindowDesc*);
 private:
+	virtual void OnResize();
 	virtual void UpdateWidgetSize(int, Dimension*, const Dimension&, Dimension*, Dimension*);
+
+	uint16 num_cargo_types = 11; // TODO
 };
 
 void ShowTemplateRefitWindow();
