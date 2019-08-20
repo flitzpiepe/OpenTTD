@@ -19,6 +19,7 @@ private:
 	virtual void OnResize();
 	virtual void UpdateWidgetSize(int, Dimension*, const Dimension&, Dimension*, Dimension*);
 
+	Scrollbar* vscroll_refits;
 	uint16 num_cargo_types = 11; // TODO
 };
 

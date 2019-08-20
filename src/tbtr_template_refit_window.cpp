@@ -10,12 +10,15 @@
 #include "window_func.h"
 #include "window_gui.h"
 #include "window_type.h"
+#include "engine_gui.h"
 
 #include "tbtr_template_refit_window.h"
 
 enum TemplateRefitWindowWidgets {
 	TRFW_CAPTION,
 	TRFW_MATRIX_REFITS,
+	TRFW_SCROLLBAR_REFITS,
+	TRFW_BUTTON_REFIT,
 };
 
 static const NWidgetPart _widgets[] = {
@@ -28,12 +31,14 @@ static const NWidgetPart _widgets[] = {
 	EndContainer(),
 	/* UI components */
 	NWidget(NWID_VERTICAL),
-		/* Template Panel */
-		NWidget(WWT_PANEL, COLOUR_GREY),
-			SetFill(1,1), SetMinimalSize(0,20), SetResize(1,0),
-		EndContainer(),
 		/* Refit list */
-		NWidget(WWT_MATRIX, COLOUR_GREY, TRFW_MATRIX_REFITS), SetFill(1,1), SetResize(1,1),
+		NWidget(NWID_HORIZONTAL),
+			NWidget(WWT_MATRIX, COLOUR_GREY, TRFW_MATRIX_REFITS), SetFill(1,14), SetResize(1,1), SetScrollbar(TRFW_SCROLLBAR_REFITS),
+			NWidget(NWID_VSCROLLBAR, COLOUR_GREY, TRFW_SCROLLBAR_REFITS),
+		EndContainer(),
+		NWidget(NWID_HORIZONTAL),
+			NWidget(WWT_TEXTBTN, COLOUR_GREY, TRFW_BUTTON_REFIT), SetResize(1,0), SetFill(1,1), SetDataTip(STR_TEMPLATE_REFIT_BUTTON, STR_TEMPLATE_REFIT_BUTTON),
+			NWidget(WWT_RESIZEBOX, COLOUR_GREY),
 		EndContainer(),
 	EndContainer(),
 };
@@ -54,15 +59,19 @@ static WindowDesc _tbtr_refit_window_desc(
 TemplateRefitWindow::TemplateRefitWindow(WindowDesc* wdesc) : Window(wdesc)
 {
 	CreateNestedTree(wdesc);
+	this->vscroll_refits = GetScrollbar(TRFW_SCROLLBAR_REFITS);
 	FinishInitNested(VEH_TRAIN);
+
+	this->vscroll_refits->SetStepSize(1);
+	this->vscroll_refits->SetCount(this->num_cargo_types);
 }
 
 void TemplateRefitWindow::UpdateWidgetSize(int widget, Dimension* size, const Dimension &padding, Dimension* fill, Dimension* resize)
 {
 	switch (widget) {
 		case TRFW_MATRIX_REFITS:
-			resize->height = 20;
-			size->height = 40;
+			resize->height = GetEngineListHeight(VEH_TRAIN);
+			size->height = 8 /*(_gui_zoom==0?3:8)*/ * resize->height;
 			break;
 	}
 }
@@ -73,7 +82,8 @@ void TemplateRefitWindow::UpdateWidgetSize(int widget, Dimension* size, const Di
 void TemplateRefitWindow::OnResize()
 {
 	NWidgetCore* nwi = this->GetWidget<NWidgetCore>(TRFW_MATRIX_REFITS);
-	nwi->widget_data = (this->num_cargo_types << MAT_ROW_START) + (1 << MAT_COL_START);
+	this->vscroll_refits->SetCapacityFromWidget(this, TRFW_MATRIX_REFITS);
+	nwi->widget_data = (this->vscroll_refits->GetCapacity() << MAT_ROW_START) + (1 << MAT_COL_START);
 }
 
 /*
