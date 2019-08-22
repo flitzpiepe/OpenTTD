@@ -10,7 +10,10 @@
 #include "window_func.h"
 #include "window_gui.h"
 #include "window_type.h"
+#include "engine_base.h"
 #include "engine_gui.h"
+
+#include "cargotype.h"
 
 #include "tbtr_template_refit_window.h"
 
@@ -73,6 +76,24 @@ void TemplateRefitWindow::UpdateWidgetSize(int widget, Dimension* size, const Di
 			resize->height = GetEngineListHeight(VEH_TRAIN);
 			size->height = 8 /*(_gui_zoom==0?3:8)*/ * resize->height;
 			break;
+	}
+}
+
+// TODO comment
+void TemplateRefitWindow::DrawWidget(const Rect& r, int widget) const {
+	switch (widget) {
+		case TRFW_MATRIX_REFITS: {
+			EngineID eid = 6;
+			const Engine* e = Engine::Get(eid);
+			const CargoSpec* cs;
+			int y = 20;
+			FOR_ALL_CARGOSPECS(cs) {
+				if ( HasBit(e->info.refit_mask, cs->bitnum) ) {
+					DrawString(r.left, r.right, y, cs->name, TC_BLACK);
+					y += 14;
+				}
+			}
+		}
 	}
 }
 

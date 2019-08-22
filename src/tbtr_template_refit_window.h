@@ -16,6 +16,7 @@ class TemplateRefitWindow : public Window {
 public:
 	TemplateRefitWindow(WindowDesc*);
 private:
+	virtual void DrawWidget(const Rect&, int) const;
 	virtual void OnResize();
 	virtual void UpdateWidgetSize(int, Dimension*, const Dimension&, Dimension*, Dimension*);
 

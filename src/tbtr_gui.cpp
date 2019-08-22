@@ -19,7 +19,9 @@
 // TODO rm
 #include "newgrf_cargo.h"
 #include "newgrf_text.h"
+// TODO rm
 #include <iostream>
+
 #include "tbtr_template_refit_window.h"
 
 enum TemplateReplaceWindowWidgets {
@@ -807,6 +809,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			// this will create a vehicleresolverobject which will resolve the callback
 			// TODO maybe some callbackid could be used with a CargoResolverObject
 			//uint16 cb = GetVehicleCallback(CBID_VEHICLE_CARGO_SUFFIX, 0, 0, v->engine_type, v);
+			// TODO rm
 			const CargoSpec *cs;
 			FOR_ALL_CARGOSPECS(cs) {
 				uint16 cb = GetCargoCallback(CBID_VEHICLE_CARGO_SUFFIX, 0, 0, cs);
