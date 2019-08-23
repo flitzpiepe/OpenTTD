@@ -870,6 +870,11 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 		}
 		case TRW_WIDGET_TMPL_BUTTONS_REFIT_TEMPLATE: {
 			ShowTemplateRefitWindow();
+			TemplateRefitWindow* w = (TemplateRefitWindow*)FindWindowByClass(WC_TBTR_TEMPLATE_REFIT_WINDOW);
+			if ( w ) {
+				TemplateVehicle* tv = TemplateVehicle::Get((this->templates)[this->index_selected_template]->index);
+				w->UpdateTemplateVehicle(tv);
+			}
 		}
 	}
 	this->SetDirty();

@@ -12,7 +12,11 @@
 #include "stdafx.h"
 #include "window_gui.h"
 
+class TemplateVehicle;
+class TbtrGui;
+
 class TemplateRefitWindow : public Window {
+	friend TbtrGui;
 public:
 	TemplateRefitWindow(WindowDesc*);
 private:
@@ -22,9 +26,12 @@ private:
 
 	void CreateCargoList();
 
+	void UpdateTemplateVehicle(TemplateVehicle* tv);
+
 	Scrollbar* vscroll_refits;
 	uint16 num_cargo_types = 11; // TODO
 	SmallVector<const CargoSpec*, 64> cargo_specs;
+	TemplateVehicle* selected_template;
 };
 
 void ShowTemplateRefitWindow();

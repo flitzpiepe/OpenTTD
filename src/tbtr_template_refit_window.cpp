@@ -15,6 +15,7 @@
 
 #include "cargotype.h"
 
+#include "tbtr_template_vehicle.h"
 #include "tbtr_template_refit_window.h"
 
 enum TemplateRefitWindowWidgets {
@@ -67,8 +68,6 @@ TemplateRefitWindow::TemplateRefitWindow(WindowDesc* wdesc) : Window(wdesc)
 
 	this->vscroll_refits->SetStepSize(1);
 	this->vscroll_refits->SetCount(this->num_cargo_types);
-
-	CreateCargoList();
 }
 
 void TemplateRefitWindow::UpdateWidgetSize(int widget, Dimension* size, const Dimension &padding, Dimension* fill, Dimension* resize)
@@ -84,7 +83,9 @@ void TemplateRefitWindow::UpdateWidgetSize(int widget, Dimension* size, const Di
 // TODO comment
 // TODO mv
 void TemplateRefitWindow::CreateCargoList() {
-	EngineID eid = 6;
+	this->cargo_specs.Clear();
+	this->cargo_specs.Reset();
+	EngineID eid = this->selected_template->last->engine_type;
 	const Engine* e = Engine::Get(eid);
 	const CargoSpec* cs;
 	FOR_ALL_CARGOSPECS(cs) {
@@ -105,6 +106,12 @@ void TemplateRefitWindow::DrawWidget(const Rect& r, int widget) const {
 			}
 		}
 	}
+}
+
+void TemplateRefitWindow::UpdateTemplateVehicle(TemplateVehicle* tv)
+{
+	this->selected_template = tv;
+	CreateCargoList();
 }
 
 /*
