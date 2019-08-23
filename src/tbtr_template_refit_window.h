@@ -20,8 +20,11 @@ private:
 	virtual void OnResize();
 	virtual void UpdateWidgetSize(int, Dimension*, const Dimension&, Dimension*, Dimension*);
 
+	void CreateCargoList();
+
 	Scrollbar* vscroll_refits;
 	uint16 num_cargo_types = 11; // TODO
+	SmallVector<const CargoSpec*, 64> cargo_specs;
 };
 
 void ShowTemplateRefitWindow();

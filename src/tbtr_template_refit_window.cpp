@@ -67,6 +67,8 @@ TemplateRefitWindow::TemplateRefitWindow(WindowDesc* wdesc) : Window(wdesc)
 
 	this->vscroll_refits->SetStepSize(1);
 	this->vscroll_refits->SetCount(this->num_cargo_types);
+
+	CreateCargoList();
 }
 
 void TemplateRefitWindow::UpdateWidgetSize(int widget, Dimension* size, const Dimension &padding, Dimension* fill, Dimension* resize)
@@ -80,18 +82,26 @@ void TemplateRefitWindow::UpdateWidgetSize(int widget, Dimension* size, const Di
 }
 
 // TODO comment
+// TODO mv
+void TemplateRefitWindow::CreateCargoList() {
+	EngineID eid = 6;
+	const Engine* e = Engine::Get(eid);
+	const CargoSpec* cs;
+	FOR_ALL_CARGOSPECS(cs) {
+		if ( HasBit(e->info.refit_mask, cs->bitnum) ) {
+			*this->cargo_specs.Append(1) = cs;
+		}
+	}
+}
+
+// TODO comment
 void TemplateRefitWindow::DrawWidget(const Rect& r, int widget) const {
 	switch (widget) {
 		case TRFW_MATRIX_REFITS: {
-			EngineID eid = 6;
-			const Engine* e = Engine::Get(eid);
-			const CargoSpec* cs;
 			int y = 20;
-			FOR_ALL_CARGOSPECS(cs) {
-				if ( HasBit(e->info.refit_mask, cs->bitnum) ) {
-					DrawString(r.left, r.right, y, cs->name, TC_BLACK);
-					y += 14;
-				}
+			for ( unsigned int i=0; i<this->cargo_specs.Length(); ++i ) {
+				DrawString(r.left, r.right, y, this->cargo_specs[i]->name, TC_BLACK);
+				y += 14;
 			}
 		}
 	}
