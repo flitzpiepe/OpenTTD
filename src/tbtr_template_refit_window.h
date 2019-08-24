@@ -32,6 +32,7 @@ private:
 	Scrollbar* vscroll_refits;
 	uint16 num_cargo_types = 11; // TODO
 	SmallVector<const CargoSpec*, 64> cargo_specs;
+	uint16 index_selected_refit = -1;
 	TemplateVehicle* selected_template;
 };
 

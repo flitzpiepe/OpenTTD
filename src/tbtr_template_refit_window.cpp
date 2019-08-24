@@ -112,10 +112,17 @@ void TemplateRefitWindow::CreateCargoList() {
 void TemplateRefitWindow::DrawWidget(const Rect& r, int widget) const {
 	switch (widget) {
 		case TRFW_MATRIX_REFITS: {
-			int y = 20;
+			int cell_height = 14; // TODO compute
+			int pos_string_top = 2; // TODO compute
+			int y = r.top;
 			for ( unsigned int i=0; i<this->cargo_specs.Length(); ++i ) {
-				DrawString(r.left, r.right, y, this->cargo_specs[i]->name, TC_BLACK);
-				y += 14;
+				/* fill the cell of the currently selected refit */
+				if ( this->index_selected_refit == (int32)i ) {
+					GfxFillRect(r.left, y, r.right, y+cell_height, _colour_gradient[COLOUR_GREY][3]);
+				}
+				/* cargo name for the refit */
+				DrawString(r.left, r.right, y+pos_string_top, this->cargo_specs[i]->name, TC_BLACK);
+				y += cell_height;
 			}
 		}
 	}
@@ -129,9 +136,27 @@ void TemplateRefitWindow::UpdateTemplateVehicle(TemplateVehicle* tv)
 }
 
 // TODO comment
-void TemplateRefitWindow::OnClick(Point p, int widget, int click_count)
+void TemplateRefitWindow::OnClick(Point pt, int widget, int click_count)
 {
 	switch (widget) {
+		case TRFW_MATRIX_REFITS: {
+			uint16 index_new = this->vscroll_refits->GetScrolledRowFromWidget(pt.y, this, widget);
+
+			/* clicked empty cell */
+			if ( index_new >= this->cargo_specs.Length() )
+				this->index_selected_refit = -1;
+
+			/* clicked currently selected cell */
+			else if ( index_new == this->index_selected_refit )
+				this->index_selected_refit = -1;
+
+			/* clicked cell containing another refit */
+			else
+				this->index_selected_refit = index_new;
+
+			this->SetDirty();
+			break;
+		}
 		case TRFW_BUTTON_REFIT: {
 			break;
 		}
