@@ -18,6 +18,9 @@
 #include "tbtr_template_vehicle.h"
 #include "tbtr_template_refit_window.h"
 
+// TODO rm
+#include "tbtr_debug.h"
+
 enum TemplateRefitWindowWidgets {
 	TRFW_CAPTION,
 	TRFW_MATRIX_REFITS,
@@ -85,12 +88,14 @@ void TemplateRefitWindow::UpdateWidgetSize(int widget, Dimension* size, const Di
 void TemplateRefitWindow::CreateCargoList() {
 	this->cargo_specs.Clear();
 	this->cargo_specs.Reset();
-	EngineID eid = this->selected_template->last->engine_type;
-	const Engine* e = Engine::Get(eid);
-	const CargoSpec* cs;
-	FOR_ALL_CARGOSPECS(cs) {
-		if ( HasBit(e->info.refit_mask, cs->bitnum) ) {
-			*this->cargo_specs.Append(1) = cs;
+	if ( this->selected_template ) {
+		EngineID eid = this->selected_template->last->engine_type;
+		const Engine* e = Engine::Get(eid);
+		const CargoSpec* cs;
+		FOR_ALL_CARGOSPECS(cs) {
+			if ( HasBit(e->info.refit_mask, cs->bitnum) ) {
+				*this->cargo_specs.Append(1) = cs;
+			}
 		}
 	}
 }
@@ -112,6 +117,7 @@ void TemplateRefitWindow::UpdateTemplateVehicle(TemplateVehicle* tv)
 {
 	this->selected_template = tv;
 	CreateCargoList();
+	this->SetDirty();
 }
 
 /*

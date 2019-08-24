@@ -759,16 +759,20 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 		case TRW_WIDGET_MATRIX_TEMPLATES: {
 			uint16 index_new = this->vscroll_templates->GetScrolledRowFromWidget(pt.y, this, widget);
 
+			/* clicked empty cell */
 			if ( index_new >= this->templates.Length() )
 				this->index_selected_template = -1;
 
-			if ( index_new == this->index_selected_template )
+			/* clicked currently selected cell */
+			else if ( index_new == this->index_selected_template )
 				this->index_selected_template = -1;
 
+			/* clicked cell containing another template */
 			else
 				this->index_selected_template = index_new;
 
 			this->UpdateButtonState();
+			this->UpdateRefitWindow();
 			break;
 		}
 		case TRW_WIDGET_START: {
@@ -870,11 +874,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 		}
 		case TRW_WIDGET_TMPL_BUTTONS_REFIT_TEMPLATE: {
 			ShowTemplateRefitWindow();
-			TemplateRefitWindow* w = (TemplateRefitWindow*)FindWindowByClass(WC_TBTR_TEMPLATE_REFIT_WINDOW);
-			if ( w ) {
-				TemplateVehicle* tv = TemplateVehicle::Get((this->templates)[this->index_selected_template]->index);
-				w->UpdateTemplateVehicle(tv);
-			}
+			this->UpdateRefitWindow();
 		}
 	}
 	this->SetDirty();
@@ -990,6 +990,20 @@ void TbtrGui::UpdateButtonState()
 		add_engine->SetDataTip(STR_TBTR_UI_BUTTON_ADD_ENGINE, STR_TBTR_UI_TOOLTIP_ADD_ENGINE);
 	} else {
 		add_engine->SetDataTip(STR_TBTR_UI_BUTTON_ADD_ENGINE_DA, STR_TBTR_UI_TOOLTIP_ADD_ENGINE);
+	}
+}
+
+/**
+ * Update the template refit window with the currently selected template
+ */
+void TbtrGui::UpdateRefitWindow()
+{
+	TemplateRefitWindow* w = (TemplateRefitWindow*)FindWindowByClass(WC_TBTR_TEMPLATE_REFIT_WINDOW);
+	if ( w ) {
+		if ( this->index_selected_template >= 0 )
+			w->UpdateTemplateVehicle(TemplateVehicle::Get((this->templates)[this->index_selected_template]->index));
+		else
+			w->UpdateTemplateVehicle(NULL);
 	}
 }
 

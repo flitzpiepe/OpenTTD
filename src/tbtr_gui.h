@@ -64,6 +64,7 @@ private:
 	bool HandleClickGroupList(Point, int, uint16);
 
 	void UpdateButtonState();
+	void UpdateRefitWindow();
 	void UpdateZoom();
 
 	Scrollbar* vscroll_engines;         ///< Scrollbar for the engines list
