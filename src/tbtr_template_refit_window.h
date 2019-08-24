@@ -21,6 +21,7 @@ public:
 	TemplateRefitWindow(WindowDesc*);
 private:
 	virtual void DrawWidget(const Rect&, int) const;
+	virtual void OnClick(Point, int, int);
 	virtual void OnResize();
 	virtual void UpdateWidgetSize(int, Dimension*, const Dimension&, Dimension*, Dimension*);
 

@@ -44,7 +44,7 @@ static const NWidgetPart _widgets[] = {
 			NWidget(NWID_VSCROLLBAR, COLOUR_GREY, TRFW_SCROLLBAR_REFITS),
 		EndContainer(),
 		NWidget(NWID_HORIZONTAL),
-			NWidget(WWT_TEXTBTN, COLOUR_GREY, TRFW_BUTTON_REFIT), SetResize(1,0), SetFill(1,1), SetDataTip(STR_TEMPLATE_REFIT_BUTTON, STR_TEMPLATE_REFIT_BUTTON),
+			NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRFW_BUTTON_REFIT), SetResize(1,0), SetFill(1,1), SetDataTip(STR_ORDER_REFIT, STR_ORDER_REFIT),
 			NWidget(WWT_RESIZEBOX, COLOUR_GREY),
 		EndContainer(),
 	EndContainer(),
@@ -126,6 +126,16 @@ void TemplateRefitWindow::UpdateTemplateVehicle(TemplateVehicle* tv)
 	this->selected_template = tv;
 	CreateCargoList();
 	this->SetDirty();
+}
+
+// TODO comment
+void TemplateRefitWindow::OnClick(Point p, int widget, int click_count)
+{
+	switch (widget) {
+		case TRFW_BUTTON_REFIT: {
+			break;
+		}
+	}
 }
 
 /*
