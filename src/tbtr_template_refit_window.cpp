@@ -88,12 +88,20 @@ void TemplateRefitWindow::UpdateWidgetSize(int widget, Dimension* size, const Di
 void TemplateRefitWindow::CreateCargoList() {
 	this->cargo_specs.Clear();
 	this->cargo_specs.Reset();
+
 	if ( this->selected_template ) {
-		EngineID eid = this->selected_template->last->engine_type;
-		const Engine* e = Engine::Get(eid);
+		/* gather all available refits for the current template chain */
+		CargoTypes template_refit_mask = 0x0;
+		const TemplateVehicle* tmp = this->selected_template->first;
+		while ( tmp ) {
+			const Engine* e = Engine::Get(tmp->engine_type);
+			template_refit_mask |= e->info.refit_mask;
+			tmp = tmp->next;
+		}
+		/* add all available refits to the list of cargo specs */
 		const CargoSpec* cs;
 		FOR_ALL_CARGOSPECS(cs) {
-			if ( HasBit(e->info.refit_mask, cs->bitnum) ) {
+			if ( HasBit(template_refit_mask, cs->bitnum) ) {
 				*this->cargo_specs.Append(1) = cs;
 			}
 		}
