@@ -858,8 +858,14 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			break;
 		}
 		case TRW_WIDGET_TMPL_BUTTONS_REFIT_TEMPLATE: {
-			ShowTemplateRefitWindow();
-			this->UpdateRefitWindow();
+			/* toggle the template refit window */
+			TemplateRefitWindow* w = (TemplateRefitWindow*)FindWindowByClass(WC_TBTR_TEMPLATE_REFIT_WINDOW);
+			if ( w )
+				DeleteWindowByClass(WC_TBTR_TEMPLATE_REFIT_WINDOW);
+			else {
+				ShowTemplateRefitWindow();
+				this->UpdateRefitWindow();
+			}
 		}
 	}
 	this->SetDirty();
