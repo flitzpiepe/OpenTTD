@@ -339,6 +339,7 @@ enum Commands {
 	CMD_TOGGLE_TEMPLATE_OPTION,       ///< toggle a template configuration option, e.g. whether to sell remainders
 	CMD_CLONE_TEMPLATE_FROM_TRAIN,    ///< create a new template vehicle as a copy of a train
 	CMD_DELETE_TEMPLATE,              ///< delete a template vehicle (chain)
+	CMD_REFIT_TEMPLATE,               ///< refit a template vehicle to carry a certain cargo type
 
 	CMD_END,                          ///< Must ALWAYS be on the end of this list!! (period)
 };

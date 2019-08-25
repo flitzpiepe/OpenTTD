@@ -13,6 +13,7 @@
 #include "engine_base.h"
 #include "engine_gui.h"
 
+#include "command_func.h"
 #include "cargotype.h"
 
 #include "tbtr_template_vehicle.h"
@@ -158,6 +159,11 @@ void TemplateRefitWindow::OnClick(Point pt, int widget, int click_count)
 			break;
 		}
 		case TRFW_BUTTON_REFIT: {
+			const CargoSpec* cs = this->cargo_specs[index_selected_refit];
+			CargoID cid = cs->Index();
+			DoCommandP(0, this->selected_template->index, cid, CMD_REFIT_TEMPLATE);
+			Window* tbtr_gui = FindWindowByClass(WC_TBTR_GUI);
+			if ( tbtr_gui ) tbtr_gui->SetDirty();
 			break;
 		}
 	}

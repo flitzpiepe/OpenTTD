@@ -637,3 +637,23 @@ CommandCost CmdDeleteTemplate(TileIndex ti, DoCommandFlag flags, uint32 p1, uint
 
 	return CommandCost();
 }
+
+// TODO comment
+// p1 template (by id)
+// p2 new refit (cargoid)
+CommandCost CmdRefitTemplate(TileIndex ti, DoCommandFlag flags, uint32 p1, uint32 p2, char const* msg)
+{
+	TemplateVehicle* tv = TemplateVehicle::Get(p1);
+	CargoID cid = CargoID(p2);
+
+	if ( !tv )
+		return CMD_ERROR;
+
+	for ( TemplateVehicle* tmp=tv->first; tmp; tmp=tmp->next ) {
+		const Engine* engine = Engine::Get(tmp->engine_type);
+		if ( flags == DC_EXEC && HasBit(engine->info.refit_mask,cid) )
+			tmp->cargo_type = cid;
+	}
+
+	return CommandCost();
+}
