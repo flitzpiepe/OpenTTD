@@ -64,12 +64,13 @@ static WindowDesc _tbtr_refit_window_desc(
 /*
  * Constructor
  */
-TemplateRefitWindow::TemplateRefitWindow(WindowDesc* wdesc) : Window(wdesc)
+TemplateRefitWindow::TemplateRefitWindow(WindowDesc* wdesc, Window* p) : Window(wdesc)
 {
 	CreateNestedTree(wdesc);
 	this->vscroll_refits = GetScrollbar(TRFW_SCROLLBAR_REFITS);
 	FinishInitNested(VEH_TRAIN);
 
+	this->parent = p;
 	this->vscroll_refits->SetStepSize(1);
 	this->vscroll_refits->SetCount(this->num_cargo_types);
 }
@@ -182,10 +183,10 @@ void TemplateRefitWindow::OnResize()
 /*
  * Show the template refit window
  */
-void ShowTemplateRefitWindow()
+void ShowTemplateRefitWindow(Window* parent)
 {
 	Window* w = FindWindowByClass(WC_TBTR_TEMPLATE_REFIT_WINDOW);
 	if ( w )
 		return;
-	new TemplateRefitWindow(&_tbtr_refit_window_desc);
+	new TemplateRefitWindow(&_tbtr_refit_window_desc, parent);
 }

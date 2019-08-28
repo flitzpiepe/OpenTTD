@@ -18,7 +18,7 @@ class TbtrGui;
 class TemplateRefitWindow : public Window {
 	friend TbtrGui;
 public:
-	TemplateRefitWindow(WindowDesc*);
+	TemplateRefitWindow(WindowDesc*, Window*);
 private:
 	virtual void DrawWidget(const Rect&, int) const;
 	virtual void OnClick(Point, int, int);
@@ -36,6 +36,6 @@ private:
 	TemplateVehicle* selected_template;
 };
 
-void ShowTemplateRefitWindow();
+void ShowTemplateRefitWindow(Window*);
 
 #endif /* !TBTR_TEMPLATE_REFIT_WINDOW_H */

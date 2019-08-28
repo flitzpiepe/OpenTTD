@@ -863,7 +863,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			if ( w )
 				DeleteWindowByClass(WC_TBTR_TEMPLATE_REFIT_WINDOW);
 			else {
-				ShowTemplateRefitWindow();
+				ShowTemplateRefitWindow(this);
 				this->UpdateRefitWindow();
 			}
 		}
