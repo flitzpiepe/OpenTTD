@@ -16,6 +16,7 @@
 #include "command_func.h"
 #include "cargotype.h"
 
+#include "tbtr_gui.h"
 #include "tbtr_template_vehicle.h"
 #include "tbtr_template_refit_window.h"
 
@@ -71,6 +72,7 @@ TemplateRefitWindow::TemplateRefitWindow(WindowDesc* wdesc, Window* p) : Window(
 	FinishInitNested(VEH_TRAIN);
 
 	this->parent = p;
+	this->main_ui = (TbtrGui*)p;
 	this->vscroll_refits->SetStepSize(1);
 	this->vscroll_refits->SetCount(this->num_cargo_types);
 }
@@ -115,6 +117,7 @@ void TemplateRefitWindow::DrawWidget(const Rect& r, int widget) const {
 	switch (widget) {
 		case TRFW_MATRIX_REFITS: {
 			int cell_height = 14; // TODO compute
+			cell_height = main_ui->height_cell_templates;
 			int pos_string_top = 2; // TODO compute
 			int y = r.top;
 			for ( unsigned int i=0; i<this->cargo_specs.Length(); ++i ) {

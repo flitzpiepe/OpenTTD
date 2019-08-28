@@ -34,10 +34,13 @@ enum UpdateGuiMode {
 	TEMPLATE_DELETED,
 };
 
+class TemplateRefitWindow;
+
 /*
  * TBTR's main window - for managing templates and setting up train groups for replacement.
  */
 class TbtrGui : public Window {
+friend TemplateRefitWindow;
 public:
 	TbtrGui(WindowDesc*);
 	virtual void UpdateWidgetSize(int, Dimension*, const Dimension&, Dimension*, Dimension*);

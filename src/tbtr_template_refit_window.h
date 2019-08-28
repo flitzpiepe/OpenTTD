@@ -34,6 +34,7 @@ private:
 	SmallVector<const CargoSpec*, 64> cargo_specs;
 	uint16 index_selected_refit = -1;
 	TemplateVehicle* selected_template;
+	TbtrGui* main_ui;
 };
 
 void ShowTemplateRefitWindow(Window*);
