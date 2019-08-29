@@ -817,6 +817,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			this->index_selected_template = FindNewestTemplateInGui();
 			if ( this->index_selected_template >= 0 )
 				this->vscroll_templates->ScrollTowards(this->index_selected_template);
+			this->UpdateRefitWindow();
 			break;
 		}
 		case TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE: {
@@ -840,6 +841,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 				this->vscroll_templates->ScrollTowards(this->index_selected_template);
 				this->index_selected_template = -1;
 				this->UpdateButtonState();
+				this->UpdateRefitWindow();
 			}
 			break;
 		}
@@ -855,6 +857,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 
 			/* delete the last engine */
 			DoCommandP(0, tid, 0, CMD_TEMPLATE_DELETE_ENGINE, CcTemplateEngineDeleted);
+			this->UpdateRefitWindow();
 			break;
 		}
 		case TRW_WIDGET_TMPL_BUTTONS_REFIT_TEMPLATE: {
