@@ -119,7 +119,7 @@ static const NWidgetPart _widgets[] = {
 			NWidget(NWID_HORIZONTAL),
 				NWidget(WWT_TEXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE), SetMinimalSize(140,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_CLONE_TEMPLATE, STR_TBTR_UI_TOOLTIP_CLONE_TEMPLATE),
 				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_ADD_ENGINE), SetMinimalSize(140,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_ADD_ENGINE_DA, STR_TBTR_UI_TOOLTIP_ADD_ENGINE),
-				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_TOGGLE_REFIT_WINDOW), SetMinimalSize(140,12), SetResize(1,0), SetFill(1,0), SetDataTip(STR_TEMPLATE_REFIT_BUTTON, STR_TEMPLATE_REFIT_BUTTON),
+				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_TOGGLE_REFIT_WINDOW), SetMinimalSize(140,12), SetResize(1,0), SetFill(1,0), SetDataTip(STR_TEMPLATE_REFIT_BUTTON_DA, STR_TEMPLATE_REFIT_BUTTON_DA),
 				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_DELETE_ENGINE), SetMinimalSize(140,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_DELETE_ENGINE_DA, STR_TBTR_UI_TOOLTIP_DELETE_ENGINE),
 				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE), SetMinimalSize(140,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_DELETE_TEMPLATE_DA, STR_TBTR_UI_TOOLTIP_DELETE_TEMPLATE),
 			EndContainer(),
@@ -863,9 +863,11 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 		case TRW_WIDGET_TMPL_BUTTONS_TOGGLE_REFIT_WINDOW: {
 			/* toggle the template refit window */
 			TemplateRefitWindow* w = (TemplateRefitWindow*)FindWindowByClass(WC_TBTR_TEMPLATE_REFIT_WINDOW);
-			if ( w )
+			if ( w ) {
 				DeleteWindowByClass(WC_TBTR_TEMPLATE_REFIT_WINDOW);
-			else {
+				this->UpdateButtonState();
+			}
+			else if ( this->index_selected_template >= 0 ) {
 				ShowTemplateRefitWindow(this);
 				this->UpdateRefitWindow();
 			}
@@ -955,14 +957,19 @@ void TbtrGui::UpdateButtonState()
 	NWidgetCore* delete_engine = this->GetWidget<NWidgetCore>(TRW_WIDGET_TMPL_BUTTONS_DELETE_ENGINE);
 	NWidgetCore* start_rpl = this->GetWidget<NWidgetCore>(TRW_WIDGET_START);
 	NWidgetCore* stop_rpl = this->GetWidget<NWidgetCore>(TRW_WIDGET_STOP);
+	NWidgetCore* toggle_refit_ui = this->GetWidget<NWidgetCore>(TRW_WIDGET_TMPL_BUTTONS_TOGGLE_REFIT_WINDOW);
+	bool refit_window = FindWindowByClass(WC_TBTR_TEMPLATE_REFIT_WINDOW) != NULL;
 
 	/* template selected */
 	if ( this->index_selected_template != -1 ) {
 		delete_template->SetDataTip(STR_TBTR_UI_BUTTON_DELETE_TEMPLATE, STR_TBTR_UI_TOOLTIP_DELETE_TEMPLATE);
 		delete_engine->SetDataTip(STR_TBTR_UI_BUTTON_DELETE_ENGINE, STR_TBTR_UI_TOOLTIP_DELETE_ENGINE);
+		toggle_refit_ui->SetDataTip(STR_TEMPLATE_REFIT_BUTTON, STR_TEMPLATE_REFIT_BUTTON);
 	} else {
 		delete_template->SetDataTip(STR_TBTR_UI_BUTTON_DELETE_TEMPLATE_DA, STR_TBTR_UI_TOOLTIP_DELETE_TEMPLATE);
 		delete_engine->SetDataTip(STR_TBTR_UI_BUTTON_DELETE_ENGINE_DA, STR_TBTR_UI_TOOLTIP_DELETE_ENGINE);
+		if ( FindWindowByClass(WC_TBTR_TEMPLATE_REFIT_WINDOW) == NULL )
+			toggle_refit_ui->SetDataTip(STR_TEMPLATE_REFIT_BUTTON_DA, STR_TEMPLATE_REFIT_BUTTON_DA);
 	}
 
 	/* group selected */

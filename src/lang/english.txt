@@ -371,6 +371,7 @@ STR_TBTR_WARN_FREE_WAGON                                        :{RED}Free Chain
 # TBTR Template Refit Window
 STR_TEMPLATE_REFIT_TITLE                                        :{WHITE}Template Refit
 STR_TEMPLATE_REFIT_BUTTON                                       :{BLACK}Toggle Refit Window
+STR_TEMPLATE_REFIT_BUTTON_DA                                    :{GRAY}Toggle Refit Window
 
 # Tooltips for the main toolbar
 STR_TOOLBAR_TOOLTIP_PAUSE_GAME                                  :{BLACK}Pause game
