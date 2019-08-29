@@ -163,11 +163,16 @@ void TemplateRefitWindow::OnClick(Point pt, int widget, int click_count)
 			break;
 		}
 		case TRFW_BUTTON_REFIT: {
-			const CargoSpec* cs = this->cargo_specs[index_selected_refit];
-			CargoID cid = cs->Index();
-			DoCommandP(0, this->selected_template->index, cid, CMD_REFIT_TEMPLATE);
-			Window* tbtr_gui = FindWindowByClass(WC_TBTR_GUI);
-			if ( tbtr_gui ) tbtr_gui->SetDirty();
+			if ( this->index_selected_refit < this->cargo_specs.Length() ) {
+				/* refit */
+				const CargoSpec* cs = *(this->cargo_specs.Get(this->index_selected_refit));
+				CargoID cid = cs->Index();
+				DoCommandP(0, this->selected_template->index, cid, CMD_REFIT_TEMPLATE);
+
+				/* propagate top the main ui */
+				Window* tbtr_gui = FindWindowByClass(WC_TBTR_GUI);
+				if ( tbtr_gui ) tbtr_gui->SetDirty();
+			}
 			break;
 		}
 	}
