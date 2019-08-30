@@ -20,9 +20,6 @@
 #include "tbtr_template_vehicle.h"
 #include "tbtr_template_refit_window.h"
 
-// TODO rm
-#include "tbtr_debug.h"
-
 enum TemplateRefitWindowWidgets {
 	TRFW_CAPTION,
 	TRFW_MATRIX_REFITS,
@@ -77,18 +74,9 @@ TemplateRefitWindow::TemplateRefitWindow(WindowDesc* wdesc, Window* p) : Window(
 	this->vscroll_refits->SetCount(this->num_cargo_types);
 }
 
-void TemplateRefitWindow::UpdateWidgetSize(int widget, Dimension* size, const Dimension &padding, Dimension* fill, Dimension* resize)
-{
-	switch (widget) {
-		case TRFW_MATRIX_REFITS:
-			resize->height = GetEngineListHeight(VEH_TRAIN);
-			size->height = 8 /*(_gui_zoom==0?3:8)*/ * resize->height;
-			break;
-	}
-}
-
-// TODO comment
-// TODO mv
+/**
+ * Build the list of cargo types to show in the refit window
+ */
 void TemplateRefitWindow::CreateCargoList() {
 	this->cargo_specs.Clear();
 	this->cargo_specs.Reset();
@@ -112,7 +100,9 @@ void TemplateRefitWindow::CreateCargoList() {
 	}
 }
 
-// TODO comment
+/*
+ * Draw a widget of this GUI
+ */
 void TemplateRefitWindow::DrawWidget(const Rect& r, int widget) const {
 	switch (widget) {
 		case TRFW_MATRIX_REFITS: {
@@ -133,14 +123,9 @@ void TemplateRefitWindow::DrawWidget(const Rect& r, int widget) const {
 	}
 }
 
-void TemplateRefitWindow::UpdateTemplateVehicle(TemplateVehicle* tv)
-{
-	this->selected_template = tv;
-	CreateCargoList();
-	this->SetDirty();
-}
-
-// TODO comment
+/*
+ * Handle mouse clicks on the GUI
+ */
 void TemplateRefitWindow::OnClick(Point pt, int widget, int click_count)
 {
 	switch (widget) {
@@ -186,6 +171,32 @@ void TemplateRefitWindow::OnResize()
 	NWidgetCore* nwi = this->GetWidget<NWidgetCore>(TRFW_MATRIX_REFITS);
 	this->vscroll_refits->SetCapacityFromWidget(this, TRFW_MATRIX_REFITS);
 	nwi->widget_data = (this->vscroll_refits->GetCapacity() << MAT_ROW_START) + (1 << MAT_COL_START);
+}
+
+/**
+ * Update the template vehicle to refit
+ *
+ * @param tv:    Pointer to the template vehicle that should be refitted
+ */
+// TODO make param const
+void TemplateRefitWindow::UpdateTemplateVehicle(TemplateVehicle* tv)
+{
+	this->selected_template = tv;
+	CreateCargoList();
+	this->SetDirty();
+}
+
+/**
+ * Recalculate the size of the window's components
+ */
+void TemplateRefitWindow::UpdateWidgetSize(int widget, Dimension* size, const Dimension &padding, Dimension* fill, Dimension* resize)
+{
+	switch (widget) {
+		case TRFW_MATRIX_REFITS:
+			resize->height = GetEngineListHeight(VEH_TRAIN);
+			size->height = 8 /*(_gui_zoom==0?3:8)*/ * resize->height;
+			break;
+	}
 }
 
 /*

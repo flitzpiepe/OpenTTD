@@ -638,9 +638,15 @@ CommandCost CmdDeleteTemplate(TileIndex ti, DoCommandFlag flags, uint32 p1, uint
 	return CommandCost();
 }
 
-// TODO comment
-// p1 template (by id)
-// p2 new refit (cargoid)
+/**
+ * Refit a template vehicle to carry some specified type of cargo
+ *
+ * @param tile:     unused
+ * @param flags:    command flags
+ * @param p1:       ID of the template vehicle to refit
+ * @param p2:       CargoID to use as refit
+ * @param msg:      unused
+ */
 CommandCost CmdRefitTemplate(TileIndex ti, DoCommandFlag flags, uint32 p1, uint32 p2, char const* msg)
 {
 	TemplateVehicle* tv = TemplateVehicle::Get(p1);

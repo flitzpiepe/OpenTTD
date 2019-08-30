@@ -16,12 +16,6 @@
 #include "engine_gui.h"
 #include "zoom_func.h"
 
-// TODO rm
-#include "newgrf_cargo.h"
-#include "newgrf_text.h"
-// TODO rm
-#include <iostream>
-
 #include "tbtr_template_refit_window.h"
 
 enum TemplateReplaceWindowWidgets {
