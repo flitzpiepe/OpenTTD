@@ -175,8 +175,7 @@ void TemplateRefitWindow::OnResize()
  *
  * @param tv:    Pointer to the template vehicle that should be refitted
  */
-// TODO make param const
-void TemplateRefitWindow::UpdateTemplateVehicle(TemplateVehicle* tv)
+void TemplateRefitWindow::UpdateTemplateVehicle(const TemplateVehicle* tv)
 {
 	this->selected_template = tv;
 	CreateCargoList();
