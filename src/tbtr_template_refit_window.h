@@ -30,7 +30,7 @@ private:
 	void UpdateTemplateVehicle(TemplateVehicle* tv);
 
 	Scrollbar* vscroll_refits;
-	uint16 num_cargo_types = 11; // TODO
+	uint16 num_cargo_types = 11; // this should be the highest cargotype ID; check enum CargoType in cargo_type.h
 	SmallVector<const CargoSpec*, 64> cargo_specs;
 	uint16 index_selected_refit = -1;
 	TemplateVehicle* selected_template;

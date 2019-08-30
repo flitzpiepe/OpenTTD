@@ -106,18 +106,15 @@ void TemplateRefitWindow::CreateCargoList() {
 void TemplateRefitWindow::DrawWidget(const Rect& r, int widget) const {
 	switch (widget) {
 		case TRFW_MATRIX_REFITS: {
-			int cell_height = 14; // TODO compute
-			cell_height = main_ui->height_cell_templates;
-			int pos_string_top = 2; // TODO compute
 			int y = r.top;
 			for ( unsigned int i=0; i<this->cargo_specs.Length(); ++i ) {
 				/* fill the cell of the currently selected refit */
 				if ( this->index_selected_refit == (int32)i ) {
-					GfxFillRect(r.left, y, r.right, y+cell_height, _colour_gradient[COLOUR_GREY][3]);
+					GfxFillRect(r.left, y, r.right, y+this->main_ui->height_cell_templates, _colour_gradient[COLOUR_GREY][3]);
 				}
 				/* cargo name for the refit */
-				DrawString(r.left, r.right, y+pos_string_top, this->cargo_specs[i]->name, TC_BLACK);
-				y += cell_height;
+				DrawString(r.left, r.right, y+this->main_ui->pos_string_hi, this->cargo_specs[i]->name, TC_BLACK);
+				y += this->main_ui->height_cell_templates;
 			}
 		}
 	}
