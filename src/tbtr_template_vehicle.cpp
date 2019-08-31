@@ -89,7 +89,6 @@ void TemplateVehicle::CloneFromTrain(const Train* train, TemplateVehicle* chainH
 	this->subtype = train->subtype;
 	this->railtype = train->railtype;
 	this->cargo_type = train->cargo_type;
-	this->cargo_subtype = train->cargo_subtype;
 	this->cargo_cap = train->cargo_cap;
 	const GroundVehicleCache* gcache = train->GetGroundVehicleCache();
 	this->max_speed = train->GetDisplayMaxSpeed();
@@ -248,8 +247,6 @@ bool TemplateVehicle::TrainNeedsReplacement(Train* t)
 		if ( t->subtype != tv->subtype )
 			return true;
 		if ( t->cargo_type != tv->cargo_type )
-			return true;
-		if ( t->cargo_subtype != tv->cargo_subtype )
 			return true;
 		tv = tv->GetNextUnit();
 		t = t->GetNextUnit();

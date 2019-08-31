@@ -26,7 +26,7 @@
  */
 bool CheckRefit(const TemplateVehicle* tv, const Train* t)
 {
-	return tv->cargo_type==t->cargo_type && tv->cargo_subtype==t->cargo_subtype;
+	return tv->cargo_type==t->cargo_type;
 }
 
 /**
@@ -158,13 +158,12 @@ void TransferCargo(Train* src, Train* dest)
 
 	while ( src ) {
 		CargoID _cargo_type = src->cargo_type;
-		byte _cargo_subtype = src->cargo_subtype;
 
 		/* how much cargo has to be moved (if possible) */
 		uint remainingAmount = src->cargo.TotalCount();
 		/* each vehicle in the new chain shall be given as much of the old cargo as possible, until none is left */
 		for (Train* tmp=dest; tmp!=NULL && remainingAmount>0; tmp=tmp->GetNextUnit()) {
-			if (tmp->cargo_type == _cargo_type && tmp->cargo_subtype == _cargo_subtype) {
+			if (tmp->cargo_type == _cargo_type) {
 				/* calculate the free space for new cargo on the current vehicle */
 				uint curCap = tmp->cargo_cap - tmp->cargo.TotalCount();
 				uint moveAmount = min(remainingAmount, curCap);
@@ -244,7 +243,7 @@ Train* FindMatchingTrainInDepot(TemplateVehicle* tv, TileIndex tile, bool check_
 				&& (ignore==NULL || NotInChain(train, ignore)) ) {
 			/* already found a matching vehicle, keep checking for matching refit + cargo amount */
 			if ( found != NULL && check_refit == true) {
-				if ( train->cargo_type==tv->cargo_type && train->cargo_subtype==tv->cargo_subtype )
+				if ( train->cargo_type==tv->cargo_type)
 					/* find something with a minimal amount of cargo, so that we can transfer more
 					 * from the original chain into it later */
 					if ( train->cargo.StoredCount() < found->cargo.StoredCount() )
@@ -380,8 +379,7 @@ CommandCost CmdTemplateReplacement(TileIndex ti, DoCommandFlag flags, uint32 p1,
 		/* maybe refit as template */
 		if ( refit_train && new_vehicle ) {
 			CargoID cargo_type = cur_tmpl->cargo_type;
-			byte cargo_subtype = cur_tmpl->cargo_subtype;
-			CommandCost ccRefit = DoCommand(0, new_vehicle->index, cargo_type | (cargo_subtype<<8) | (1<<16), flags, GetCmdRefitVeh(new_vehicle));
+			CommandCost ccRefit = DoCommand(0, new_vehicle->index, cargo_type|(1<<16), flags, GetCmdRefitVeh(new_vehicle));
 			if ( flags==DC_EXEC )
 				cc.AddCost(ccRefit);
 		}
@@ -480,7 +478,6 @@ CommandCost CmdTemplateAddEngine(TileIndex ti, DoCommandFlag flags, uint32 p1, u
 
 		tv->railtype = engine->u.rail.railtype;
 		tv->cargo_type = engine->GetDefaultCargoType();
-		tv->cargo_subtype = 0;
 		tv->cargo_cap = engine->GetDisplayDefaultCapacity();
 		tv->max_speed = engine->GetDisplayMaxSpeed();
 		tv->power = engine->GetPower();

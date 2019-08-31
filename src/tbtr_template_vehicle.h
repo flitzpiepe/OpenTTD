@@ -77,7 +77,6 @@ public:
 
 	CargoID cargo_type;                 ///< type of cargo this vehicle is carrying
 	uint16 cargo_cap;                   ///< total capacity
-	byte cargo_subtype;                 ///< cargo subtype
 
 	/** Vehicle drawing information */
 	uint16 real_length;                 ///< template length in tile units, for drawing in the gui
