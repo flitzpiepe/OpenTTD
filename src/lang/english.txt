@@ -369,9 +369,9 @@ STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_N                         :{GREEN}Trains t
 STR_TBTR_WARN_FREE_WAGON                                        :{RED}Free Chain: not runnable!
 
 # TBTR Template Refit Window
-STR_TEMPLATE_REFIT_TITLE                                        :{WHITE}Template Refit
-STR_TEMPLATE_REFIT_BUTTON                                       :{BLACK}Toggle Refit Window
-STR_TEMPLATE_REFIT_BUTTON_DA                                    :{GRAY}Toggle Refit Window
+STR_TBTR_REFIT_UI_TITLE                                         :{WHITE}Template Refit
+STR_TBTR_UI_BUTTON_REFIT                                        :{BLACK}Toggle Refit Window
+STR_TBTR_UI_BUTTON_REFIT_DA                                     :{GRAY}Toggle Refit Window
 
 # Tooltips for the main toolbar
 STR_TOOLBAR_TOOLTIP_PAUSE_GAME                                  :{BLACK}Pause game
