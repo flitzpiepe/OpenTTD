@@ -455,7 +455,8 @@ CommandCost CmdTemplateReplacement(TileIndex ti, DoCommandFlag flags, uint32 p1,
 CommandCost CmdTemplateAddEngine(TileIndex ti, DoCommandFlag flags, uint32 p1, uint32 p2, char const* msg)
 {
 	TemplateID tid = static_cast<TemplateID>(p1);
-	const Engine* engine = Engine::Get(p2);
+	EngineID eid = (EngineID)p2;
+	const Engine* engine = Engine::Get(eid);
 
 	if ( flags == DC_EXEC) {
 		if ( !TemplateVehicle::CanAllocateItem() )
@@ -478,7 +479,45 @@ CommandCost CmdTemplateAddEngine(TileIndex ti, DoCommandFlag flags, uint32 p1, u
 
 		tv->railtype = engine->u.rail.railtype;
 		tv->cargo_type = engine->GetDefaultCargoType();
-		tv->cargo_cap = engine->GetDisplayDefaultCapacity();
+
+		// TODO move into a function?
+		/* TODO cargo cap */
+		if ( eid != INVALID_ENGINE && Engine::Get(eid)->CanCarryCargo() ) {
+			auto itca = TemplateVehicle::engine_cargo_cap.find(eid);
+			// no ca yet, create one
+			if ( itca == TemplateVehicle::engine_cargo_cap.end() )  {
+				CargoArray* ca = new CargoArray();
+				// TODO move into a function?
+				const Train* t = NULL;
+				FOR_ALL_TRAINS(t) {
+					// TODO actually we might want to do this setup for all cargo types, not just for the
+					// default one
+					if ( t->engine_type == eid && t->cargo_type == tv->cargo_type ) {
+						(*ca)[tv->cargo_type] = t->cargo_cap;
+						break;
+					}
+				}
+				TemplateVehicle::engine_cargo_cap[eid] = ca;
+			}
+			// TODO: there is a ca, but it is not sure whether there already is an entry for the current cargo
+			// type in it
+			else {
+				CargoArray* ca = itca->second;
+				if ( (*ca)[tv->cargo_type] == 0 ) {
+					// TODO move into a function?
+					const Train* t = NULL;
+					FOR_ALL_TRAINS(t) {
+						// TODO actually we might want to do this setup for all cargo types, not just for the
+						// default one
+						if ( t->engine_type == eid && t->cargo_type == tv->cargo_type ) {
+							(*ca)[tv->cargo_type] = t->cargo_cap;
+							break;
+						}
+					}
+				}
+			}
+		}
+
 		tv->max_speed = engine->GetDisplayMaxSpeed();
 		tv->power = engine->GetPower();
 		tv->weight = engine->GetDisplayWeight();

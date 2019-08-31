@@ -37,6 +37,8 @@ class TemplateVehicle;
 typedef Pool<TemplateVehicle, TemplateID, 512, 0x10000> TemplatePool;
 extern TemplatePool _template_pool;
 
+typedef std::map<EngineID, CargoArray*> EngineCargoCapacities;
+
 enum TBTR_REPLACEMENT_OPTS {
 	TBTR_OPT_REUSE_DEPOT_VEHICLES,
 	TBTR_OPT_REFIT_VEHICLE,
@@ -51,12 +53,17 @@ enum TBTR_REPLACEMENT_OPTS {
  * All templates are stored in their own pool so that they don't interfere with a company's allowed number of
  * trains. */
 struct TemplateVehicle : TemplatePool::PoolItem<&_template_pool>, BaseVehicle {
+	/* static members */
+public:
+	static TemplateID last_template;    ///< remember the ID of the template vehicle that was created last
+	static EngineCargoCapacities engine_cargo_cap; // TODO comment
+
+	/* non-static members */
 public:
 	TemplateVehicle();
 	TemplateVehicle(EngineID);
 	~TemplateVehicle();
 	TemplateID index;                   ///< Vehicle index
-	static TemplateID last_template;    ///< remember the ID of the template vehicle that was created last
 
 	TemplateVehicle* next;              ///< pointer to the next template vehicle in the chain
 	TemplateVehicle* prev;              ///< pointer to the previous template vehicle in the chain

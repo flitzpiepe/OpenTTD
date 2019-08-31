@@ -18,6 +18,7 @@ TemplatePool _template_pool("Template");
 INSTANTIATE_POOL_METHODS(Template)
 
 TemplateID TemplateVehicle::last_template = INVALID_TEMPLATE;
+EngineCargoCapacities TemplateVehicle::engine_cargo_cap;
 
 /*
  * Default CTOR
