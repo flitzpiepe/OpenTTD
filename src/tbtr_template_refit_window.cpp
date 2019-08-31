@@ -7,17 +7,9 @@
 
 /** @file tbtr_template_refit_window.h Window for setting the refit for a template chain */
 #include "stdafx.h"
-#include "window_func.h"
-#include "window_gui.h"
-#include "window_type.h"
-#include "engine_base.h"
-#include "engine_gui.h"
-
 #include "command_func.h"
-#include "cargotype.h"
 
 #include "tbtr_gui.h"
-#include "tbtr_template_vehicle.h"
 #include "tbtr_template_refit_window.h"
 
 enum TemplateRefitWindowWidgets {
