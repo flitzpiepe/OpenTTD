@@ -234,6 +234,35 @@ void TemplateVehicle::Init(EngineID eid)
 }
 
 /**
+ * Set this vehicle's cargo capacity.
+ */
+void TemplateVehicle::SetCargoCapacity()
+{
+	// TODO all comments
+	this->cargo_cap = Engine::Get(this->engine_type)->GetDisplayDefaultCapacity();
+	/* cargo cap */
+	if ( this->engine_type != INVALID_ENGINE && Engine::Get(this->engine_type)->CanCarryCargo() ) {
+		EngineCargo ec = EngineCargo(this->engine_type, this->cargo_type);
+		auto itca = TemplateVehicle::engine_cargo_cap.find(ec);
+		// already cached
+		if ( itca != TemplateVehicle::engine_cargo_cap.end() ) {
+			this->cargo_cap = itca->second;
+		}
+		// not cached yet: try to find an existing train which carries this type of cargo
+		else {
+			const Train* t = NULL;
+			FOR_ALL_TRAINS(t) {
+				if ( t->engine_type == this->engine_type && t->cargo_type == this->cargo_type ) {
+					TemplateVehicle::engine_cargo_cap[ec] = t->cargo_cap;
+					this->cargo_cap = t->cargo_cap;
+					break;
+				}
+			}
+		}
+	}
+}
+
+/**
  * Return whether a given train will be treated by template replacement.
  *
  * @t:      the train to check

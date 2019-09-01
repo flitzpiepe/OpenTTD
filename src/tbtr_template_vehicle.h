@@ -116,6 +116,8 @@ public:
 
 	bool TrainNeedsReplacement(Train*);
 
+	void SetCargoCapacity();
+
 	void UpdateLastVehicle(TemplateVehicle*);
 	void UpdateZoom();					///< take the changed UI zoom into account
 };

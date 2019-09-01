@@ -479,30 +479,7 @@ CommandCost CmdTemplateAddEngine(TileIndex ti, DoCommandFlag flags, uint32 p1, u
 
 		tv->railtype = engine->u.rail.railtype;
 		tv->cargo_type = engine->GetDefaultCargoType();
-		tv->cargo_cap = engine->GetDisplayDefaultCapacity();
-
-		// TODO move into a function?
-		/* cargo cap */
-		if ( eid != INVALID_ENGINE && Engine::Get(eid)->CanCarryCargo() ) {
-			EngineCargo ec = EngineCargo(eid, tv->cargo_type);
-			auto itca = TemplateVehicle::engine_cargo_cap.find(ec);
-			// already cached
-			if ( itca != TemplateVehicle::engine_cargo_cap.end() ) {
-				tv->cargo_cap = itca->second;
-			}
-			// the amount of this cargo in this type of engine has not been cached yet
-			else {
-				const Train* train = NULL;
-				FOR_ALL_TRAINS(train) {
-					if ( train->engine_type == eid && train->cargo_type == tv->cargo_type ) {
-						TemplateVehicle::engine_cargo_cap[ec] = train->cargo_cap;
-						tv->cargo_cap = train->cargo_cap;
-						break;
-					}
-				}
-			}
-		}
-
+		tv->SetCargoCapacity();
 		tv->max_speed = engine->GetDisplayMaxSpeed();
 		tv->power = engine->GetPower();
 		tv->weight = engine->GetDisplayWeight();
@@ -678,8 +655,10 @@ CommandCost CmdRefitTemplate(TileIndex ti, DoCommandFlag flags, uint32 p1, uint3
 
 	for ( TemplateVehicle* tmp=tv->first; tmp; tmp=tmp->next ) {
 		const Engine* engine = Engine::Get(tmp->engine_type);
-		if ( flags == DC_EXEC && HasBit(engine->info.refit_mask,cid) )
+		if ( flags == DC_EXEC && HasBit(engine->info.refit_mask,cid) ) {
 			tmp->cargo_type = cid;
+			tmp->SetCargoCapacity();
+		}
 	}
 
 	return CommandCost();
