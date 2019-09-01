@@ -37,7 +37,8 @@ class TemplateVehicle;
 typedef Pool<TemplateVehicle, TemplateID, 512, 0x10000> TemplatePool;
 extern TemplatePool _template_pool;
 
-typedef std::map<EngineID, CargoArray*> EngineCargoCapacities;
+typedef std::pair<EngineID, CargoID> EngineCargo;
+typedef std::map<std::pair<EngineID, CargoID>, uint16> EngineCargoCapacities;
 
 enum TBTR_REPLACEMENT_OPTS {
 	TBTR_OPT_REUSE_DEPOT_VEHICLES,

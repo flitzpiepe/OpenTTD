@@ -479,40 +479,25 @@ CommandCost CmdTemplateAddEngine(TileIndex ti, DoCommandFlag flags, uint32 p1, u
 
 		tv->railtype = engine->u.rail.railtype;
 		tv->cargo_type = engine->GetDefaultCargoType();
+		tv->cargo_cap = engine->GetDisplayDefaultCapacity();
 
 		// TODO move into a function?
-		/* TODO cargo cap */
+		/* cargo cap */
 		if ( eid != INVALID_ENGINE && Engine::Get(eid)->CanCarryCargo() ) {
-			auto itca = TemplateVehicle::engine_cargo_cap.find(eid);
-			// no ca yet, create one
-			if ( itca == TemplateVehicle::engine_cargo_cap.end() )  {
-				CargoArray* ca = new CargoArray();
-				// TODO move into a function?
-				const Train* t = NULL;
-				FOR_ALL_TRAINS(t) {
-					// TODO actually we might want to do this setup for all cargo types, not just for the
-					// default one
-					if ( t->engine_type == eid && t->cargo_type == tv->cargo_type ) {
-						(*ca)[tv->cargo_type] = t->cargo_cap;
-						break;
-					}
-				}
-				TemplateVehicle::engine_cargo_cap[eid] = ca;
+			EngineCargo ec = EngineCargo(eid, tv->cargo_type);
+			auto itca = TemplateVehicle::engine_cargo_cap.find(ec);
+			// already cached
+			if ( itca != TemplateVehicle::engine_cargo_cap.end() ) {
+				tv->cargo_cap = itca->second;
 			}
-			// TODO: there is a ca, but it is not sure whether there already is an entry for the current cargo
-			// type in it
+			// the amount of this cargo in this type of engine has not been cached yet
 			else {
-				CargoArray* ca = itca->second;
-				if ( (*ca)[tv->cargo_type] == 0 ) {
-					// TODO move into a function?
-					const Train* t = NULL;
-					FOR_ALL_TRAINS(t) {
-						// TODO actually we might want to do this setup for all cargo types, not just for the
-						// default one
-						if ( t->engine_type == eid && t->cargo_type == tv->cargo_type ) {
-							(*ca)[tv->cargo_type] = t->cargo_cap;
-							break;
-						}
+				const Train* train = NULL;
+				FOR_ALL_TRAINS(train) {
+					if ( train->engine_type == eid && train->cargo_type == tv->cargo_type ) {
+						TemplateVehicle::engine_cargo_cap[ec] = train->cargo_cap;
+						tv->cargo_cap = train->cargo_cap;
+						break;
 					}
 				}
 			}
