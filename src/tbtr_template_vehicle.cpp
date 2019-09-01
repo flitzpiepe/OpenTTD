@@ -235,31 +235,47 @@ void TemplateVehicle::Init(EngineID eid)
 
 /**
  * Set this vehicle's cargo capacity.
+ *
+ * The engine's default capacity might not be suitable because this value may be altered by NewGRF callbacks.
  */
 void TemplateVehicle::SetCargoCapacity()
 {
-	// TODO all comments
-	this->cargo_cap = Engine::Get(this->engine_type)->GetDisplayDefaultCapacity();
-	/* cargo cap */
-	if ( this->engine_type != INVALID_ENGINE && Engine::Get(this->engine_type)->CanCarryCargo() ) {
-		EngineCargo ec = EngineCargo(this->engine_type, this->cargo_type);
-		auto itca = TemplateVehicle::engine_cargo_cap.find(ec);
-		// already cached
-		if ( itca != TemplateVehicle::engine_cargo_cap.end() ) {
-			this->cargo_cap = itca->second;
-		}
-		// not cached yet: try to find an existing train which carries this type of cargo
-		else {
-			const Train* t = NULL;
-			FOR_ALL_TRAINS(t) {
-				if ( t->engine_type == this->engine_type && t->cargo_type == this->cargo_type ) {
-					TemplateVehicle::engine_cargo_cap[ec] = t->cargo_cap;
-					this->cargo_cap = t->cargo_cap;
-					break;
-				}
-			}
+	if ( this->engine_type == INVALID_ENGINE || Engine::Get(this->engine_type)->CanCarryCargo() == false )
+		return;
+
+	/* the needed engine + cargo combination */
+	EngineCargo ec = EngineCargo(this->engine_type, this->cargo_type);
+
+	/* the cargo capacity for this type of engine + cargo might already be cached */
+	auto itca = TemplateVehicle::engine_cargo_cap.find(ec);
+	if ( itca != TemplateVehicle::engine_cargo_cap.end() ) {
+		this->cargo_cap = itca->second;
+		return;
+	}
+
+	/* try to find a train with this type of engine + cargo and get the capacity from it */
+	const Train* t = NULL;
+	FOR_ALL_TRAINS(t) {
+		if ( t->engine_type == this->engine_type && t->cargo_type == this->cargo_type ) {
+			TemplateVehicle::engine_cargo_cap[ec] = t->cargo_cap;
+			this->cargo_cap = t->cargo_cap;
+			return;
 		}
 	}
+
+	/* try to create a new train with the needed engine + cargo to determine its capacity */
+	if ( Train::CanAllocateItem() ) {
+		Train *t = new Train();
+		t->engine_type = this->engine_type;
+		t->cargo_type = this->cargo_type;
+		const Engine* e = Engine::Get(this->engine_type);
+		this->cargo_cap = e->DetermineCapacity(t);
+		delete t;
+		return;
+	}
+
+	/* give up and use the engine's default cargo capacity */
+	this->cargo_cap = Engine::Get(this->engine_type)->GetDisplayDefaultCapacity();
 }
 
 /**
