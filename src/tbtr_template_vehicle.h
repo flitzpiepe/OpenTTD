@@ -37,6 +37,7 @@ class TemplateVehicle;
 typedef Pool<TemplateVehicle, TemplateID, 512, 0x10000> TemplatePool;
 extern TemplatePool _template_pool;
 
+/** A type of cache for engine cargo capacities */
 typedef std::pair<EngineID, CargoID> EngineCargo;
 typedef std::map<std::pair<EngineID, CargoID>, uint16> EngineCargoCapacities;
 
@@ -57,7 +58,7 @@ struct TemplateVehicle : TemplatePool::PoolItem<&_template_pool>, BaseVehicle {
 	/* static members */
 public:
 	static TemplateID last_template;    ///< remember the ID of the template vehicle that was created last
-	static EngineCargoCapacities engine_cargo_cap; // TODO comment
+	static EngineCargoCapacities engine_cargo_cap; ///< A type of cache for engine cargo capacities
 
 	/* non-static members */
 public:
