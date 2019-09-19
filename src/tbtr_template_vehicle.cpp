@@ -243,7 +243,7 @@ void TemplateVehicle::SetCargoCapacity()
 	if ( this->engine_type == INVALID_ENGINE || Engine::Get(this->engine_type)->CanCarryCargo() == false )
 		return;
 
-	/* the needed engine + cargo combination */
+	/* the needed engine-id + cargo-id combination */
 	EngineCargo ec = EngineCargo(this->engine_type, this->cargo_type);
 
 	/* the cargo capacity for this type of engine + cargo might already be cached */
@@ -257,6 +257,7 @@ void TemplateVehicle::SetCargoCapacity()
 	const Train* t = NULL;
 	FOR_ALL_TRAINS(t) {
 		if ( t->engine_type == this->engine_type && t->cargo_type == this->cargo_type ) {
+			/* cache it */
 			TemplateVehicle::engine_cargo_cap[ec] = t->cargo_cap;
 			this->cargo_cap = t->cargo_cap;
 			return;
@@ -270,6 +271,8 @@ void TemplateVehicle::SetCargoCapacity()
 		t->cargo_type = this->cargo_type;
 		const Engine* e = Engine::Get(this->engine_type);
 		this->cargo_cap = e->DetermineCapacity(t);
+		/* cache it */
+		TemplateVehicle::engine_cargo_cap[ec] = this->cargo_cap;
 		delete t;
 		return;
 	}
