@@ -93,6 +93,17 @@ namespace td
 			sv(tv);
 		}
 	}
+
+	void ecc()
+	{
+		std::cout << "ecc:" << std::endl;
+		for ( auto it = TemplateVehicle::engine_cargo_cap.cbegin();
+				it != TemplateVehicle::engine_cargo_cap.cend();
+				++it )
+		{
+			std::cout << it->first.first << "," << (int)it->first.second << "," << it->second << std::endl;
+		}
+	}
 }
 
 #endif

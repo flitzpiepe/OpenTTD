@@ -325,3 +325,9 @@ void TemplateVehicle::UpdateZoom()
 {
 	this->cached_sprite_size = false;
 }
+
+void ResetTemplateVehicles()
+{
+	TemplateVehicle::engine_cargo_cap.clear();
+}
+

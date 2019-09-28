@@ -134,5 +134,6 @@ CommandCost CmdCloneTemplateFromTrain(TileIndex, DoCommandFlag, uint32, uint32, 
 
 TemplateVehicle* GetTemplateForTrain(Train*);
 
+void ResetTemplateVehicles();
 
 #endif /* !TBTR_TEMPLATE_VEHICLE_H */
