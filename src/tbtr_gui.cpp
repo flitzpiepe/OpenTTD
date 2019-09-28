@@ -325,8 +325,10 @@ void TbtrGui::UpdateGUI(UpdateGuiMode mode)
 	switch (mode) {
 		case ENGINE_ADDED:
 			/* if no template was selected, select the newly created chain */
-			if ( this->index_selected_template == -1 )
+			if ( this->index_selected_template == -1 ) {
 				this->index_selected_template = this->templates.Length() - 1;
+				this->UpdateButtonState();
+			}
 			break;
 		case ENGINE_DELETED:
 			/* last engine removed => unselect template */
