@@ -767,6 +767,28 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			else
 				this->index_selected_template = index_new;
 
+			/* clicked on a specific engine of a template vehicle */
+			// TODO
+			//	max x
+			if ( index_new < this->templates.Length() ) {
+				int x = this->template_x_offset;
+				const TemplateVehicle* tv = TemplateVehicle::Get((this->templates)[index_new]->index);
+				if ( tv )
+					x += tv->sprite_width;
+				std::cout << "pt.x: " << pt.x << std::endl;
+				std::cout << "start at x: " << x << std::endl;
+				std::cout << "template in current cell:  ";
+				for ( const TemplateVehicle* tmp = tv; tmp; tmp=tmp->next )
+					std::cout << tmp->index << ":" << tmp->engine_type << ":" << tmp->sprite_width << " ";
+				std::cout << std::endl;
+				while ( tv && x <= pt.x ) {
+					// TODO what if the sprite_width is not cached yet?
+					x += tv->sprite_width;
+					tv = tv->next;
+				}
+				std::cout << "maybe clicked on: " << x << ", tmpl: " << (tv?tv->index:-1) << ":" << (tv?tv->engine_type:INVALID_ENGINE) << std::endl;
+			}
+
 			this->UpdateButtonState();
 			this->UpdateRefitWindow();
 			break;

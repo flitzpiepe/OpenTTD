@@ -162,7 +162,8 @@ int TemplateVehicle::CountGroups() const
  * @param left:     left border of the bounding box
  * @param right:    right border of the bounding box
  * @param y:        y-coordinate of the bounding box
- * @param x_offset: how many pixels to skip at the start before starting to draw any template
+ * @param x_offset: how many pixels to skip at the start of the template before starting to draw any engine
+ *					this is used when the template has to be horizontally scrolled into view
  */
 void TemplateVehicle::Draw(uint left, uint right, int y, int x_offset=0)
 {
