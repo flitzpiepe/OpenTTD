@@ -27,13 +27,14 @@ private:
 
 	void CreateCargoList();
 
-	void UpdateTemplateVehicle(const TemplateVehicle* tv);
+	void UpdateTemplateVehicle(const TemplateVehicle*, bool);
 
 	Scrollbar* vscroll_refits;
 	uint16 num_cargo_types = 11; // this should be the highest cargotype ID; check enum CargoType in cargo_type.h
 	SmallVector<const CargoSpec*, 64> cargo_specs;
 	uint16 index_selected_refit = -1;
-	const TemplateVehicle* selected_template;
+	const TemplateVehicle* selected_template = NULL;
+	bool refit_single_engine = false;
 	TbtrGui* main_ui;
 };
 

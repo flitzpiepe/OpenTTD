@@ -770,7 +770,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			/* clicked on a specific engine of a template vehicle */
 			// TODO refactor, cleanup
 			//	max x
-			/* clicked in front of the whole template */
+			/* clicked in front of the whole template *until we find pt.x along the template length */
 			if ( pt.x < this->template_x_offset )
 				this->id_selected_engine = INVALID_TEMPLATE;
 			/* else iterate the template until we find pt.x along the template length */
@@ -1031,10 +1031,14 @@ void TbtrGui::UpdateRefitWindow()
 {
 	TemplateRefitWindow* w = (TemplateRefitWindow*)FindWindowByClass(WC_TBTR_TEMPLATE_REFIT_WINDOW);
 	if ( w ) {
-		if ( this->index_selected_template >= 0 )
-			w->UpdateTemplateVehicle(TemplateVehicle::Get((this->templates)[this->index_selected_template]->index));
-		else
-			w->UpdateTemplateVehicle(NULL);
+		// TODO if id_selected_engine != INVALID_TEMPLATE, use its pointer instead of the one to the first
+		const TemplateVehicle* tv = this->index_selected_template >= 0 
+						? TemplateVehicle::Get((this->templates)[this->index_selected_template]->index)
+						: NULL;
+		if ( id_selected_engine != INVALID_TEMPLATE )
+			tv = TemplateVehicle::Get(this->id_selected_engine);
+		bool single_engine = this->id_selected_engine != INVALID_TEMPLATE;
+		w->UpdateTemplateVehicle(tv, single_engine);
 	}
 }
 

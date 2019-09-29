@@ -115,6 +115,7 @@ void TemplateRefitWindow::DrawWidget(const Rect& r, int widget) const {
 /*
  * Handle mouse clicks on the GUI
  */
+#include <iostream> // TODO rm
 void TemplateRefitWindow::OnClick(Point pt, int widget, int click_count)
 {
 	switch (widget) {
@@ -141,7 +142,9 @@ void TemplateRefitWindow::OnClick(Point pt, int widget, int click_count)
 				/* refit */
 				const CargoSpec* cs = *(this->cargo_specs.Get(this->index_selected_refit));
 				CargoID cid = cs->Index();
-				DoCommandP(0, this->selected_template->index, cid, CMD_REFIT_TEMPLATE);
+				// TODO rm
+				std::cout << "want to command: bool: " << this->refit_single_engine << ", cid: " << (int)cid << std::endl;
+				DoCommandP(0, this->selected_template->index, cid|(this->refit_single_engine<<8), CMD_REFIT_TEMPLATE);
 
 				/* propagate top the main ui */
 				Window* tbtr_gui = FindWindowByClass(WC_TBTR_GUI);
@@ -167,9 +170,10 @@ void TemplateRefitWindow::OnResize()
  *
  * @param tv:    Pointer to the template vehicle that should be refitted
  */
-void TemplateRefitWindow::UpdateTemplateVehicle(const TemplateVehicle* tv)
+void TemplateRefitWindow::UpdateTemplateVehicle(const TemplateVehicle* tv, bool single_engine)
 {
 	this->selected_template = tv;
+	this->refit_single_engine = single_engine;
 	CreateCargoList();
 	this->SetDirty();
 }
