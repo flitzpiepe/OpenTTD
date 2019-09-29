@@ -115,7 +115,7 @@ public:
 	TemplateVehicle* GetNextUnit() const;
 	uint GetChainDisplayLength();       ///< the sum of the sprite lengths of this template and all following chain members
 
-	void Draw(uint, uint, int, int);
+	void Draw(uint, uint, int, int, uint16, int, TemplateID);
 
 	bool TrainNeedsReplacement(Train*);
 

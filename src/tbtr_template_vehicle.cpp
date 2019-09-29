@@ -10,6 +10,7 @@
 /** @file tbtr_template_vehicle.cpp Implementation of the TemplateVehicle class. */
 
 #include "stdafx.h"
+#include "window_gui.h"
 
 #include "tbtr_template_vehicle.h"
 #include "engine_gui.h"
@@ -165,7 +166,7 @@ int TemplateVehicle::CountGroups() const
  * @param x_offset: how many pixels to skip at the start of the template before starting to draw any engine
  *					this is used when the template has to be horizontally scrolled into view
  */
-void TemplateVehicle::Draw(uint left, uint right, int y, int x_offset=0)
+void TemplateVehicle::Draw(uint left, uint right, int y, int y_top, uint16 height, int x_offset=0, TemplateID tid_selected_engine=-1)
 {
 	/* cache the sprite dimensions for this template's engine */
 	if ( this->cached_sprite_size == false ) {
@@ -180,11 +181,15 @@ void TemplateVehicle::Draw(uint left, uint right, int y, int x_offset=0)
 	/* draw this + rest of the chain */
 	if ( x_offset <= 0 ) {
 		DrawVehicleEngine(left, right, left, y, this->engine_type, GetEnginePalette(this->engine_type, this->owner), EIT_PURCHASE);
+
+		if ( this->index == tid_selected_engine )
+			DrawFrameRect(left, y_top, left+this->sprite_width, y_top+height, COLOUR_WHITE, FR_BORDERONLY);
+
 		left += this->sprite_width;
 	}
 	TemplateVehicle* next = this->GetNextUnit();
 	if ( next )
-		next->Draw(left, right, y, x_offset-this->sprite_width);
+		next->Draw(left, right, y, y_top, height, x_offset-this->sprite_width, tid_selected_engine);
 }
 
 /**

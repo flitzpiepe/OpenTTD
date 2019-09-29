@@ -614,7 +614,7 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 		DrawString(left, right-4, y+this->pos_string_hi, STR_TINY_BLACK_DECIMAL, TC_BLACK, SA_RIGHT);
 
 		/* Draw the template */
-		tv->Draw(left+this->template_x_offset, right, y+this->pos_string_hi+ScaleGUITrad(5), hscroll_templates->GetPosition());
+		tv->Draw(left+this->template_x_offset, right, y+this->pos_string_hi+ScaleGUITrad(5), y, this->height_cell_templates, hscroll_templates->GetPosition(), this->id_selected_engine);
 
 		/* Index of current template vehicle in the list of all templates for its company */
 		SetDParam(0, i);
@@ -768,7 +768,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 				this->index_selected_template = index_new;
 
 			/* clicked on a specific engine of a template vehicle */
-			// TODO
+			// TODO refactor, cleanup
 			//	max x
 			if ( index_new < this->templates.Length() ) {
 				int x = this->template_x_offset;
@@ -787,6 +787,8 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 					tv = tv->next;
 				}
 				std::cout << "maybe clicked on: " << x << ", tmpl: " << (tv?tv->index:-1) << ":" << (tv?tv->engine_type:INVALID_ENGINE) << std::endl;
+				if ( tv )
+					this->id_selected_engine = tv->index;
 			}
 
 			this->UpdateButtonState();

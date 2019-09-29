@@ -89,6 +89,7 @@ private:
 	int index_selected_engine = -1;     ///< index into the GUIEngineList "engines"
 	int index_selected_group = -1;      ///< index into the GUIGroupList "groups"
 	int index_selected_template = -1;   ///< index into the GUITemplateList "templates"
+	TemplateID id_selected_engine;      ///< ID of the selected engine of the currently selected template
 	GUIEngineList engines;              ///< List of new engines to add to the templates
 	GUIGroupList groups;                ///< List of groups
 	GUITemplateList templates;          ///< List of templates
