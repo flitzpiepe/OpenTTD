@@ -422,6 +422,53 @@ void TbtrGui::CalculateTemplatesHScroll()
 	this->hscroll_templates->SetCount(this->FindLongestTemplateDisplayWidth() + this->template_x_offset);
 }
 
+// TODO
+TemplateID TbtrGui::CheckClickedTemplateEngine(Point& pt, uint16 index_new) const
+{
+	/* clicked on a specific engine of a template vehicle */
+	// TODO refactor, cleanup
+	//	max x
+
+
+	TemplateID result = INVALID_TEMPLATE;
+
+	/* clicked in front of the whole template *until we find pt.x along the template length */
+	if ( pt.x < this->template_x_offset )
+		//this->id_selected_engine = INVALID_TEMPLATE;
+		return INVALID_TEMPLATE;
+	/* else iterate the template until we find pt.x along the template length */
+	else if ( index_new < this->templates.Length() ) {
+		int x = this->template_x_offset;
+		const TemplateVehicle* tv = TemplateVehicle::Get((this->templates)[index_new]->index);
+		// TODO break unless tv
+		if ( tv )
+			x += tv->sprite_width;
+		std::cout << "pt.x: " << pt.x << std::endl;
+		std::cout << "start at x: " << x << std::endl;
+		std::cout << "template in current cell:  ";
+		for ( const TemplateVehicle* tmp = tv; tmp; tmp=tmp->next )
+			std::cout << tmp->index << ":" << tmp->engine_type << ":" << tmp->sprite_width << " ";
+		std::cout << std::endl;
+		while ( tv && x <= pt.x ) {
+			// TODO what if the sprite_width is not cached yet?
+			x += tv->sprite_width;
+			tv = tv->next;
+		}
+		std::cout << "maybe clicked on: " << x << ", tmpl: " << (tv?tv->index:-1) << ":" << (tv?tv->engine_type:INVALID_ENGINE) << std::endl;
+		if ( tv )
+			if ( tv->index != id_selected_engine )
+				//this->id_selected_engine = tv->index;
+				return tv->index;
+			else
+				//this->id_selected_engine = INVALID_TEMPLATE;
+				return INVALID_TEMPLATE;
+		else
+			return INVALID_TEMPLATE;
+	}
+
+	return result;
+}
+
 /*
  * Draw a widget of this GUI
  */
@@ -759,46 +806,26 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			if ( index_new >= this->templates.Length() )
 				this->index_selected_template = -1;
 
+			/* maybe we clicked on an engine of the template */
+			// TODO rename engine_new?
+			TemplateID engine_new = CheckClickedTemplateEngine(pt, index_new);
+
 			/* clicked currently selected cell */
-			else if ( index_new == this->index_selected_template )
-				this->index_selected_template = -1;
+			if ( index_new == this->index_selected_template ) {
+				/* but a different engine */
+				if ( engine_new != this->id_selected_engine )
+					this->id_selected_engine = engine_new;
+				/* same engine as before */
+				else {
+					this->index_selected_template = -1;
+					this->id_selected_engine = INVALID_TEMPLATE;
+				}
+			}
 
 			/* clicked cell containing another template */
-			else
+			else {
 				this->index_selected_template = index_new;
-
-			/* clicked on a specific engine of a template vehicle */
-			// TODO refactor, cleanup
-			//	max x
-			/* clicked in front of the whole template *until we find pt.x along the template length */
-			if ( pt.x < this->template_x_offset )
-				this->id_selected_engine = INVALID_TEMPLATE;
-			/* else iterate the template until we find pt.x along the template length */
-			else if ( index_new < this->templates.Length() ) {
-				int x = this->template_x_offset;
-				const TemplateVehicle* tv = TemplateVehicle::Get((this->templates)[index_new]->index);
-				// TODO break unless tv
-				if ( tv )
-					x += tv->sprite_width;
-				std::cout << "pt.x: " << pt.x << std::endl;
-				std::cout << "start at x: " << x << std::endl;
-				std::cout << "template in current cell:  ";
-				for ( const TemplateVehicle* tmp = tv; tmp; tmp=tmp->next )
-					std::cout << tmp->index << ":" << tmp->engine_type << ":" << tmp->sprite_width << " ";
-				std::cout << std::endl;
-				while ( tv && x <= pt.x ) {
-					// TODO what if the sprite_width is not cached yet?
-					x += tv->sprite_width;
-					tv = tv->next;
-				}
-				std::cout << "maybe clicked on: " << x << ", tmpl: " << (tv?tv->index:-1) << ":" << (tv?tv->engine_type:INVALID_ENGINE) << std::endl;
-				if ( tv )
-					if ( tv->index != id_selected_engine )
-						this->id_selected_engine = tv->index;
-					else
-						this->id_selected_engine = INVALID_TEMPLATE;
-				else
-					this->id_selected_engine = INVALID_TEMPLATE;
+				this->id_selected_engine = engine_new;
 			}
 
 			this->UpdateButtonState();
