@@ -788,7 +788,12 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 				}
 				std::cout << "maybe clicked on: " << x << ", tmpl: " << (tv?tv->index:-1) << ":" << (tv?tv->engine_type:INVALID_ENGINE) << std::endl;
 				if ( tv )
-					this->id_selected_engine = tv->index;
+					if ( tv->index != id_selected_engine )
+						this->id_selected_engine = tv->index;
+					else
+						this->id_selected_engine = INVALID_TEMPLATE;
+				else
+					this->id_selected_engine = INVALID_TEMPLATE;
 			}
 
 			this->UpdateButtonState();
