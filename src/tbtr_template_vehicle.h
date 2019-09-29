@@ -24,8 +24,6 @@
 #include "vehicle_base.h"
 #include "vehicle_func.h"
 
-#include <iostream>
-
 typedef uint16 TemplateID;
 
 #define INVALID_TEMPLATE 0xFFFF

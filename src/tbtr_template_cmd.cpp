@@ -645,13 +645,11 @@ CommandCost CmdDeleteTemplate(TileIndex ti, DoCommandFlag flags, uint32 p1, uint
  * @param p2:       bool: refit only one engine | byte: CargoID to use as refit
  * @param msg:      unused
  */
-#include <iostream>
 CommandCost CmdRefitTemplate(TileIndex ti, DoCommandFlag flags, uint32 p1, uint32 p2, char const* msg)
 {
 	TemplateVehicle* tv = TemplateVehicle::Get(p1);
 	bool refit_single_engine = HasBit(p2, 8);
 	CargoID cid = (0xFF & CargoID(p2));
-	std::cout << "single: " << refit_single_engine << ", cid: " << (int)cid << std::endl;
 
 	if ( !tv )
 		return CMD_ERROR;

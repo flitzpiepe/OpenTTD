@@ -422,51 +422,43 @@ void TbtrGui::CalculateTemplatesHScroll()
 	this->hscroll_templates->SetCount(this->FindLongestTemplateDisplayWidth() + this->template_x_offset);
 }
 
-// TODO
+/**
+ * Determine which engine of the template in the matrix cell was clicked
+ * @param pt           Point that was clicked
+ * @param index_new    Index of the template in the clicked cell (index into the gui list of templates)
+ * @return             The TemplateID of the part of the template that was clicked
+ */
 TemplateID TbtrGui::CheckClickedTemplateEngine(Point& pt, uint16 index_new) const
 {
-	/* clicked on a specific engine of a template vehicle */
-	// TODO refactor, cleanup
-	//	max x
-
-
-	TemplateID result = INVALID_TEMPLATE;
-
 	/* clicked in front of the whole template *until we find pt.x along the template length */
 	if ( pt.x < this->template_x_offset )
-		//this->id_selected_engine = INVALID_TEMPLATE;
 		return INVALID_TEMPLATE;
-	/* else iterate the template until we find pt.x along the template length */
-	else if ( index_new < this->templates.Length() ) {
-		int x = this->template_x_offset;
-		const TemplateVehicle* tv = TemplateVehicle::Get((this->templates)[index_new]->index);
-		// TODO break unless tv
-		if ( tv )
-			x += tv->sprite_width;
-		std::cout << "pt.x: " << pt.x << std::endl;
-		std::cout << "start at x: " << x << std::endl;
-		std::cout << "template in current cell:  ";
-		for ( const TemplateVehicle* tmp = tv; tmp; tmp=tmp->next )
-			std::cout << tmp->index << ":" << tmp->engine_type << ":" << tmp->sprite_width << " ";
-		std::cout << std::endl;
-		while ( tv && x <= pt.x ) {
-			// TODO what if the sprite_width is not cached yet?
-			x += tv->sprite_width;
-			tv = tv->next;
-		}
-		std::cout << "maybe clicked on: " << x << ", tmpl: " << (tv?tv->index:-1) << ":" << (tv?tv->engine_type:INVALID_ENGINE) << std::endl;
-		if ( tv )
-			if ( tv->index != id_selected_engine )
-				//this->id_selected_engine = tv->index;
-				return tv->index;
-			else
-				//this->id_selected_engine = INVALID_TEMPLATE;
-				return INVALID_TEMPLATE;
-		else
-			return INVALID_TEMPLATE;
+
+	/* empty cell selected */
+	if ( index_new >= this->templates.Length() )
+		return INVALID_TEMPLATE;
+
+	/* fetch the template from the selected cell */
+	const TemplateVehicle* tv = TemplateVehicle::Get((this->templates)[index_new]->index);
+	if ( tv == NULL )
+		return INVALID_TEMPLATE;
+
+	/* iterate the template until we find pt.x along the template length */
+	int x = this->template_x_offset + tv->sprite_width;
+	while ( tv && x <= pt.x ) {
+		x += tv->sprite_width;
+		tv = tv->next;
 	}
 
-	return result;
+	/* clicked after the template in the current cell */
+	if ( tv == NULL )
+		return INVALID_TEMPLATE;
+
+	/* clicked on an engine */
+	if ( tv->index != this->id_selected_engine )
+		return tv->index;
+
+	return INVALID_TEMPLATE;
 }
 
 /*
