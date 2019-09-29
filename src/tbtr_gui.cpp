@@ -770,9 +770,14 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			/* clicked on a specific engine of a template vehicle */
 			// TODO refactor, cleanup
 			//	max x
-			if ( index_new < this->templates.Length() ) {
+			/* clicked in front of the whole template */
+			if ( pt.x < this->template_x_offset )
+				this->id_selected_engine = INVALID_TEMPLATE;
+			/* else iterate the template until we find pt.x along the template length */
+			else if ( index_new < this->templates.Length() ) {
 				int x = this->template_x_offset;
 				const TemplateVehicle* tv = TemplateVehicle::Get((this->templates)[index_new]->index);
+				// TODO break unless tv
 				if ( tv )
 					x += tv->sprite_width;
 				std::cout << "pt.x: " << pt.x << std::endl;
