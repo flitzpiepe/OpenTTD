@@ -445,7 +445,7 @@ TemplateID TbtrGui::CheckClickedTemplateEngine(Point& pt, uint16 index_new) cons
 
 	/* iterate the template until we find pt.x along the template length */
 	int x = this->template_x_offset + tv->sprite_width;
-	while ( tv && x <= pt.x ) {
+	while ( tv && x <= pt.x + this->hscroll_templates->GetPosition() ) {
 		tv = tv->next;
 		if ( tv ) x += tv->sprite_width;
 	}
