@@ -446,8 +446,8 @@ TemplateID TbtrGui::CheckClickedTemplateEngine(Point& pt, uint16 index_new) cons
 	/* iterate the template until we find pt.x along the template length */
 	int x = this->template_x_offset + tv->sprite_width;
 	while ( tv && x <= pt.x ) {
-		x += tv->sprite_width;
 		tv = tv->next;
+		x += tv->sprite_width;
 	}
 
 	/* clicked after the template in the current cell */
