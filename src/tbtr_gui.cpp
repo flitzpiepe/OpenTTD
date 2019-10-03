@@ -18,8 +18,6 @@
 
 #include "tbtr_template_refit_window.h"
 
-#include "tbtr_debug.h"
-
 enum TemplateReplaceWindowWidgets {
 	TRW_CAPTION,
 
@@ -1061,7 +1059,6 @@ void TbtrGui::UpdateRefitWindow()
 {
 	TemplateRefitWindow* w = (TemplateRefitWindow*)FindWindowByClass(WC_TBTR_TEMPLATE_REFIT_WINDOW);
 	if ( w ) {
-		// TODO if id_selected_template_part != INVALID_TEMPLATE, use its pointer instead of the one to the first
 		const TemplateVehicle* tv = this->index_selected_template >= 0 
 						? TemplateVehicle::Get((this->templates)[this->index_selected_template]->index)
 						: NULL;

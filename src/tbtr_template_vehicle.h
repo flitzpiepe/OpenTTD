@@ -26,9 +26,6 @@
 
 typedef uint16 TemplateID;
 
-// TODO
-#include <iostream>
-
 #define INVALID_TEMPLATE 0xFFFF
 
 class TemplateVehicle;
