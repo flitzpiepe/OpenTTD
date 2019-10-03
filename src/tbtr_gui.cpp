@@ -445,9 +445,19 @@ TemplateID TbtrGui::CheckClickedTemplateEngine(Point& pt, uint16 index_new) cons
 
 	std::cout << "hscroll: " << hscroll_templates->GetPosition();
 	std::cout << "clicked on: " << pt.x << std::endl;
+	/* calculate the length of the front part of the template that is (maybe)
+	 * scrolled out of view (needed for the next step) */
+	int offset = 0;
+	int i = this->hscroll_templates->GetPosition();
+	const TemplateVehicle* tmp = tv;
+	while ( tmp && i > 0 ) {
+		offset += tmp->sprite_width;
+		i -= tmp->sprite_width;
+		tmp = tmp->next;
+	}
 	/* iterate the template until we find pt.x along the template length */
 	int x = this->template_x_offset + tv->sprite_width;
-	while ( tv && x <= pt.x + this->hscroll_templates->GetPosition() ) {
+	while ( tv && x <= pt.x + offset ) {
 		tv = tv->next;
 		if ( tv ) x += tv->sprite_width;
 	}
