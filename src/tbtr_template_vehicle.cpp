@@ -10,6 +10,7 @@
 /** @file tbtr_template_vehicle.cpp Implementation of the TemplateVehicle class. */
 
 #include "stdafx.h"
+#include "window_gui.h"
 
 #include "tbtr_template_vehicle.h"
 #include "engine_gui.h"
@@ -18,6 +19,7 @@ TemplatePool _template_pool("Template");
 INSTANTIATE_POOL_METHODS(Template)
 
 TemplateID TemplateVehicle::last_template = INVALID_TEMPLATE;
+EngineCargoCapacities TemplateVehicle::engine_cargo_cap;
 
 /*
  * Default CTOR
@@ -89,7 +91,6 @@ void TemplateVehicle::CloneFromTrain(const Train* train, TemplateVehicle* chainH
 	this->subtype = train->subtype;
 	this->railtype = train->railtype;
 	this->cargo_type = train->cargo_type;
-	this->cargo_subtype = train->cargo_subtype;
 	this->cargo_cap = train->cargo_cap;
 	const GroundVehicleCache* gcache = train->GetGroundVehicleCache();
 	this->max_speed = train->GetDisplayMaxSpeed();
@@ -162,9 +163,10 @@ int TemplateVehicle::CountGroups() const
  * @param left:     left border of the bounding box
  * @param right:    right border of the bounding box
  * @param y:        y-coordinate of the bounding box
- * @param x_offset: how many pixels to skip at the start before starting to draw any template
+ * @param x_offset: how many pixels to skip at the start of the template before starting to draw any engine
+ *					this is used when the template has to be horizontally scrolled into view
  */
-void TemplateVehicle::Draw(uint left, uint right, int y, int x_offset=0)
+void TemplateVehicle::Draw(uint left, uint right, int y, int y_top, uint16 height, int x_offset=0, TemplateID tid_selected_template_part=-1)
 {
 	/* cache the sprite dimensions for this template's engine */
 	if ( this->cached_sprite_size == false ) {
@@ -179,11 +181,15 @@ void TemplateVehicle::Draw(uint left, uint right, int y, int x_offset=0)
 	/* draw this + rest of the chain */
 	if ( x_offset <= 0 ) {
 		DrawVehicleEngine(left, right, left, y, this->engine_type, GetEnginePalette(this->engine_type, this->owner), EIT_PURCHASE);
+
+		if ( this->index == tid_selected_template_part )
+			DrawFrameRect(left, y_top, left+this->sprite_width, y_top+height, COLOUR_WHITE, FR_BORDERONLY);
+
 		left += this->sprite_width;
 	}
 	TemplateVehicle* next = this->GetNextUnit();
 	if ( next )
-		next->Draw(left, right, y, x_offset-this->sprite_width);
+		next->Draw(left, right, y, y_top, height, x_offset-this->sprite_width, tid_selected_template_part);
 }
 
 /**
@@ -234,6 +240,54 @@ void TemplateVehicle::Init(EngineID eid)
 }
 
 /**
+ * Set this vehicle's cargo capacity.
+ *
+ * The engine's default capacity might not be suitable because this value may be altered by NewGRF callbacks.
+ */
+void TemplateVehicle::SetCargoCapacity()
+{
+	if ( this->engine_type == INVALID_ENGINE || Engine::Get(this->engine_type)->CanCarryCargo() == false )
+		return;
+
+	/* the needed engine-id + cargo-id combination */
+	EngineCargo ec = EngineCargo(this->engine_type, this->cargo_type);
+
+	/* the cargo capacity for this type of engine + cargo might already be cached */
+	auto itca = TemplateVehicle::engine_cargo_cap.find(ec);
+	if ( itca != TemplateVehicle::engine_cargo_cap.end() ) {
+		this->cargo_cap = itca->second;
+		return;
+	}
+
+	/* try to find a train with this type of engine + cargo and get the capacity from it */
+	const Train* t = NULL;
+	FOR_ALL_TRAINS(t) {
+		if ( t->engine_type == this->engine_type && t->cargo_type == this->cargo_type ) {
+			/* cache it */
+			TemplateVehicle::engine_cargo_cap[ec] = t->cargo_cap;
+			this->cargo_cap = t->cargo_cap;
+			return;
+		}
+	}
+
+	/* try to create a new train with the needed engine + cargo to determine its capacity */
+	if ( Train::CanAllocateItem() ) {
+		Train *t = new Train();
+		t->engine_type = this->engine_type;
+		t->cargo_type = this->cargo_type;
+		const Engine* e = Engine::Get(this->engine_type);
+		this->cargo_cap = e->DetermineCapacity(t);
+		/* cache it */
+		TemplateVehicle::engine_cargo_cap[ec] = this->cargo_cap;
+		delete t;
+		return;
+	}
+
+	/* give up and use the engine's default cargo capacity */
+	this->cargo_cap = Engine::Get(this->engine_type)->GetDisplayDefaultCapacity();
+}
+
+/**
  * Return whether a given train will be treated by template replacement.
  *
  * @t:      the train to check
@@ -248,8 +302,6 @@ bool TemplateVehicle::TrainNeedsReplacement(Train* t)
 		if ( t->subtype != tv->subtype )
 			return true;
 		if ( t->cargo_type != tv->cargo_type )
-			return true;
-		if ( t->cargo_subtype != tv->cargo_subtype )
 			return true;
 		tv = tv->GetNextUnit();
 		t = t->GetNextUnit();
@@ -279,3 +331,9 @@ void TemplateVehicle::UpdateZoom()
 {
 	this->cached_sprite_size = false;
 }
+
+void ResetTemplateVehicles()
+{
+	TemplateVehicle::engine_cargo_cap.clear();
+}
+

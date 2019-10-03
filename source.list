@@ -84,6 +84,7 @@ stringfilter.cpp
 strings.cpp
 story.cpp
 subsidy.cpp
+tbtr_template_refit_window.cpp
 tbtr_template_vehicle.cpp
 tbtr_template_cmd.cpp
 textbuf.cpp
@@ -352,6 +353,7 @@ subsidy_func.h
 subsidy_type.h
 tar_type.h
 tbtr_gui.h
+tbtr_template_refit_window.h
 tbtr_template_vehicle.h
 terraform_gui.h
 textbuf_gui.h

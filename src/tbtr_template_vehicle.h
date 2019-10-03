@@ -37,6 +37,10 @@ class TemplateVehicle;
 typedef Pool<TemplateVehicle, TemplateID, 512, 0x10000> TemplatePool;
 extern TemplatePool _template_pool;
 
+/** A type of cache for engine cargo capacities */
+typedef std::pair<EngineID, CargoID> EngineCargo;
+typedef std::map<std::pair<EngineID, CargoID>, uint16> EngineCargoCapacities;
+
 enum TBTR_REPLACEMENT_OPTS {
 	TBTR_OPT_REUSE_DEPOT_VEHICLES,
 	TBTR_OPT_REFIT_VEHICLE,
@@ -51,12 +55,17 @@ enum TBTR_REPLACEMENT_OPTS {
  * All templates are stored in their own pool so that they don't interfere with a company's allowed number of
  * trains. */
 struct TemplateVehicle : TemplatePool::PoolItem<&_template_pool>, BaseVehicle {
+	/* static members */
+public:
+	static TemplateID last_template;    ///< remember the ID of the template vehicle that was created last
+	static EngineCargoCapacities engine_cargo_cap; ///< A type of cache for engine cargo capacities
+
+	/* non-static members */
 public:
 	TemplateVehicle();
 	TemplateVehicle(EngineID);
 	~TemplateVehicle();
 	TemplateID index;                   ///< Vehicle index
-	static TemplateID last_template;    ///< remember the ID of the template vehicle that was created last
 
 	TemplateVehicle* next;              ///< pointer to the next template vehicle in the chain
 	TemplateVehicle* prev;              ///< pointer to the previous template vehicle in the chain
@@ -77,7 +86,6 @@ public:
 
 	CargoID cargo_type;                 ///< type of cargo this vehicle is carrying
 	uint16 cargo_cap;                   ///< total capacity
-	byte cargo_subtype;                 ///< cargo subtype
 
 	/** Vehicle drawing information */
 	uint16 real_length;                 ///< template length in tile units, for drawing in the gui
@@ -105,9 +113,11 @@ public:
 	TemplateVehicle* GetNextUnit() const;
 	uint GetChainDisplayLength();       ///< the sum of the sprite lengths of this template and all following chain members
 
-	void Draw(uint, uint, int, int);
+	void Draw(uint, uint, int, int, uint16, int, TemplateID);
 
 	bool TrainNeedsReplacement(Train*);
+
+	void SetCargoCapacity();
 
 	void UpdateLastVehicle(TemplateVehicle*);
 	void UpdateZoom();					///< take the changed UI zoom into account
@@ -124,5 +134,6 @@ CommandCost CmdCloneTemplateFromTrain(TileIndex, DoCommandFlag, uint32, uint32, 
 
 TemplateVehicle* GetTemplateForTrain(Train*);
 
+void ResetTemplateVehicles();
 
 #endif /* !TBTR_TEMPLATE_VEHICLE_H */

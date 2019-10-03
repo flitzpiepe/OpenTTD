@@ -16,6 +16,8 @@
 #include "engine_gui.h"
 #include "zoom_func.h"
 
+#include "tbtr_template_refit_window.h"
+
 enum TemplateReplaceWindowWidgets {
 	TRW_CAPTION,
 
@@ -35,7 +37,7 @@ enum TemplateReplaceWindowWidgets {
 	TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE,
 	TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE,
 	TRW_WIDGET_TMPL_BUTTONS_DELETE_ENGINE,
-	TRW_WIDGET_TMPL_BUTTONS_EDIT_RIGHTPANEL,
+	TRW_WIDGET_TMPL_BUTTONS_TOGGLE_REFIT_WINDOW,
 
 	TRW_WIDGET_TITLE_INFO_GROUP,
 	TRW_WIDGET_TITLE_INFO_TEMPLATE,
@@ -109,11 +111,11 @@ static const NWidgetPart _widgets[] = {
 		NWidget(NWID_VERTICAL),
 			/* Edit buttons */
 			NWidget(NWID_HORIZONTAL),
-				NWidget(WWT_TEXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE), SetMinimalSize(150,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_CLONE_TEMPLATE, STR_TBTR_UI_TOOLTIP_CLONE_TEMPLATE),
-				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_ADD_ENGINE), SetMinimalSize(150,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_ADD_ENGINE_DA, STR_TBTR_UI_TOOLTIP_ADD_ENGINE),
-				NWidget(WWT_PANEL, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_EDIT_RIGHTPANEL), SetMinimalSize(0,12), SetResize(1,0), EndContainer(),
-				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_DELETE_ENGINE), SetMinimalSize(150,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_DELETE_ENGINE_DA, STR_TBTR_UI_TOOLTIP_DELETE_ENGINE),
-				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE), SetMinimalSize(150,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_DELETE_TEMPLATE_DA, STR_TBTR_UI_TOOLTIP_DELETE_TEMPLATE),
+				NWidget(WWT_TEXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE), SetMinimalSize(140,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_CLONE_TEMPLATE, STR_TBTR_UI_TOOLTIP_CLONE_TEMPLATE),
+				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_ADD_ENGINE), SetMinimalSize(140,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_ADD_ENGINE_DA, STR_TBTR_UI_TOOLTIP_ADD_ENGINE),
+				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_TOGGLE_REFIT_WINDOW), SetMinimalSize(140,12), SetResize(1,0), SetFill(1,0), SetDataTip(STR_TBTR_UI_BUTTON_REFIT_DA, STR_TBTR_UI_BUTTON_REFIT_DA),
+				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_DELETE_ENGINE), SetMinimalSize(140,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_DELETE_ENGINE_DA, STR_TBTR_UI_TOOLTIP_DELETE_ENGINE),
+				NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE), SetMinimalSize(140,12), SetResize(1,0), SetDataTip(STR_TBTR_UI_BUTTON_DELETE_TEMPLATE_DA, STR_TBTR_UI_TOOLTIP_DELETE_TEMPLATE),
 			EndContainer(),
 		EndContainer(),
 		/* Start/Stop buttons */
@@ -420,6 +422,55 @@ void TbtrGui::CalculateTemplatesHScroll()
 	this->hscroll_templates->SetCount(this->FindLongestTemplateDisplayWidth() + this->template_x_offset);
 }
 
+/**
+ * Determine which engine of the template in the matrix cell was clicked
+ * @param pt           Point that was clicked
+ * @param index_new    Index of the template in the clicked cell (index into the gui list of templates)
+ * @return             The TemplateID of the part of the template that was clicked
+ */
+TemplateID TbtrGui::CheckClickedTemplatePart(Point& pt, uint16 index_new) const
+{
+	/* clicked in front of the whole template *until we find pt.x along the template length */
+	if ( pt.x < this->template_x_offset )
+		return INVALID_TEMPLATE;
+
+	/* empty cell selected */
+	if ( index_new >= this->templates.Length() )
+		return INVALID_TEMPLATE;
+
+	/* fetch the template from the selected cell */
+	const TemplateVehicle* tv = TemplateVehicle::Get((this->templates)[index_new]->index);
+	if ( tv == NULL )
+		return INVALID_TEMPLATE;
+
+	/* calculate the length of the front part of the template that is (maybe)
+	 * scrolled out of view (needed for the next step) */
+	int width_scrolled_out = 0;
+	int i = this->hscroll_templates->GetPosition();
+	const TemplateVehicle* tmp = tv;
+	while ( tmp && i > 0 ) {
+		width_scrolled_out += tmp->sprite_width;
+		i -= tmp->sprite_width;
+		tmp = tmp->next;
+	}
+	/* iterate the template until we find pt.x along the template length */
+	int x = this->template_x_offset + tv->sprite_width;
+	while ( tv && x <= pt.x + width_scrolled_out ) {
+		tv = tv->next;
+		if ( tv ) x += tv->sprite_width;
+	}
+
+	/* clicked after the template in the current cell */
+	if ( tv == NULL )
+		return INVALID_TEMPLATE;
+
+	/* clicked on an engine */
+	if ( tv->index != this->id_selected_template_part )
+		return tv->index;
+
+	return INVALID_TEMPLATE;
+}
+
 /*
  * Draw a widget of this GUI
  */
@@ -612,7 +663,7 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 		DrawString(left, right-4, y+this->pos_string_hi, STR_TINY_BLACK_DECIMAL, TC_BLACK, SA_RIGHT);
 
 		/* Draw the template */
-		tv->Draw(left+this->template_x_offset, right, y+this->pos_string_hi+ScaleGUITrad(5), hscroll_templates->GetPosition());
+		tv->Draw(left+this->template_x_offset, right, y+this->pos_string_hi+ScaleGUITrad(5), y, this->height_cell_templates, hscroll_templates->GetPosition(), this->id_selected_template_part);
 
 		/* Index of current template vehicle in the list of all templates for its company */
 		SetDParam(0, i);
@@ -753,16 +804,33 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 		case TRW_WIDGET_MATRIX_TEMPLATES: {
 			uint16 index_new = this->vscroll_templates->GetScrolledRowFromWidget(pt.y, this, widget);
 
+			/* clicked empty cell */
 			if ( index_new >= this->templates.Length() )
 				this->index_selected_template = -1;
 
-			if ( index_new == this->index_selected_template )
-				this->index_selected_template = -1;
+			/* maybe we clicked on an engine of the template */
+			TemplateID clicked_template_part = CheckClickedTemplatePart(pt, index_new);
 
-			else
+			/* clicked currently selected cell */
+			if ( index_new == this->index_selected_template ) {
+				/* but a different engine */
+				if ( clicked_template_part != this->id_selected_template_part )
+					this->id_selected_template_part = clicked_template_part;
+				/* same engine as before */
+				else {
+					this->index_selected_template = -1;
+					this->id_selected_template_part = INVALID_TEMPLATE;
+				}
+			}
+
+			/* clicked cell containing another template */
+			else {
 				this->index_selected_template = index_new;
+				this->id_selected_template_part = clicked_template_part;
+			}
 
 			this->UpdateButtonState();
+			this->UpdateRefitWindow();
 			break;
 		}
 		case TRW_WIDGET_START: {
@@ -807,6 +875,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			this->index_selected_template = FindNewestTemplateInGui();
 			if ( this->index_selected_template >= 0 )
 				this->vscroll_templates->ScrollTowards(this->index_selected_template);
+			this->UpdateRefitWindow();
 			break;
 		}
 		case TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE: {
@@ -830,6 +899,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 				this->vscroll_templates->ScrollTowards(this->index_selected_template);
 				this->index_selected_template = -1;
 				this->UpdateButtonState();
+				this->UpdateRefitWindow();
 			}
 			break;
 		}
@@ -845,7 +915,20 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 
 			/* delete the last engine */
 			DoCommandP(0, tid, 0, CMD_TEMPLATE_DELETE_ENGINE, CcTemplateEngineDeleted);
+			this->UpdateRefitWindow();
 			break;
+		}
+		case TRW_WIDGET_TMPL_BUTTONS_TOGGLE_REFIT_WINDOW: {
+			/* toggle the template refit window */
+			TemplateRefitWindow* w = (TemplateRefitWindow*)FindWindowByClass(WC_TBTR_TEMPLATE_REFIT_WINDOW);
+			if ( w ) {
+				DeleteWindowByClass(WC_TBTR_TEMPLATE_REFIT_WINDOW);
+				this->UpdateButtonState();
+			}
+			else if ( this->index_selected_template >= 0 ) {
+				ShowTemplateRefitWindow(this);
+				this->UpdateRefitWindow();
+			}
 		}
 	}
 	this->SetDirty();
@@ -932,14 +1015,19 @@ void TbtrGui::UpdateButtonState()
 	NWidgetCore* delete_engine = this->GetWidget<NWidgetCore>(TRW_WIDGET_TMPL_BUTTONS_DELETE_ENGINE);
 	NWidgetCore* start_rpl = this->GetWidget<NWidgetCore>(TRW_WIDGET_START);
 	NWidgetCore* stop_rpl = this->GetWidget<NWidgetCore>(TRW_WIDGET_STOP);
+	NWidgetCore* toggle_refit_ui = this->GetWidget<NWidgetCore>(TRW_WIDGET_TMPL_BUTTONS_TOGGLE_REFIT_WINDOW);
+	bool refit_window = FindWindowByClass(WC_TBTR_TEMPLATE_REFIT_WINDOW) != NULL;
 
 	/* template selected */
 	if ( this->index_selected_template != -1 ) {
 		delete_template->SetDataTip(STR_TBTR_UI_BUTTON_DELETE_TEMPLATE, STR_TBTR_UI_TOOLTIP_DELETE_TEMPLATE);
 		delete_engine->SetDataTip(STR_TBTR_UI_BUTTON_DELETE_ENGINE, STR_TBTR_UI_TOOLTIP_DELETE_ENGINE);
+		toggle_refit_ui->SetDataTip(STR_TBTR_UI_BUTTON_REFIT, STR_TBTR_UI_BUTTON_REFIT);
 	} else {
 		delete_template->SetDataTip(STR_TBTR_UI_BUTTON_DELETE_TEMPLATE_DA, STR_TBTR_UI_TOOLTIP_DELETE_TEMPLATE);
 		delete_engine->SetDataTip(STR_TBTR_UI_BUTTON_DELETE_ENGINE_DA, STR_TBTR_UI_TOOLTIP_DELETE_ENGINE);
+		if ( FindWindowByClass(WC_TBTR_TEMPLATE_REFIT_WINDOW) == NULL )
+			toggle_refit_ui->SetDataTip(STR_TBTR_UI_BUTTON_REFIT_DA, STR_TBTR_UI_BUTTON_REFIT_DA);
 	}
 
 	/* group selected */
@@ -961,6 +1049,23 @@ void TbtrGui::UpdateButtonState()
 		add_engine->SetDataTip(STR_TBTR_UI_BUTTON_ADD_ENGINE, STR_TBTR_UI_TOOLTIP_ADD_ENGINE);
 	} else {
 		add_engine->SetDataTip(STR_TBTR_UI_BUTTON_ADD_ENGINE_DA, STR_TBTR_UI_TOOLTIP_ADD_ENGINE);
+	}
+}
+
+/**
+ * Update the template refit window with the currently selected template
+ */
+void TbtrGui::UpdateRefitWindow()
+{
+	TemplateRefitWindow* w = (TemplateRefitWindow*)FindWindowByClass(WC_TBTR_TEMPLATE_REFIT_WINDOW);
+	if ( w ) {
+		const TemplateVehicle* tv = this->index_selected_template >= 0 
+						? TemplateVehicle::Get((this->templates)[this->index_selected_template]->index)
+						: NULL;
+		if ( id_selected_template_part != INVALID_TEMPLATE )
+			tv = TemplateVehicle::Get(this->id_selected_template_part);
+		bool single_engine = this->id_selected_template_part != INVALID_TEMPLATE;
+		w->UpdateTemplateVehicle(tv, single_engine);
 	}
 }
 

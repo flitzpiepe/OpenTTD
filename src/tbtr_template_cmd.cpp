@@ -26,7 +26,7 @@
  */
 bool CheckRefit(const TemplateVehicle* tv, const Train* t)
 {
-	return tv->cargo_type==t->cargo_type && tv->cargo_subtype==t->cargo_subtype;
+	return tv->cargo_type==t->cargo_type;
 }
 
 /**
@@ -158,13 +158,12 @@ void TransferCargo(Train* src, Train* dest)
 
 	while ( src ) {
 		CargoID _cargo_type = src->cargo_type;
-		byte _cargo_subtype = src->cargo_subtype;
 
 		/* how much cargo has to be moved (if possible) */
 		uint remainingAmount = src->cargo.TotalCount();
 		/* each vehicle in the new chain shall be given as much of the old cargo as possible, until none is left */
 		for (Train* tmp=dest; tmp!=NULL && remainingAmount>0; tmp=tmp->GetNextUnit()) {
-			if (tmp->cargo_type == _cargo_type && tmp->cargo_subtype == _cargo_subtype) {
+			if (tmp->cargo_type == _cargo_type) {
 				/* calculate the free space for new cargo on the current vehicle */
 				uint curCap = tmp->cargo_cap - tmp->cargo.TotalCount();
 				uint moveAmount = min(remainingAmount, curCap);
@@ -244,7 +243,7 @@ Train* FindMatchingTrainInDepot(TemplateVehicle* tv, TileIndex tile, bool check_
 				&& (ignore==NULL || NotInChain(train, ignore)) ) {
 			/* already found a matching vehicle, keep checking for matching refit + cargo amount */
 			if ( found != NULL && check_refit == true) {
-				if ( train->cargo_type==tv->cargo_type && train->cargo_subtype==tv->cargo_subtype )
+				if ( train->cargo_type==tv->cargo_type)
 					/* find something with a minimal amount of cargo, so that we can transfer more
 					 * from the original chain into it later */
 					if ( train->cargo.StoredCount() < found->cargo.StoredCount() )
@@ -380,8 +379,7 @@ CommandCost CmdTemplateReplacement(TileIndex ti, DoCommandFlag flags, uint32 p1,
 		/* maybe refit as template */
 		if ( refit_train && new_vehicle ) {
 			CargoID cargo_type = cur_tmpl->cargo_type;
-			byte cargo_subtype = cur_tmpl->cargo_subtype;
-			CommandCost ccRefit = DoCommand(0, new_vehicle->index, cargo_type | (cargo_subtype<<8) | (1<<16), flags, GetCmdRefitVeh(new_vehicle));
+			CommandCost ccRefit = DoCommand(0, new_vehicle->index, cargo_type|(1<<16), flags, GetCmdRefitVeh(new_vehicle));
 			if ( flags==DC_EXEC )
 				cc.AddCost(ccRefit);
 		}
@@ -457,7 +455,8 @@ CommandCost CmdTemplateReplacement(TileIndex ti, DoCommandFlag flags, uint32 p1,
 CommandCost CmdTemplateAddEngine(TileIndex ti, DoCommandFlag flags, uint32 p1, uint32 p2, char const* msg)
 {
 	TemplateID tid = static_cast<TemplateID>(p1);
-	const Engine* engine = Engine::Get(p2);
+	EngineID eid = (EngineID)p2;
+	const Engine* engine = Engine::Get(eid);
 
 	if ( flags == DC_EXEC) {
 		if ( !TemplateVehicle::CanAllocateItem() )
@@ -480,8 +479,7 @@ CommandCost CmdTemplateAddEngine(TileIndex ti, DoCommandFlag flags, uint32 p1, u
 
 		tv->railtype = engine->u.rail.railtype;
 		tv->cargo_type = engine->GetDefaultCargoType();
-		tv->cargo_subtype = 0;
-		tv->cargo_cap = engine->GetDisplayDefaultCapacity();
+		tv->SetCargoCapacity();
 		tv->max_speed = engine->GetDisplayMaxSpeed();
 		tv->power = engine->GetPower();
 		tv->weight = engine->GetDisplayWeight();
@@ -643,6 +641,43 @@ CommandCost CmdDeleteTemplate(TileIndex ti, DoCommandFlag flags, uint32 p1, uint
 		/* delete the given TemplateVehicle */
 		delete tv;
 	}
+
+	return CommandCost();
+}
+
+/**
+ * Refit a template vehicle to carry some specified type of cargo
+ *
+ * @param tile:     unused
+ * @param flags:    command flags
+ * @param p1:       ID of the template vehicle to refit
+ * @param p2:       bool: refit only one engine | byte: CargoID to use as refit
+ * @param msg:      unused
+ */
+CommandCost CmdRefitTemplate(TileIndex ti, DoCommandFlag flags, uint32 p1, uint32 p2, char const* msg)
+{
+	TemplateVehicle* tv = TemplateVehicle::Get(p1);
+	bool refit_single_engine = HasBit(p2, 8);
+	CargoID cid = (0xFF & CargoID(p2));
+
+	if ( !tv )
+		return CMD_ERROR;
+
+	if ( refit_single_engine ) {
+		const Engine* engine = Engine::Get(tv->engine_type);
+		if ( flags == DC_EXEC && HasBit(engine->info.refit_mask,cid) ) {
+			tv->cargo_type = cid;
+			tv->SetCargoCapacity();
+		}
+	}
+	else
+		for ( TemplateVehicle* tmp=tv->first; tmp; tmp=tmp->next ) {
+			const Engine* engine = Engine::Get(tmp->engine_type);
+			if ( flags == DC_EXEC && HasBit(engine->info.refit_mask,cid) ) {
+				tmp->cargo_type = cid;
+				tmp->SetCargoCapacity();
+			}
+		}
 
 	return CommandCost();
 }

@@ -33,7 +33,6 @@ const SaveLoad* GetTemplateDescription() {
 
 		SLE_VAR(TemplateVehicle, cargo_type,                SLE_UINT8),
 		SLE_VAR(TemplateVehicle, cargo_cap,                 SLE_UINT16),
-		SLE_VAR(TemplateVehicle, cargo_subtype,             SLE_UINT8),
 		SLE_VAR(TemplateVehicle, subtype,                   SLE_UINT8),
 		SLE_VAR(TemplateVehicle, railtype,                  SLE_UINT8),
 

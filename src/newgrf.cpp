@@ -49,6 +49,7 @@
 #include "vehicle_func.h"
 #include "language.h"
 #include "vehicle_base.h"
+#include "tbtr_template_vehicle.h"
 
 #include "table/strings.h"
 #include "table/build_industry.h"
@@ -8278,6 +8279,9 @@ void ResetNewGRFData()
 
 	/* Reset rail type information */
 	ResetRailTypes();
+
+	/* Reset some structures related to template vehicles */
+	ResetTemplateVehicles();
 
 	/* Allocate temporary refit/cargo class data */
 	_gted = CallocT<GRFTempEngineData>(Engine::GetPoolSize());
