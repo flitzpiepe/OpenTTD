@@ -57,7 +57,7 @@ private:
 	void BuildTemplateList();
 	void BuildTemplateEngineList();
 	void CalculateTemplatesHScroll();
-	TemplateID CheckClickedTemplateEngine(Point&, uint16) const;
+	TemplateID CheckClickedTemplatePart(Point&, uint16) const;
 	void DrawEngines(const Rect&) const;
 	void DrawGroups(const Rect&) const;
 	void DrawTemplateInfo(const Rect&) const;

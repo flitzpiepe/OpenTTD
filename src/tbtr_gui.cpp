@@ -426,7 +426,7 @@ void TbtrGui::CalculateTemplatesHScroll()
  * @param index_new    Index of the template in the clicked cell (index into the gui list of templates)
  * @return             The TemplateID of the part of the template that was clicked
  */
-TemplateID TbtrGui::CheckClickedTemplateEngine(Point& pt, uint16 index_new) const
+TemplateID TbtrGui::CheckClickedTemplatePart(Point& pt, uint16 index_new) const
 {
 	/* clicked in front of the whole template *until we find pt.x along the template length */
 	if ( pt.x < this->template_x_offset )
@@ -441,20 +441,19 @@ TemplateID TbtrGui::CheckClickedTemplateEngine(Point& pt, uint16 index_new) cons
 	if ( tv == NULL )
 		return INVALID_TEMPLATE;
 
-	// TODO mv into some function
 	/* calculate the length of the front part of the template that is (maybe)
 	 * scrolled out of view (needed for the next step) */
-	int offset = 0;
+	int width_scrolled_out = 0;
 	int i = this->hscroll_templates->GetPosition();
 	const TemplateVehicle* tmp = tv;
 	while ( tmp && i > 0 ) {
-		offset += tmp->sprite_width;
+		width_scrolled_out += tmp->sprite_width;
 		i -= tmp->sprite_width;
 		tmp = tmp->next;
 	}
 	/* iterate the template until we find pt.x along the template length */
 	int x = this->template_x_offset + tv->sprite_width;
-	while ( tv && x <= pt.x + offset ) {
+	while ( tv && x <= pt.x + width_scrolled_out ) {
 		tv = tv->next;
 		if ( tv ) x += tv->sprite_width;
 	}
@@ -808,14 +807,13 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 				this->index_selected_template = -1;
 
 			/* maybe we clicked on an engine of the template */
-			// TODO rename engine_new?
-			TemplateID engine_new = CheckClickedTemplateEngine(pt, index_new);
+			TemplateID clicked_template_part = CheckClickedTemplatePart(pt, index_new);
 
 			/* clicked currently selected cell */
 			if ( index_new == this->index_selected_template ) {
 				/* but a different engine */
-				if ( engine_new != this->id_selected_template_part )
-					this->id_selected_template_part = engine_new;
+				if ( clicked_template_part != this->id_selected_template_part )
+					this->id_selected_template_part = clicked_template_part;
 				/* same engine as before */
 				else {
 					this->index_selected_template = -1;
@@ -826,7 +824,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			/* clicked cell containing another template */
 			else {
 				this->index_selected_template = index_new;
-				this->id_selected_template_part = engine_new;
+				this->id_selected_template_part = clicked_template_part;
 			}
 
 			this->UpdateButtonState();
