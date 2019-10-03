@@ -180,7 +180,6 @@ void TemplateVehicle::Draw(uint left, uint right, int y, int y_top, uint16 heigh
 
 	/* draw this + rest of the chain */
 	if ( x_offset <= 0 ) {
-		std::cout << left << "(" << this->sprite_width << ") ";
 		DrawVehicleEngine(left, right, left, y, this->engine_type, GetEnginePalette(this->engine_type, this->owner), EIT_PURCHASE);
 
 		if ( this->index == tid_selected_engine )

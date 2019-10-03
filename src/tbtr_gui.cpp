@@ -443,8 +443,7 @@ TemplateID TbtrGui::CheckClickedTemplateEngine(Point& pt, uint16 index_new) cons
 	if ( tv == NULL )
 		return INVALID_TEMPLATE;
 
-	std::cout << "hscroll: " << hscroll_templates->GetPosition();
-	std::cout << "clicked on: " << pt.x << std::endl;
+	// TODO mv into some function
 	/* calculate the length of the front part of the template that is (maybe)
 	 * scrolled out of view (needed for the next step) */
 	int offset = 0;
@@ -665,9 +664,7 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 		DrawString(left, right-4, y+this->pos_string_hi, STR_TINY_BLACK_DECIMAL, TC_BLACK, SA_RIGHT);
 
 		/* Draw the template */
-		std::cout << "draw template at: ";
 		tv->Draw(left+this->template_x_offset, right, y+this->pos_string_hi+ScaleGUITrad(5), y, this->height_cell_templates, hscroll_templates->GetPosition(), this->id_selected_engine);
-		std::cout << "\n";
 
 		/* Index of current template vehicle in the list of all templates for its company */
 		SetDParam(0, i);
@@ -815,7 +812,6 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			/* maybe we clicked on an engine of the template */
 			// TODO rename engine_new?
 			TemplateID engine_new = CheckClickedTemplateEngine(pt, index_new);
-			std::cout << "clicked engine: " << engine_new << "\n";
 
 			/* clicked currently selected cell */
 			if ( index_new == this->index_selected_template ) {
