@@ -466,7 +466,7 @@ TemplateID TbtrGui::CheckClickedTemplateEngine(Point& pt, uint16 index_new) cons
 		return INVALID_TEMPLATE;
 
 	/* clicked on an engine */
-	if ( tv->index != this->id_selected_engine )
+	if ( tv->index != this->id_selected_template_part )
 		return tv->index;
 
 	return INVALID_TEMPLATE;
@@ -664,7 +664,7 @@ void TbtrGui::DrawTemplates(const Rect& r) const
 		DrawString(left, right-4, y+this->pos_string_hi, STR_TINY_BLACK_DECIMAL, TC_BLACK, SA_RIGHT);
 
 		/* Draw the template */
-		tv->Draw(left+this->template_x_offset, right, y+this->pos_string_hi+ScaleGUITrad(5), y, this->height_cell_templates, hscroll_templates->GetPosition(), this->id_selected_engine);
+		tv->Draw(left+this->template_x_offset, right, y+this->pos_string_hi+ScaleGUITrad(5), y, this->height_cell_templates, hscroll_templates->GetPosition(), this->id_selected_template_part);
 
 		/* Index of current template vehicle in the list of all templates for its company */
 		SetDParam(0, i);
@@ -816,19 +816,19 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			/* clicked currently selected cell */
 			if ( index_new == this->index_selected_template ) {
 				/* but a different engine */
-				if ( engine_new != this->id_selected_engine )
-					this->id_selected_engine = engine_new;
+				if ( engine_new != this->id_selected_template_part )
+					this->id_selected_template_part = engine_new;
 				/* same engine as before */
 				else {
 					this->index_selected_template = -1;
-					this->id_selected_engine = INVALID_TEMPLATE;
+					this->id_selected_template_part = INVALID_TEMPLATE;
 				}
 			}
 
 			/* clicked cell containing another template */
 			else {
 				this->index_selected_template = index_new;
-				this->id_selected_engine = engine_new;
+				this->id_selected_template_part = engine_new;
 			}
 
 			this->UpdateButtonState();
@@ -1061,13 +1061,13 @@ void TbtrGui::UpdateRefitWindow()
 {
 	TemplateRefitWindow* w = (TemplateRefitWindow*)FindWindowByClass(WC_TBTR_TEMPLATE_REFIT_WINDOW);
 	if ( w ) {
-		// TODO if id_selected_engine != INVALID_TEMPLATE, use its pointer instead of the one to the first
+		// TODO if id_selected_template_part != INVALID_TEMPLATE, use its pointer instead of the one to the first
 		const TemplateVehicle* tv = this->index_selected_template >= 0 
 						? TemplateVehicle::Get((this->templates)[this->index_selected_template]->index)
 						: NULL;
-		if ( id_selected_engine != INVALID_TEMPLATE )
-			tv = TemplateVehicle::Get(this->id_selected_engine);
-		bool single_engine = this->id_selected_engine != INVALID_TEMPLATE;
+		if ( id_selected_template_part != INVALID_TEMPLATE )
+			tv = TemplateVehicle::Get(this->id_selected_template_part);
+		bool single_engine = this->id_selected_template_part != INVALID_TEMPLATE;
 		w->UpdateTemplateVehicle(tv, single_engine);
 	}
 }

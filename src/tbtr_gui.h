@@ -71,31 +71,31 @@ private:
 	void UpdateRefitWindow();
 	void UpdateZoom();
 
-	Scrollbar* vscroll_engines;                            ///< Scrollbar for the engines list
-	Scrollbar* vscroll_groups;                             ///< Scrollbar for the group list
-	Scrollbar* hscroll_templates;                          ///< Horizontal scrollbar for the template list
-	Scrollbar* vscroll_templates;                          ///< Vertical scrollbar for the template list
+	Scrollbar* vscroll_engines;                                   ///< Scrollbar for the engines list
+	Scrollbar* vscroll_groups;                                    ///< Scrollbar for the group list
+	Scrollbar* hscroll_templates;                                 ///< Horizontal scrollbar for the template list
+	Scrollbar* vscroll_templates;                                 ///< Vertical scrollbar for the template list
 
-	uint16 height_cell_engines;                            ///< the height of a line in the engines matrix
-	uint16 height_cell_groups;                             ///< the height of a line in the groups matrix
-	uint16 height_cell_templates;                          ///< the height of a line in the templates matrix
-	uint16 pos_string_usedepot;                            ///< horizontal position of the use-depot option
-	uint16 pos_string_keepremainders;                      ///< horizontal position of the keep-remainders option
-	uint16 pos_string_userefit;                            ///< horizontal position of the use-refit option
-	uint16 pos_string_lo;                                  ///< low vertical string position in a GUI cell
-	uint16 pos_string_med;                                 ///< medium vertical string position in a GUI cell
-	uint16 pos_string_hi;                                  ///< high vertical string position in a GUI cell
+	uint16 height_cell_engines;                                   ///< the height of a line in the engines matrix
+	uint16 height_cell_groups;                                    ///< the height of a line in the groups matrix
+	uint16 height_cell_templates;                                 ///< the height of a line in the templates matrix
+	uint16 pos_string_usedepot;                                   ///< horizontal position of the use-depot option
+	uint16 pos_string_keepremainders;                             ///< horizontal position of the keep-remainders option
+	uint16 pos_string_userefit;                                   ///< horizontal position of the use-refit option
+	uint16 pos_string_lo;                                         ///< low vertical string position in a GUI cell
+	uint16 pos_string_med;                                        ///< medium vertical string position in a GUI cell
+	uint16 pos_string_hi;                                         ///< high vertical string position in a GUI cell
 
-	uint16 template_x_offset = 50;                         ///< LHS spacing for templates in the GUI
-	int index_selected_engine = -1;                        ///< index into the GUIEngineList "engines"
-	int index_selected_group = -1;                         ///< index into the GUIGroupList "groups"
-	int index_selected_template = -1;                      ///< index into the GUITemplateList "templates"
-	TemplateID id_selected_engine = INVALID_TEMPLATE;      ///< ID of the selected engine of the currently selected template
-	GUIEngineList engines;                                 ///< List of new engines to add to the templates
-	GUIGroupList groups;                                   ///< List of groups
-	GUITemplateList templates;                             ///< List of templates
+	uint16 template_x_offset = 50;                                ///< LHS spacing for templates in the GUI
+	int index_selected_engine = -1;                               ///< index into the GUIEngineList "engines"
+	int index_selected_group = -1;                                ///< index into the GUIGroupList "groups"
+	int index_selected_template = -1;                             ///< index into the GUITemplateList "templates"
+	TemplateID id_selected_template_part = INVALID_TEMPLATE;      ///< ID of the selected engine of the currently selected template
+	GUIEngineList engines;                                        ///< List of new engines to add to the templates
+	GUIGroupList groups;                                          ///< List of groups
+	GUITemplateList templates;                                    ///< List of templates
 	RailType railtype;
-	ZoomLevelByte gui_zoom;                                ///< GUI Zoom level
+	ZoomLevelByte gui_zoom;                                       ///< GUI Zoom level
 };
 
 void ShowTbtrGui();
