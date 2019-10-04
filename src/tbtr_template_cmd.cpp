@@ -447,7 +447,9 @@ CommandCost CmdTemplateReplacement(TileIndex ti, DoCommandFlag flags, uint32 p1,
  * @param ti:   not used
  * @param p1:   index of the template vehicle to which the new engine will be appended, if it is
  *              INVALID_TEMPLATE a new chain will be created
- * @param p2:   EngineID to be added
+ * @param p2:   Bits [0-15]:[uint16]:EngineID to be added
+ *              Bit  [16]:[bool]:append directly after the template id from p1 (if false, the new engine will
+ *                   be appended to the end of the template given in p1)
  * @param msg:  not used
  *
  * @return:     either a default CommandCost object or CMD_ERROR
@@ -457,6 +459,7 @@ CommandCost CmdTemplateAddEngine(TileIndex ti, DoCommandFlag flags, uint32 p1, u
 	TemplateID tid = static_cast<TemplateID>(p1);
 	EngineID eid = (EngineID)p2;
 	const Engine* engine = Engine::Get(eid);
+	bool append_to_tv = HasBit(p2,16);
 
 	if ( flags == DC_EXEC) {
 		if ( !TemplateVehicle::CanAllocateItem() )
@@ -464,17 +467,27 @@ CommandCost CmdTemplateAddEngine(TileIndex ti, DoCommandFlag flags, uint32 p1, u
 		TemplateVehicle* tv = new TemplateVehicle(p2);
 		TemplateVehicle::last_template = tv->index;
 
-		TemplateVehicle* head = TemplateVehicle::GetIfValid(tid);
-		if ( head ) {
-			head = head->first;
-			head->last->next = tv;
-			tv->prev = head->last;
-			head->UpdateLastVehicle(tv);
-			tv->first = head;
+		if ( append_to_tv ) {
+			TemplateVehicle* append_to = TemplateVehicle::GetIfValid(tid);
+			tv->next = append_to->next;
+			append_to->next = tv;
+			tv->first = append_to->first;
 			tv->subtype = DetermineSubtype(engine, false);
+			append_to->first->UpdateLastVehicle(tv);
 		}
 		else {
-			tv->subtype = DetermineSubtype(engine, true);
+			TemplateVehicle* head = TemplateVehicle::GetIfValid(tid);
+			if ( head ) {
+				head = head->first;
+				head->last->next = tv;
+				tv->prev = head->last;
+				head->UpdateLastVehicle(tv);
+				tv->first = head;
+				tv->subtype = DetermineSubtype(engine, false);
+			}
+			else {
+				tv->subtype = DetermineSubtype(engine, true);
+			}
 		}
 
 		tv->railtype = engine->u.rail.railtype;

@@ -871,7 +871,10 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 				tid = (*this->templates.Get(index_selected_template))->index;
 
 			/* add the engine */
-			DoCommandP(0, tid, eid, CMD_TEMPLATE_ADD_ENGINE, CcTemplateEngineAdded);
+			if ( this->id_selected_template_part == INVALID_TEMPLATE )
+				DoCommandP(0, tid, eid, CMD_TEMPLATE_ADD_ENGINE, CcTemplateEngineAdded);
+			else
+				DoCommandP(0, this->id_selected_template_part, eid|(1<<16), CMD_TEMPLATE_ADD_ENGINE, CcTemplateEngineAdded);
 			this->index_selected_template = FindNewestTemplateInGui();
 			if ( this->index_selected_template >= 0 )
 				this->vscroll_templates->ScrollTowards(this->index_selected_template);
