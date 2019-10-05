@@ -467,7 +467,13 @@ CommandCost CmdTemplateAddEngine(TileIndex ti, DoCommandFlag flags, uint32 p1, u
 		TemplateVehicle* tv = new TemplateVehicle(p2);
 		TemplateVehicle::last_template = tv->index;
 
-		if ( append_to_tv ) {
+		/* no template yet */
+		// TODO rename head -> first (like in delete cmd, or rename there)
+		TemplateVehicle* head = TemplateVehicle::GetIfValid(tid);
+		if ( head == NULL ) {
+			tv->subtype = DetermineSubtype(engine, true);
+		}
+		else if ( append_to_tv ) {
 			TemplateVehicle* append_to = TemplateVehicle::GetIfValid(tid);
 			tv->next = append_to->next;
 			append_to->next = tv;
@@ -476,7 +482,8 @@ CommandCost CmdTemplateAddEngine(TileIndex ti, DoCommandFlag flags, uint32 p1, u
 			append_to->first->UpdateLastVehicle(tv);
 		}
 		else {
-			TemplateVehicle* head = TemplateVehicle::GetIfValid(tid);
+			//TemplateVehicle* head = TemplateVehicle::GetIfValid(tid);
+			// TODO cleanup
 			if ( head ) {
 				head = head->first;
 				head->last->next = tv;
@@ -528,7 +535,7 @@ CommandCost CmdTemplateDeleteEngine(TileIndex tile, DoCommandFlag flags, uint32 
 		/* case: tv == head */
 		else if ( tv == tv->first ) {
 			tv->next = NULL;
-			tv->next->prev == NULL;
+			tv->next->prev = NULL;
 			TemplateVehicle* first_new = tv->next;
 			delete tv;
 			tv->UpdateFirstVehicle(first_new);
