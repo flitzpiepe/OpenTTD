@@ -18,6 +18,8 @@
 
 #include "tbtr_template_refit_window.h"
 
+#include "tbtr_debug.h"
+
 enum TemplateReplaceWindowWidgets {
 	TRW_CAPTION,
 

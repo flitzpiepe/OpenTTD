@@ -311,15 +311,29 @@ bool TemplateVehicle::TrainNeedsReplacement(Train* t)
 }
 
 /**
- * Update the last pointer on each member of this chain of TemplateVehicle's
+ * Update the "first" pointer on each member of this chain
  *
  * @param last:   the new last vehicle
  */
-void TemplateVehicle::UpdateLastVehicle(TemplateVehicle* last)
+void TemplateVehicle::UpdateFirstVehicle(TemplateVehicle* first_new)
 {
 	TemplateVehicle* tmp = this->first;
 	while ( tmp ) {
-		tmp->last = last;
+		tmp->first = first_new;
+		tmp = tmp->next;
+	}
+}
+
+/**
+ * Update the "last" pointer on each member of this chain
+ *
+ * @param last:   the new last vehicle
+ */
+void TemplateVehicle::UpdateLastVehicle(TemplateVehicle* last_new)
+{
+	TemplateVehicle* tmp = this->first;
+	while ( tmp ) {
+		tmp->last = last_new;
 		tmp = tmp->next;
 	}
 }

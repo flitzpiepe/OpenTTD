@@ -507,25 +507,49 @@ CommandCost CmdTemplateAddEngine(TileIndex ti, DoCommandFlag flags, uint32 p1, u
  *
  * @param tile:  not used
  * @param p1:    template id, this is assumed to be the head of the template chain
- * @param p2:    not used
+ * @param p2:    bool: delete the template with id defined by p1 parameter
  * @param msg:   not used
  */
 CommandCost CmdTemplateDeleteEngine(TileIndex tile, DoCommandFlag flags, uint32 p1, uint32 p2, char const* msg)
 {
 	TemplateVehicle* tv = TemplateVehicle::Get(p1);
+	bool delete_template_p1 = (bool)p2;
 	if ( tv == NULL )
 		return CMD_ERROR;
 
 	if ( flags == DC_EXEC ) {
-		if ( tv == tv->last ) {
+		// TODO mv all delete + Update(First|Last)Vehicle statements after all if-else cases
+		/* template vehicle to delete */
+		tv = delete_template_p1 ? tv : tv->last;
+		/* case: template consists of 1 vehicle */
+		if ( tv == tv->first && tv == tv->last ) {
 			delete tv;
-			return CommandCost();
 		}
-		TemplateVehicle* last = tv->last;
-		last->prev->next = NULL;
-		tv->last = last->prev;
-		delete last;
-		tv->UpdateLastVehicle(tv->last);
+		/* case: tv == head */
+		else if ( tv == tv->first ) {
+			tv->next = NULL;
+			tv->next->prev == NULL;
+			TemplateVehicle* first_new = tv->next;
+			delete tv;
+			tv->UpdateFirstVehicle(first_new);
+		}
+		/* case: tv == last */
+		else if ( tv == tv->last ) {
+			TemplateVehicle* first = tv->first;
+			TemplateVehicle* last_new = tv->prev;
+			tv->prev->next = NULL;
+			tv->prev = NULL;
+			delete tv;
+			first->UpdateLastVehicle(last_new);
+		}
+		/* case: middle */
+		else {
+			tv->prev->next = tv->next;
+			tv->next->prev = tv->prev;
+			tv->prev = NULL;
+			tv->next = NULL;
+			delete tv;
+		}
 	}
 
 	return CommandCost();
