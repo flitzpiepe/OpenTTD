@@ -200,7 +200,7 @@ static int CDECL TrainEnginesThenWagonsSorter(const EngineID* a, const EngineID*
  *
  * Command callback when a new engine has been added to an existing template or while creating a new template.
  */
-void CcTemplateEngineAdded(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2)
+void CcTemplateEngineAdded(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2, uint32 cmd)
 {
 	if ( result.Succeeded() ) {
 		TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
@@ -213,7 +213,7 @@ void CcTemplateEngineAdded(const CommandCost &result, TileIndex tile, uint32 p1,
  *
  * Command callback when an engine has been removed from a template.
  */
-void CcTemplateEngineDeleted(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2)
+void CcTemplateEngineDeleted(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2, uint32 cmd)
 {
 	if ( result.Succeeded() ) {
 		TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
@@ -227,7 +227,7 @@ void CcTemplateEngineDeleted(const CommandCost &result, TileIndex tile, uint32 p
  *
  * Command callback when a template has been cloned from an existing train.
  */
-void CcTemplateClonedFromTrain(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2)
+void CcTemplateClonedFromTrain(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2, uint32 cmd)
 {
 	if ( result.Succeeded() ) {
 		TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
@@ -240,7 +240,7 @@ void CcTemplateClonedFromTrain(const CommandCost &result, TileIndex tile, uint32
  *
  * Command callback when a template has been deleted.
  */
-void CcTemplateDeleted(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2)
+void CcTemplateDeleted(const CommandCost &result, TileIndex tile, uint32 p1, uint32 p2, uint32 cmd)
 {
 	if ( result.Succeeded() ) {
 		TbtrGui* tbtrGui = static_cast<TbtrGui*>(FindWindowByClass(WC_TBTR_GUI));
