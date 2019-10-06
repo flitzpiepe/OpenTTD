@@ -475,10 +475,14 @@ CommandCost CmdTemplateAddEngine(TileIndex ti, DoCommandFlag flags, uint32 p1, u
 		else if ( append_to_tv ) {
 			TemplateVehicle* append_to = TemplateVehicle::GetIfValid(tid);
 			tv->next = append_to->next;
+			tv->prev = append_to;
+			append_to->next->prev = tv;
 			append_to->next = tv;
 			tv->first = append_to->first;
+			tv->last = append_to->last;
 			tv->subtype = DetermineSubtype(engine, false);
-			append_to->first->UpdateLastVehicle(tv);
+			if ( append_to->last == append_to )
+				append_to->first->UpdateLastVehicle(tv);
 		}
 		else {
 			if ( head ) {
