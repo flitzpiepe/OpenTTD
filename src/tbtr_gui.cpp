@@ -1022,6 +1022,7 @@ bool TbtrGui::OnVehicleSelect(const Vehicle* v)
 	return true;
 }
 
+// TODO comment
 void TbtrGui::UpdateButtonState()
 {
 	NWidgetCore* delete_template = this->GetWidget<NWidgetCore>(TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE);
