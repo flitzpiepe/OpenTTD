@@ -1038,7 +1038,9 @@ bool TbtrGui::OnVehicleSelect(const Vehicle* v)
 	return true;
 }
 
-// TODO comment
+/**
+ * Change button texts and colors depending on available gui actions
+ */
 void TbtrGui::UpdateButtonState()
 {
 	NWidgetCore* delete_template = this->GetWidget<NWidgetCore>(TRW_WIDGET_TMPL_BUTTONS_DELETE_TEMPLATE);
