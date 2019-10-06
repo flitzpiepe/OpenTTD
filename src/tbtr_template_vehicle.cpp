@@ -311,19 +311,23 @@ bool TemplateVehicle::TrainNeedsReplacement(Train* t)
 }
 
 /**
- * Update the "first" pointer on each member of this chain
+ * Update the "first" pointer on each member of this chain, starting at "this" vehicle
  *
  * @param last:   the new last vehicle
  */
 void TemplateVehicle::UpdateFirstVehicle(TemplateVehicle* first_new)
 {
-	TemplateVehicle* tmp = this->first;
+	TemplateVehicle* tmp = this;
 	while ( tmp ) {
 		tmp->first = first_new;
 		tmp = tmp->next;
 	}
 }
 
+// TODO should the iteration start at "this" vehicle or at "this->first"?
+// this->first didn't work for updatefirstvehicle (in case that there is a new first)
+// check all calls of this function. maybe its better to demand to call it with the head of the chain, if
+// desired, instead of assuming this, at least to be aligned with the above
 /**
  * Update the "last" pointer on each member of this chain
  *
@@ -336,6 +340,20 @@ void TemplateVehicle::UpdateLastVehicle(TemplateVehicle* last_new)
 		tmp->last = last_new;
 		tmp = tmp->next;
 	}
+}
+
+/**
+ * Update the subtype of this template vehicle
+ *
+ * This can be used after the template chain has been changed in this vehicle just became the new head of the
+ * chain.
+ */
+void TemplateVehicle::UpdateSubtype()
+{
+	if (HasBit(this->subtype, GVSF_ENGINE))
+		SetBit(this->subtype, GVSF_FRONT);
+	else if (HasBit(this->subtype, GVSF_WAGON))
+		SetBit(this->subtype, GVSF_FREE_WAGON);
 }
 
 /**

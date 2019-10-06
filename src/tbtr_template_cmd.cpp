@@ -468,7 +468,6 @@ CommandCost CmdTemplateAddEngine(TileIndex ti, DoCommandFlag flags, uint32 p1, u
 		TemplateVehicle::last_template = tv->index;
 
 		/* no template yet */
-		// TODO rename head -> first (like in delete cmd, or rename there)
 		TemplateVehicle* head = TemplateVehicle::GetIfValid(tid);
 		if ( head == NULL ) {
 			tv->subtype = DetermineSubtype(engine, true);
@@ -482,8 +481,6 @@ CommandCost CmdTemplateAddEngine(TileIndex ti, DoCommandFlag flags, uint32 p1, u
 			append_to->first->UpdateLastVehicle(tv);
 		}
 		else {
-			//TemplateVehicle* head = TemplateVehicle::GetIfValid(tid);
-			// TODO cleanup
 			if ( head ) {
 				head = head->first;
 				head->last->next = tv;
@@ -513,32 +510,29 @@ CommandCost CmdTemplateAddEngine(TileIndex ti, DoCommandFlag flags, uint32 p1, u
  * Delete the last engine of a template
  *
  * @param tile:  not used
- * @param p1:    template id, this is assumed to be the head of the template chain
- * @param p2:    bool: delete the template with id defined by p1 parameter
+ * @param p1:    template id of the vehicle to delete
+ * @param p2:    unused
  * @param msg:   not used
  */
 CommandCost CmdTemplateDeleteEngine(TileIndex tile, DoCommandFlag flags, uint32 p1, uint32 p2, char const* msg)
 {
 	TemplateVehicle* tv = TemplateVehicle::Get(p1);
-	bool delete_template_p1 = (bool)p2;
 	if ( tv == NULL )
 		return CMD_ERROR;
 
 	if ( flags == DC_EXEC ) {
-		// TODO mv all delete + Update(First|Last)Vehicle statements after all if-else cases
-		/* template vehicle to delete */
-		tv = delete_template_p1 ? tv : tv->last;
 		/* case: template consists of 1 vehicle */
 		if ( tv == tv->first && tv == tv->last ) {
 			delete tv;
 		}
 		/* case: tv == head */
 		else if ( tv == tv->first ) {
-			tv->next = NULL;
-			tv->next->prev = NULL;
 			TemplateVehicle* first_new = tv->next;
+			tv->next->prev = NULL;
+			tv->next = NULL;
+			first_new->UpdateFirstVehicle(first_new);
+			first_new->UpdateSubtype();
 			delete tv;
-			tv->UpdateFirstVehicle(first_new);
 		}
 		/* case: tv == last */
 		else if ( tv == tv->last ) {

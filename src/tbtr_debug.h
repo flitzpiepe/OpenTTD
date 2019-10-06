@@ -15,6 +15,7 @@
 #include "tbtr_template_vehicle.h"
 #include "train.h"
 #include "vehicle_base.h"
+#include "tbtr_gui.h"
 
 namespace td
 {
@@ -103,6 +104,11 @@ namespace td
 		{
 			std::cout << it->first.first << "," << (int)it->first.second << "," << it->second << std::endl;
 		}
+	}
+
+	TbtrGui* gui()
+	{
+		return (TbtrGui*)FindWindowByClass(WC_TBTR_GUI);
 	}
 }
 

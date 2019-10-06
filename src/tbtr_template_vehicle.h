@@ -119,8 +119,9 @@ public:
 
 	void SetCargoCapacity();
 
-	void UpdateLastVehicle(TemplateVehicle*);
 	void UpdateFirstVehicle(TemplateVehicle*);
+	void UpdateLastVehicle(TemplateVehicle*);
+	void UpdateSubtype();
 	void UpdateZoom();					///< take the changed UI zoom into account
 };
 

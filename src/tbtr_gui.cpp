@@ -909,10 +909,19 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			break;
 		}
 		case TRW_WIDGET_TMPL_BUTTONS_DELETE_ENGINE: {
-			/* get the currently selected template */
+			/* get the currently selected template chain or template vehicle */
 			TemplateID tid = INVALID_TEMPLATE;
-			if ( index_selected_template >= 0 )
-				tid = (*this->templates.Get(index_selected_template))->index;
+			if ( this->id_selected_template_part != INVALID_TEMPLATE ) {
+				// TODO the udate steps should be done in the CC of the command below
+				const TemplateVehicle* tv_sel = TemplateVehicle::Get(this->id_selected_template_part);
+				/* in case we're deleting the head of a chain update the index to the selected template */
+				if ( this->id_selected_template_part == tv_sel->first->index && tv_sel->next ) {
+					this->templates[this->index_selected_template] = tv_sel->next;
+				}
+				tid = this->id_selected_template_part;
+			}
+			else if ( this->index_selected_template >= 0 )
+				tid = (*this->templates.Get(this->index_selected_template))->last->index;
 			else
 				return;
 
