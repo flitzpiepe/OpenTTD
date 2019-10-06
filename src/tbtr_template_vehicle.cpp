@@ -324,18 +324,14 @@ void TemplateVehicle::UpdateFirstVehicle(TemplateVehicle* first_new)
 	}
 }
 
-// TODO should the iteration start at "this" vehicle or at "this->first"?
-// this->first didn't work for updatefirstvehicle (in case that there is a new first)
-// check all calls of this function. maybe its better to demand to call it with the head of the chain, if
-// desired, instead of assuming this, at least to be aligned with the above
 /**
- * Update the "last" pointer on each member of this chain
+ * Update the "last" pointer on each member of this chain, starting at "this" vehicle
  *
  * @param last:   the new last vehicle
  */
 void TemplateVehicle::UpdateLastVehicle(TemplateVehicle* last_new)
 {
-	TemplateVehicle* tmp = this->first;
+	TemplateVehicle* tmp = this;
 	while ( tmp ) {
 		tmp->last = last_new;
 		tmp = tmp->next;
