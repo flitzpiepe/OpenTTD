@@ -168,6 +168,7 @@ DropDownList *BaseVehicleListWindow::BuildActionDropdownList(bool show_autorepla
 {
 	DropDownList *list = new DropDownList();
 
+	*list->Append() = new DropDownListStringItem(STR_TBTR_TEMPLATE_REPLACEMENT, ADI_TBTR, false);
 	if (show_autoreplace) *list->Append() = new DropDownListStringItem(STR_VEHICLE_LIST_REPLACE_VEHICLES, ADI_REPLACE, false);
 	*list->Append() = new DropDownListStringItem(STR_VEHICLE_LIST_SEND_FOR_SERVICING, ADI_SERVICE, false);
 	*list->Append() = new DropDownListStringItem(this->vehicle_depot_name[this->vli.vtype], ADI_DEPOT, false);

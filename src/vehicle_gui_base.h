@@ -27,6 +27,7 @@ struct BaseVehicleListWindow : public Window {
 	VehicleListIdentifier vli; ///< Identifier of the vehicle list we want to currently show.
 
 	enum ActionDropdownItem {
+		ADI_TBTR,
 		ADI_REPLACE,
 		ADI_SERVICE,
 		ADI_DEPOT,

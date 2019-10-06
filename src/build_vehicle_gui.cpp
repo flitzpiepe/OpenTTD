@@ -32,6 +32,7 @@
 #include "cargotype.h"
 #include "core/geometry_func.hpp"
 #include "autoreplace_func.h"
+#include "tbtr_template_vehicle.h"
 
 #include "widgets/build_vehicle_widget.h"
 
@@ -971,6 +972,7 @@ void DisplayVehicleSortDropDown(Window *w, VehicleType vehicle_type, int selecte
 
 /** GUI for building vehicles. */
 struct BuildVehicleWindow : Window {
+	TemplateVehicle* template_vehicle;
 	VehicleType vehicle_type;                   ///< Type of vehicles shown in the window.
 	union {
 		RailTypeByte railtype;              ///< Rail type to show, or #RAILTYPE_END.
@@ -991,6 +993,7 @@ struct BuildVehicleWindow : Window {
 
 	BuildVehicleWindow(WindowDesc *desc, TileIndex tile, VehicleType type) : Window(desc)
 	{
+		this->template_vehicle = 0;
 		this->vehicle_type = type;
 		this->window_number = tile == INVALID_TILE ? (int)type : tile;
 
@@ -1321,6 +1324,11 @@ struct BuildVehicleWindow : Window {
 
 			case WID_BV_BUILD: {
 				EngineID sel_eng = this->sel_engine;
+				//TemplateVehicle* tv = new TemplateVehicle();
+				//tv->engine_type = sel_eng;
+				//if ( template_vehicle == 0 )
+				//	template_vehicle = tv;
+				//break;
 				if (sel_eng != INVALID_ENGINE) {
 					CommandCallback *callback = (this->vehicle_type == VEH_TRAIN && RailVehInfo(sel_eng)->railveh_type == RAILVEH_WAGON) ? CcBuildWagon : CcBuildPrimaryVehicle;
 					DoCommandP(this->window_number, sel_eng, 0, GetCmdBuildVeh(this->vehicle_type), callback);

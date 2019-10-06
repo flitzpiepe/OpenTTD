@@ -28,6 +28,10 @@ static const SaveLoad _group_desc[] = {
 	 SLE_CONDVAR(Group, livery.colour1,     SLE_UINT8,                     SLV_GROUP_LIVERIES, SL_MAX_VERSION),
 	 SLE_CONDVAR(Group, livery.colour2,     SLE_UINT8,                     SLV_GROUP_LIVERIES, SL_MAX_VERSION),
 	 SLE_CONDVAR(Group, parent,             SLE_UINT16,                    SLV_189, SL_MAX_VERSION),
+	SLE_VAR(Group,  template_id,        SLE_INT16),
+	SLE_VAR(Group,  reuse_depot_vehicles,      SLE_UINT8),
+	SLE_VAR(Group,  keep_remaining_vehicles,   SLE_UINT8),
+	SLE_VAR(Group,  refit_as_template,         SLE_UINT8),
 	     SLE_END()
 };
 

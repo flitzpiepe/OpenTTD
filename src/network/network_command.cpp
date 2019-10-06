@@ -51,6 +51,9 @@ static CommandCallback * const _callback_table[] = {
 	/* 0x19 */ CcStartStopVehicle,
 	/* 0x1A */ CcGame,
 	/* 0x1B */ CcAddVehicleNewGroup,
+	/* 0x1B */ CcTemplateEngineAdded,
+	/* 0x1B */ CcTemplateEngineDeleted,
+	/* 0x1B */ CcTemplateClonedFromTrain,
 };
 
 /**

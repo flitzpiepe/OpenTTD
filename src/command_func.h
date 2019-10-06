@@ -125,4 +125,9 @@ CommandCallback CcFoundRandomTown;
 CommandCallback CcBuildPrimaryVehicle;
 CommandCallback CcStartStopVehicle;
 
+/* tbtr_gui.cpp */
+CommandCallback CcTemplateEngineAdded;
+CommandCallback CcTemplateEngineDeleted;
+CommandCallback CcTemplateClonedFromTrain;
+
 #endif /* COMMAND_FUNC_H */

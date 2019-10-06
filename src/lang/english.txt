@@ -314,6 +314,65 @@ STR_SORT_BY_RANGE                                               :Range
 STR_SORT_BY_POPULATION                                          :Population
 STR_SORT_BY_RATING                                              :Rating
 
+# Template-based train replacement
+STR_TBTR_TEMPLATE_REPLACEMENT                                   :Template Replacement
+STR_TBTR_UI_TITLE                                               :{WHITE}Template Replacement
+
+STR_TBTR_UI_LABEL_GROUPS                                        :{YELLOW}Company groups
+STR_TBTR_UI_LABEL_ENGINES                                       :{YELLOW}Available Engines
+STR_TBTR_UI_LABEL_TEMPLATE_INFO                                 :{YELLOW}Template Info
+STR_TBTR_UI_LABEL_TEMPLATES                                     :{YELLOW}Available Templates
+
+STR_TBTR_UI_BUTTON_ADD_ENGINE                                   :{BLACK}Add Engine
+STR_TBTR_UI_BUTTON_ADD_ENGINE_DA                                :{GRAY}Add Engine
+STR_TBTR_UI_BUTTON_CLONE_TEMPLATE                               :{BLACK}Clone Template
+STR_TBTR_UI_BUTTON_DELETE_TEMPLATE                              :{BLACK}Delete Template
+STR_TBTR_UI_BUTTON_DELETE_TEMPLATE_DA                           :{GRAY}Delete Template
+STR_TBTR_UI_BUTTON_DELETE_ENGINE                                :{BLACK}Delete last Engine
+STR_TBTR_UI_BUTTON_DELETE_ENGINE_DA                             :{GRAY}Delete last Engine
+STR_TBTR_UI_BUTTON_KEEP_REMAINDERS                              :{BLACK}Keep remainders
+STR_TBTR_UI_BUTTON_START_REPLACEMENT                            :{BLACK}Start replacing
+STR_TBTR_UI_BUTTON_START_REPLACEMENT_DA                         :{GRAY}Start replacing
+STR_TBTR_UI_BUTTON_STOP_REPLACEMENT                             :{BLACK}Stop replacing
+STR_TBTR_UI_BUTTON_STOP_REPLACEMENT_DA                          :{GRAY}Stop replacing
+STR_TBTR_UI_BUTTON_USE_DEPOT                                    :{BLACK}Use vehicles in depot
+STR_TBTR_UI_BUTTON_USE_REFIT                                    :{BLACK}Use Refit
+
+STR_TBTR_UI_TOOLTIP_ADD_ENGINE                                  :{BLACK}Add a new engine to the selected template or create a new template if none is selected
+STR_TBTR_UI_TOOLTIP_CLONE_TEMPLATE                              :{BLACK}Create a new template by cloning from an existing train
+STR_TBTR_UI_TOOLTIP_DELETE_TEMPLATE                             :{BLACK}Delete the selected template
+STR_TBTR_UI_TOOLTIP_DELETE_ENGINE                               :{BLACK}Delete the last engine of the selected template
+STR_TBTR_UI_TOOLTIP_ENGINES                                     :{BLACK}Available engines to be added to the currently selected Template Vehicle
+STR_TBTR_UI_TOOLTIP_GROUPS                                      :{BLACK}Select a group and a template and click "Start replacement" to assign a template to this group
+STR_TBTR_UI_TOOLTIP_KEEP_REMAINDERS                             :{BLACK}After finishing template replacement keep all remaining vehicles from the old train in a neutral and idle state for later use
+STR_TBTR_UI_TOOLTIP_SELECT_RAILTYPE                             :{BLACK}Switch the current railtype
+STR_TBTR_UI_TOOLTIP_START_REPLACEMENT                           :{BLACK}Start replacement for the selected group and template
+STR_TBTR_UI_TOOLTIP_STOP_REPLACEMENT                            :{BLACK}Stop replacement for the selected group
+STR_TBTR_UI_TOOLTIP_TEMPLATES                                   :{BLACK}Select a template - for assignment to a group or for modification
+STR_TBTR_UI_TOOLTIP_USE_DEPOT                                   :{BLACK}Use vehicles inside the depot that are in a neutral and idle state to compose trains on template replacement in order to reduce buying costs
+STR_TBTR_UI_TOOLTIP_USE_REFIT                                   :{BLACK}If set, the train will use exactly the cargo refit specified by the template. If not every wagon that is to be newly bought or retrieved from the depot, will *attempt* to be refitted as the old one was. Standard refit if this is impossible.
+
+STR_TBTR_CONFIG_KEEP_REMAINDERS                                 :keep rem
+STR_TBTR_CONFIG_USE_DEPOT                                       :use depot
+STR_TBTR_CONFIG_USE_REFIT                                       :use refit
+
+STR_TBTR_INFO_CARGO_SUMMARY                                     :{CARGO_LONG}
+STR_TBTR_INFO_CARGO_SUMMARY_MULTI                               :{CARGO_LONG} (x{NUM})
+STR_TBTR_INFO_GROUP_USES_TEMPLATE                               :{GREEN}Template {GOLD}{NUM}
+STR_TBTR_INFO_GROUP_NO_TEMPLATE                                 :No template set
+STR_TBTR_INFO_TEMPLATE_VALUE                                    :{TINY_FONT}{BLACK}Buying Cost: {GOLD}{CURRENCY_LONG}
+STR_TBTR_INFO_TEMPLATE_VALUE_notinyfont                         :{BLACK}Buying Cost: {GOLD}{CURRENCY_LONG}
+STR_TBTR_INFO_TEMPLATE_IN_USE                                   :Template used by {GOLD}{NUM} {GREEN}groups
+STR_TBTR_INFO_TEMPLATE_IN_USE_1                                 :Template used by {GOLD}1 {GREEN}group
+STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_0                         :No trains to replace
+STR_TBTR_INFO_TRAINS_NEED_REPLACEMENT_N                         :{GREEN}Trains to replace: {ORANGE}{NUM}
+STR_TBTR_WARN_FREE_WAGON                                        :{RED}Free Chain: not runnable!
+
+# TBTR Template Refit Window
+STR_TBTR_REFIT_UI_TITLE                                         :{WHITE}Template Refit
+STR_TBTR_UI_BUTTON_REFIT                                        :{BLACK}Toggle Refit Window
+STR_TBTR_UI_BUTTON_REFIT_DA                                     :{GRAY}Toggle Refit Window
+
 # Tooltips for the main toolbar
 STR_TOOLBAR_TOOLTIP_PAUSE_GAME                                  :{BLACK}Pause game
 STR_TOOLBAR_TOOLTIP_FORWARD                                     :{BLACK}Fast forward the game

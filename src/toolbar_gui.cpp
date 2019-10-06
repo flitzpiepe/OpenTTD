@@ -47,6 +47,7 @@
 #include "goal_base.h"
 #include "story_base.h"
 #include "toolbar_gui.h"
+#include "tbtr_gui.h"
 #include "framerate_type.h"
 #include "guitimer_func.h"
 
@@ -1984,6 +1985,7 @@ enum MainToolbarHotkeys {
 	MTHK_GIANT_SCREENSHOT,
 	MTHK_CHEATS,
 	MTHK_TERRAFORM,
+	MTHK_TBTR_GUI,
 	MTHK_EXTRA_VIEWPORT,
 	MTHK_CLIENT_LIST,
 	MTHK_SIGN_LIST,
@@ -2079,6 +2081,7 @@ struct MainToolbarWindow : Window {
 			case MTHK_GIANT_SCREENSHOT: MenuClickLargeWorldScreenshot(SC_WORLD); break;
 			case MTHK_CHEATS: if (!_networking) ShowCheatWindow(); break;
 			case MTHK_TERRAFORM: ShowTerraformToolbar(); break;
+			case MTHK_TBTR_GUI: ShowTbtrGui(); break;
 			case MTHK_EXTRA_VIEWPORT: ShowExtraViewPortWindowForTileUnderCursor(); break;
 #ifdef ENABLE_NETWORK
 			case MTHK_CLIENT_LIST: if (_networking) ShowClientList(); break;
@@ -2192,6 +2195,7 @@ static Hotkey maintoolbar_hotkeys[] = {
 	Hotkey((uint16)0, "giant_screenshot", MTHK_GIANT_SCREENSHOT),
 	Hotkey(WKC_CTRL | WKC_ALT | 'C', "cheats", MTHK_CHEATS),
 	Hotkey('L', "terraform", MTHK_TERRAFORM),
+	Hotkey(WKC_CTRL | 'E', "tbtr_gui", MTHK_TBTR_GUI),
 	Hotkey('V', "extra_viewport", MTHK_EXTRA_VIEWPORT),
 #ifdef ENABLE_NETWORK
 	Hotkey((uint16)0, "client_list", MTHK_CLIENT_LIST),

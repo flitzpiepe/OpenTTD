@@ -53,6 +53,7 @@
 #include "linkgraph/linkgraph.h"
 #include "linkgraph/refresh.h"
 #include "framerate_type.h"
+#include "tbtr_template_vehicle.h"
 
 #include "table/strings.h"
 
@@ -691,6 +692,13 @@ void ResetVehicleColourMap()
 typedef SmallMap<Vehicle *, bool, 4> AutoreplaceMap;
 static AutoreplaceMap _vehicles_to_autoreplace;
 
+/**
+ * List of vehicles that are issued for template replacement this tick.
+ * Mapping is {vehicle : leave depot after replacement}
+ */
+typedef SmallMap<Train *, bool, 4> TemplateReplacementMap;
+static TemplateReplacementMap _vehicles_to_templatereplace;
+
 void InitializeVehicles()
 {
 	_vehicles_to_autoreplace.Reset();
@@ -894,8 +902,21 @@ Vehicle::~Vehicle()
  */
 void VehicleEnteredDepotThisTick(Vehicle *v)
 {
-	/* Vehicle should stop in the depot if it was in 'stopping' state */
-	_vehicles_to_autoreplace[v] = !(v->vehstatus & VS_STOPPED);
+	/* Template Replacement Setup stuff */
+	bool stayInDepot = v->current_order.GetDepotActionType();
+	Train* t = static_cast<Train*>(v);
+	TemplateVehicle* tv = GetTemplateForTrain(t);
+	if ( tv != NULL && tv->TrainNeedsReplacement(t) ) {
+		if ( stayInDepot ) _vehicles_to_templatereplace[t] = true;
+		else               _vehicles_to_templatereplace[t] = false;
+	}
+	/* Moved the assignment for auto replacement here to prevent auto replacement
+	 * from happening if template replacement is also scheduled */
+	else
+	{
+		/* Vehicle should stop in the depot if it was in 'stopping' state */
+		_vehicles_to_autoreplace[v] = !(v->vehstatus & VS_STOPPED);
+	}
 
 	/* We ALWAYS set the stopped state. Even when the vehicle does not plan on
 	 * stopping in the depot, so we stop it to ensure that it will not reserve
@@ -943,6 +964,7 @@ static void RunVehicleDayProc()
 void CallVehicleTicks()
 {
 	_vehicles_to_autoreplace.Clear();
+	_vehicles_to_templatereplace.Clear();
 
 	RunVehicleDayProc();
 
@@ -1072,6 +1094,25 @@ void CallVehicleTicks()
 	}
 
 	cur_company.Restore();
+
+	/* do Template Replacement */
+	Backup<CompanyByte> tmpl_cur_company(_current_company, FILE_LINE);
+	for (TemplateReplacementMap::iterator it = _vehicles_to_templatereplace.Begin(); it != _vehicles_to_templatereplace.End(); it++) {
+		Train *t = it->first;
+		bool stayInDepot = it->second;
+
+		tmpl_cur_company.Change(t->owner);
+		t->vehstatus |= VS_STOPPED;
+
+		CommandCost cc = DoCommand(0, t->index, stayInDepot, DC_EXEC, CMD_TEMPLATE_REPLACE_VEHICLE);
+		/* if the replacement failed, the vehicle would not be launched from within the replacement function */
+		if ( !cc.Succeeded() && !stayInDepot )
+			t->vehstatus &= ~VS_STOPPED;
+
+		/* Redraw main gui for changed statistics */
+		SetWindowClassesDirty(WC_TBTR_GUI);
+	}
+	tmpl_cur_company.Restore();
 }
 
 /**

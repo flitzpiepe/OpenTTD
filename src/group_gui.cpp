@@ -26,6 +26,7 @@
 #include "core/geometry_func.hpp"
 #include "company_base.h"
 #include "company_gui.h"
+#include "tbtr_gui.h"
 
 #include "widgets/group_widget.h"
 
@@ -625,6 +626,7 @@ public:
 			VehicleGroupWindow *w = (VehicleGroupWindow*)win;
 			w->vli.index = ALL_GROUP;
 			DoCommandP(0, w->group_confirm, 0, CMD_DELETE_GROUP | CMD_MSG(STR_ERROR_GROUP_CAN_T_DELETE));
+			InvalidateWindowData(WC_TBTR_GUI, 0, 0, 0);
 		}
 	}
 
@@ -817,6 +819,7 @@ public:
 	virtual void OnQueryTextFinished(char *str)
 	{
 		if (str != NULL) DoCommandP(0, this->group_rename, 0, CMD_ALTER_GROUP | CMD_MSG(STR_ERROR_GROUP_CAN_T_RENAME), NULL, str);
+		InvalidateWindowData(WC_TBTR_GUI, 0, 0, 0);
 		this->group_rename = INVALID_GROUP;
 	}
 
@@ -837,6 +840,9 @@ public:
 				assert(this->vehicles.Length() != 0);
 
 				switch (index) {
+					case ADI_TBTR:    // Template Replacement window
+						ShowTbtrGui();
+						break;
 					case ADI_REPLACE: // Replace window
 						ShowReplaceGroupVehicleWindow(this->vli.index, this->vli.vtype);
 						break;

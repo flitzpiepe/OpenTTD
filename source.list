@@ -84,6 +84,9 @@ stringfilter.cpp
 strings.cpp
 story.cpp
 subsidy.cpp
+tbtr_template_refit_window.cpp
+tbtr_template_vehicle.cpp
+tbtr_template_cmd.cpp
 textbuf.cpp
 texteff.cpp
 tgp.cpp
@@ -349,6 +352,9 @@ subsidy_base.h
 subsidy_func.h
 subsidy_type.h
 tar_type.h
+tbtr_gui.h
+tbtr_template_refit_window.h
+tbtr_template_vehicle.h
 terraform_gui.h
 textbuf_gui.h
 textbuf_type.h
@@ -494,6 +500,7 @@ station_gui.cpp
 statusbar_gui.cpp
 story_gui.cpp
 subsidy_gui.cpp
+tbtr_gui.cpp
 terraform_gui.cpp
 textfile_gui.cpp
 timetable_gui.cpp
@@ -633,6 +640,7 @@ saveload/storage_sl.cpp
 saveload/strings_sl.cpp
 saveload/story_sl.cpp
 saveload/subsidy_sl.cpp
+saveload/tbtr_template_vehicle_sl.cpp
 saveload/town_sl.cpp
 saveload/vehicle_sl.cpp
 saveload/waypoint_sl.cpp

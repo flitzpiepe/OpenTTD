@@ -423,6 +423,9 @@
     <ClCompile Include="..\src\strings.cpp" />
     <ClCompile Include="..\src\story.cpp" />
     <ClCompile Include="..\src\subsidy.cpp" />
+    <ClCompile Include="..\src\tbtr_gui.cpp" />
+    <ClCompile Include="..\src\tbtr_template_vehicle.cpp" />
+    <ClCompile Include="..\src\tbtr_template_cmd.cpp" />
     <ClCompile Include="..\src\textbuf.cpp" />
     <ClCompile Include="..\src\texteff.cpp" />
     <ClCompile Include="..\src\tgp.cpp" />
@@ -662,6 +665,8 @@
     <ClInclude Include="..\src\subsidy_func.h" />
     <ClInclude Include="..\src\subsidy_type.h" />
     <ClInclude Include="..\src\tar_type.h" />
+    <ClInclude Include="..\src\tbtr_gui.h" />
+    <ClInclude Include="..\src\tbtr_template_vehicle.h" />
     <ClInclude Include="..\src\terraform_gui.h" />
     <ClInclude Include="..\src\textbuf_gui.h" />
     <ClInclude Include="..\src\textbuf_type.h" />
@@ -919,6 +924,7 @@
     <ClCompile Include="..\src\saveload\strings_sl.cpp" />
     <ClCompile Include="..\src\saveload\story_sl.cpp" />
     <ClCompile Include="..\src\saveload\subsidy_sl.cpp" />
+    <ClCompile Include="..\src\saveload\tbtr_template_vehicle_sl.cpp" />
     <ClCompile Include="..\src\saveload\town_sl.cpp" />
     <ClCompile Include="..\src\saveload\vehicle_sl.cpp" />
     <ClCompile Include="..\src\saveload\waypoint_sl.cpp" />
