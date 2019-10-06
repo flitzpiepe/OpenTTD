@@ -53,6 +53,7 @@ public:
 	void UpdateGUI(UpdateGuiMode);
 
 private:
+	void AddEngine();
 	void BuildGroupList();
 	void BuildTemplateList();
 	void BuildTemplateEngineList();

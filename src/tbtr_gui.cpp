@@ -360,6 +360,31 @@ void TbtrGui::UpdateGUI(UpdateGuiMode mode)
 	this->CalculateTemplatesHScroll();
 }
 
+void TbtrGui::AddEngine()
+{
+	/* get the selected engine */
+	if ( this->index_selected_engine == -1 )
+		return;
+
+	/* selected engine */
+	EngineID eid = this->engines[this->index_selected_engine];
+
+	/* selected template */
+	TemplateID tid = INVALID_TEMPLATE;
+	if ( this->index_selected_template >= 0 )
+		tid = (*this->templates.Get(index_selected_template))->index;
+
+	/* add the engine */
+	if ( this->id_selected_template_part == INVALID_TEMPLATE )
+		DoCommandP(0, tid, eid, CMD_TEMPLATE_ADD_ENGINE, CcTemplateEngineAdded);
+	else
+		DoCommandP(0, this->id_selected_template_part, eid|(1<<16), CMD_TEMPLATE_ADD_ENGINE, CcTemplateEngineAdded);
+	this->index_selected_template = FindNewestTemplateInGui();
+	if ( this->index_selected_template >= 0 )
+		this->vscroll_templates->ScrollTowards(this->index_selected_template);
+	this->UpdateRefitWindow();
+}
+
 /**
  * Build the list of engines that can be selected for new or existing templates
  */
@@ -779,6 +804,10 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			uint16 index_new = this->vscroll_engines->GetScrolledRowFromWidget(pt.y, this, widget);
 			if ( index_new >= this->engines.Length() )
 				this->index_selected_engine = -1;
+			else if ( click_count == 2 ) {
+				this->AddEngine();
+				this->index_selected_engine = index_new;
+			}
 			else if ( this->index_selected_engine == index_new )
 				this->index_selected_engine = -1;
 			else
@@ -868,27 +897,7 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			break;
 		}
 		case TRW_WIDGET_TMPL_BUTTONS_ADD_ENGINE: {
-			/* get the selected engine */
-			if ( this->index_selected_engine == -1 )
-				return;
-
-			/* selected engine */
-			EngineID eid = this->engines[this->index_selected_engine];
-
-			/* selected template */
-			TemplateID tid = INVALID_TEMPLATE;
-			if ( this->index_selected_template >= 0 )
-				tid = (*this->templates.Get(index_selected_template))->index;
-
-			/* add the engine */
-			if ( this->id_selected_template_part == INVALID_TEMPLATE )
-				DoCommandP(0, tid, eid, CMD_TEMPLATE_ADD_ENGINE, CcTemplateEngineAdded);
-			else
-				DoCommandP(0, this->id_selected_template_part, eid|(1<<16), CMD_TEMPLATE_ADD_ENGINE, CcTemplateEngineAdded);
-			this->index_selected_template = FindNewestTemplateInGui();
-			if ( this->index_selected_template >= 0 )
-				this->vscroll_templates->ScrollTowards(this->index_selected_template);
-			this->UpdateRefitWindow();
+			this->AddEngine();
 			break;
 		}
 		case TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE: {
