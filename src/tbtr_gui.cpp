@@ -340,6 +340,14 @@ void TbtrGui::UpdateGUI(UpdateGuiMode mode)
 				this->index_selected_template = -1;
 				this->UpdateButtonState();
 			}
+			/* if we were about to delete the head of a template, we have stored the new chain head
+			 * beforehand; if that is the case, use this stored vehicle */
+			if ( this->new_chain_head ) {
+				this->templates[this->index_selected_template] = this->new_chain_head;
+				/* reset it, it will be set again before deleting the next head of a template */
+				this->new_chain_head = NULL;
+			}
+			this->id_selected_template_part = INVALID_TEMPLATE;
 			break;
 		case TEMPLATE_CLONED:
 			this->ToggleWidgetLoweredState(TRW_WIDGET_TMPL_BUTTONS_CLONE_TEMPLATE);
@@ -912,12 +920,11 @@ void TbtrGui::OnClick(Point pt, int widget, int click_count)
 			/* get the currently selected template chain or template vehicle */
 			TemplateID tid = INVALID_TEMPLATE;
 			if ( this->id_selected_template_part != INVALID_TEMPLATE ) {
-				// TODO the udate steps should be done in the CC of the command below
+				/* in case we're deleting the head of a chain remember the pointer to the new head after the
+				 * deletion, since the update will happen only when the delete command finishes sucessfully */
 				const TemplateVehicle* tv_sel = TemplateVehicle::Get(this->id_selected_template_part);
-				/* in case we're deleting the head of a chain update the index to the selected template */
-				if ( this->id_selected_template_part == tv_sel->first->index && tv_sel->next ) {
-					this->templates[this->index_selected_template] = tv_sel->next;
-				}
+				if ( this->id_selected_template_part == tv_sel->first->index && tv_sel->next )
+					this->new_chain_head = tv_sel->next;
 				tid = this->id_selected_template_part;
 			}
 			else if ( this->index_selected_template >= 0 )

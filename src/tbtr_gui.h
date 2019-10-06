@@ -91,6 +91,7 @@ private:
 	int index_selected_group = -1;                                ///< index into the GUIGroupList "groups"
 	int index_selected_template = -1;                             ///< index into the GUITemplateList "templates"
 	TemplateID id_selected_template_part = INVALID_TEMPLATE;      ///< ID of the selected engine of the currently selected template
+	const TemplateVehicle* new_chain_head = NULL;                 ///< A pointer to remember what the new chain head will be after deleting the leading vehicle
 	GUIEngineList engines;                                        ///< List of new engines to add to the templates
 	GUIGroupList groups;                                          ///< List of groups
 	GUITemplateList templates;                                    ///< List of templates
