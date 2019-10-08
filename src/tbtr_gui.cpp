@@ -262,7 +262,7 @@ int CountTrainsToReplace(const Group* group)
 	TemplateVehicle* tv = TemplateVehicle::Get(group->template_id);
 	Train* t;
 	FOR_ALL_TRAINS(t) {
-		if ( t->IsPrimaryVehicle() && t->group_id == group->index && tv && tv->TrainNeedsReplacement(t) )
+		if ( t->IsPrimaryVehicle() && t->group_id == group->index && tv && tv->TrainNeedsReplacement(t, group->refit_as_template) )
 			++count;
 	}
 	return count;

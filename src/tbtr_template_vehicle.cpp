@@ -293,7 +293,7 @@ void TemplateVehicle::SetCargoCapacity()
  * @t:      the train to check
  * @return: true, if it will be considered for template replacement
  */
-bool TemplateVehicle::TrainNeedsReplacement(Train* t)
+bool TemplateVehicle::TrainNeedsReplacement(Train* t, bool compare_cargotype)
 {
 	TemplateVehicle* tv = this;
 	while ( tv && t ) {
@@ -301,7 +301,7 @@ bool TemplateVehicle::TrainNeedsReplacement(Train* t)
 			return true;
 		if ( t->subtype != tv->subtype )
 			return true;
-		if ( t->cargo_type != tv->cargo_type )
+		if ( compare_cargotype && t->cargo_type != tv->cargo_type )
 			return true;
 		tv = tv->GetNextUnit();
 		t = t->GetNextUnit();

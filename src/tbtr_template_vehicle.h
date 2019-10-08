@@ -115,7 +115,7 @@ public:
 
 	void Draw(uint, uint, int, int, uint16, int, TemplateID);
 
-	bool TrainNeedsReplacement(Train*);
+	bool TrainNeedsReplacement(Train*, bool);
 
 	void SetCargoCapacity();
 
@@ -126,7 +126,6 @@ public:
 };
 
 TemplateID FindTemplateIndexForGroup(GroupID);
-
 
 /* Command functions */
 CommandCost CmdTemplateAddEngine(TileIndex, DoCommandFlag, uint32, uint32, char const*);
